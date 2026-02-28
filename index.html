@@ -481,12 +481,148 @@
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
+
+  /* ── MOBILE TOPBAR ── */
+  .mobile-topbar {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--navy);
+    padding: 14px 18px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .mobile-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: white;
+  }
+  .mobile-logo span { color: var(--gold-light); }
+
+  .hamburger {
+    background: rgba(255,255,255,0.1);
+    border: 1.5px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    width: 40px; height: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .hamburger:hover { background: rgba(255,255,255,0.18); }
+  .hamburger span {
+    display: block;
+    width: 20px; height: 2px;
+    background: white;
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* ── OVERLAY ── */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 150;
+    backdrop-filter: blur(2px);
+  }
+  .overlay.visible { display: block; }
+
+  /* ── MEDIA QUERIES ── */
+  @media (max-width: 768px) {
+    body { flex-direction: column; overflow: auto; height: auto; min-height: 100vh; }
+
+    .mobile-topbar { display: flex; }
+
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 100vh;
+      width: 280px;
+      z-index: 200;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    .sidebar.open { transform: translateX(0); }
+
+    .main { flex: 1; overflow: visible; }
+
+    .tabs-bar {
+      padding: 0 12px;
+      overflow-x: auto;
+      gap: 0;
+    }
+    .tab { padding: 14px 12px 12px; font-size: 12px; }
+
+    .panel { padding: 16px; }
+
+    .video-thumb { height: 180px; }
+
+    .video-info { padding: 14px 16px; }
+    .video-title { font-size: 16px; }
+
+    .speed-controls { display: none; }
+
+    .video-meta { gap: 10px; }
+
+    .materials-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .material-card { padding: 14px 8px 10px; }
+    .material-icon { width: 38px; height: 38px; font-size: 18px; }
+    .material-label { font-size: 11px; }
+
+    .quiz-card { padding: 18px; }
+    .quiz-question-text { font-size: 14px; }
+    .option-item { padding: 12px 14px; font-size: 13px; }
+
+    .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .stat-val { font-size: 20px; }
+    .stat-label { font-size: 10px; }
+
+    .subject-name { min-width: 130px; font-size: 12px; }
+
+    .quiz-actions { flex-direction: column; }
+    .btn-primary, .btn-outline { width: 100%; justify-content: center; }
+
+    .quiz-header { gap: 6px; }
+    .quiz-badge { font-size: 10px; padding: 4px 8px; }
+  }
+
+  @media (max-width: 400px) {
+    .materials-grid { grid-template-columns: repeat(2, 1fr); }
+    .stats-grid { grid-template-columns: repeat(1, 1fr); }
+    .subject-row { flex-wrap: wrap; gap: 6px; }
+    .subject-name { min-width: 100%; }
+    .subject-bar-wrap { flex: 1; min-width: 60%; }
+  }
 </style>
 </head>
 <body>
 
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- MOBILE TOPBAR -->
+<div class="mobile-topbar">
+  <div class="mobile-logo">Goiânia<span>Conc</span></div>
+  <div class="hamburger" id="hamburger" onclick="toggleSidebar()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
 <!-- SIDEBAR -->
-<aside class="sidebar">
+<aside class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <div class="logo">Goiânia<span>Conc</span></div>
     <div class="module-badge">Câmara Municipal de Goiânia</div>
@@ -859,6 +995,30 @@
   function showFeedback() {
     document.getElementById('feedbackBox').classList.add('visible');
   }
+
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const hamburger = document.getElementById('hamburger');
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('visible');
+    hamburger.classList.toggle('open');
+  }
+
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('overlay').classList.remove('visible');
+    document.getElementById('hamburger').classList.remove('open');
+  }
+
+  // Fecha sidebar ao clicar em item do menu no mobile
+  document.querySelectorAll && document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        if (window.innerWidth <= 768) closeSidebar();
+      });
+    });
+  });
 
   function nextQuestion() {
     answered = false;
