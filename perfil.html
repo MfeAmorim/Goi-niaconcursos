@@ -245,49 +245,55 @@
   });
 
   async function loadProfile() {
-    userProfile = await getUserProfile(currentUser.id);
-    userStats = await getStats(currentUser.id);
-    const studyMin = await getStudyTime(currentUser.id);
-
-    // Nome e email
-    const name = userProfile?.full_name || currentUser.email.split('@')[0];
-    document.getElementById('profileName').textContent = name;
-    document.getElementById('profileEmail').textContent = currentUser.email;
-    document.getElementById('editName').value = name;
-    document.getElementById('editEmail').value = currentUser.email;
-
-    // Data de criação
-    const created = new Date(currentUser.created_at);
-    document.getElementById('profileSince').textContent = `Membro desde ${created.toLocaleDateString('pt-BR', {month:'long',year:'numeric'})}`;
-
-    // Avatar
-    if (userProfile?.avatar_url) {
-      document.getElementById('profileAvatar').innerHTML = `<img src="${userProfile.avatar_url}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
-    } else {
-      const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
-      document.getElementById('profileAvatar').textContent = initials;
-    }
-
-    // Stats (zerados para novo usuário)
-    document.getElementById('statTaxa').textContent = userStats.taxa + '%';
-    document.getElementById('statTotal').textContent = userStats.total;
-    const h = Math.floor(studyMin / 60);
-    const m = studyMin % 60;
-    document.getElementById('statTempo').textContent = h > 0 ? `${h}h ${m}min` : `${m}min`;
-
-    // Progresso
-    const progress = await getProgress(currentUser.id);
-    if (progress.length > 0) {
-      const rows = document.querySelectorAll('#progressList .subject-row');
-      const materias = ['Português / Redação','Direito Administrativo','Legislação Municipal','Raciocínio Lógico','Informática','Atualidades','Conhecimentos Específicos'];
-      rows.forEach((row, i) => {
-        const p = progress.find(p => p.materia === materias[i]);
-        const pct = p ? p.percentual : 0;
-        row.querySelector('.subject-bar-fill').style.width = pct + '%';
-        row.querySelector('.subject-pct').textContent = pct + '%';
-      });
-    }
+  try {
+    userProfile = await Promise.race([
+      getUserProfile(currentUser.id),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000))
+    ]);
+  } catch(e) {
+    userProfile = null;
   }
+
+  try {
+    userStats = await getStats(currentUser.id);
+  } catch(e) {
+    userStats = { total: 0, corretas: 0, taxa: 0 };
+  }
+
+  // Nome e email
+  const name = userProfile?.full_name || currentUser.email.split('@')[0];
+  document.getElementById('profileName').textContent = name;
+  document.getElementById('profileEmail').textContent = currentUser.email;
+  document.getElementById('editName').value = name;
+  document.getElementById('editEmail').value = currentUser.email;
+
+  const created = new Date(currentUser.created_at);
+  document.getElementById('profileSince').textContent = 
+    `Membro desde ${created.toLocaleDateString('pt-BR', {month:'long', year:'numeric'})}`;
+
+  // Avatar
+  if (userProfile?.avatar_url) {
+    document.getElementById('profileAvatar').innerHTML = 
+      `<img src="${userProfile.avatar_url}?t=${Date.now()}" 
+       style="width:100%;height:100%;border-radius:50%;object-fit:cover"
+       onerror="this.parentElement.textContent='👤'">`;
+  } else {
+    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
+    document.getElementById('profileAvatar').textContent = initials;
+  }
+
+  // Stats
+  document.getElementById('statTaxa').textContent = (userStats?.taxa || 0) + '%';
+  document.getElementById('statTotal').textContent = userStats?.total || 0;
+  document.getElementById('statTempo').textContent = '0min';
+
+  // Progresso zerado
+  const rows = document.querySelectorAll('#progressList .subject-row');
+  rows.forEach(row => {
+    row.querySelector('.subject-bar-fill').style.width = '0%';
+    row.querySelector('.subject-pct').textContent = '0%';
+  });
+}
 
   async function handleSaveProfile() {
     const name = document.getElementById('editName').value.trim();
