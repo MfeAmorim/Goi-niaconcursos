@@ -31,7 +31,6 @@
     color: var(--gold-light); font-size: 11px; font-weight: 700;
     padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px;
   }
-
   .user-btn {
     display: flex; align-items: center; gap: 8px;
     padding: 5px 12px 5px 6px; border-radius: 30px;
@@ -59,16 +58,20 @@
   /* ── PANELS ── */
   .panel { display: none; padding: 28px 24px; max-width: 900px; margin: 0 auto; width: 100%; }
   .panel.active { display: block; animation: fadeIn 0.25s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
-  /* ── EMPTY STATE ── */
-  .empty-state {
-    background: white; border: 2px dashed var(--gray-200);
-    border-radius: 16px; padding: 56px 32px;
-    text-align: center;
+  /* ── PROGRESS BAR MATÉRIA ── */
+  .materia-progress {
+    background: white; border: 1px solid var(--gray-200);
+    border-radius: 14px; padding: 16px 20px; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 16px;
   }
-  .empty-icon { font-size: 48px; margin-bottom: 16px; }
-  .empty-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--navy); margin-bottom: 8px; }
-  .empty-desc { font-size: 14px; color: var(--gray-400); line-height: 1.7; max-width: 400px; margin: 0 auto 24px; }
+  .materia-progress-icon { font-size: 28px; flex-shrink: 0; }
+  .materia-progress-info { flex: 1; }
+  .materia-progress-label { font-size: 12px; font-weight: 600; color: var(--gray-400); margin-bottom: 6px; }
+  .materia-progress-pct { font-size: 20px; font-weight: 700; color: var(--navy); }
+  .progress-wrap { background: #e5e7eb; border-radius: 99px; height: 8px; flex: 1; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #C8951A, #e6b022); border-radius: 99px; transition: width 0.6s ease; }
 
   /* ── VIDEO PLACEHOLDER ── */
   .video-placeholder {
@@ -90,18 +93,26 @@
     padding: 4px 12px; border-radius: 20px;
   }
 
-  /* ── RESUMO ── */
-  .resumo-editor {
-    background: white; border: 1px solid var(--gray-200);
-    border-radius: 16px; overflow: hidden; margin-bottom: 20px;
+  /* ── TÓPICOS AULA ── */
+  .topicos-section { background: white; border: 1px solid var(--gray-200); border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
+  .topicos-header { background: #f8f9fa; border-bottom: 1px solid var(--gray-200); padding: 14px 20px; display: flex; align-items: center; gap: 10px; }
+  .topicos-header-title { font-size: 14px; font-weight: 700; color: var(--navy); }
+  .topicos-body { padding: 8px 0; }
+  .topico-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 20px; border-bottom: 1px solid #f3f4f6;
+    cursor: pointer; transition: background 0.15s;
   }
-  .resumo-header {
-    background: var(--gray-50); border-bottom: 1px solid var(--gray-200);
-    padding: 14px 20px; display: flex; align-items: center; justify-content: space-between;
+  .topico-item:last-child { border-bottom: none; }
+  .topico-item:hover { background: #fafafa; }
+  .topico-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(200,149,26,0.1); color: #C8951A;
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
-  .resumo-header-title { font-size: 14px; font-weight: 700; color: var(--navy); }
-  .resumo-body { padding: 20px; min-height: 200px; }
-  .resumo-empty { color: var(--gray-400); font-size: 14px; font-style: italic; }
+  .topico-name { font-size: 14px; font-weight: 600; color: var(--navy); flex: 1; }
+  .topico-sub { font-size: 12px; color: var(--gray-400); }
 
   /* ── MATERIAIS GRID ── */
   .materiais-grid {
@@ -114,46 +125,80 @@
     display: flex; flex-direction: column; align-items: center; gap: 8px;
     cursor: pointer; transition: all 0.2s; text-align: center;
   }
-  .material-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(200,149,26,0.1); }
+  .material-card:hover { border-color: #C8951A; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(200,149,26,0.1); }
   .material-card-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
   .material-card-label { font-size: 12px; font-weight: 700; color: var(--navy); }
   .material-card-sub { font-size: 11px; color: var(--gray-400); }
   .material-card-empty { border-style: dashed; opacity: 0.5; cursor: default; }
   .material-card-empty:hover { border-color: var(--gray-200); transform: none; box-shadow: none; }
 
-  /* ── QUESTÕES ── */
-  .questoes-empty { background: white; border: 1px solid var(--gray-200); border-radius: 16px; padding: 40px; text-align: center; }
-
-  /* ── PROGRESS BAR MATÉRIA ── */
-  .materia-progress {
-    background: white; border: 1px solid var(--gray-200);
-    border-radius: 14px; padding: 16px 20px; margin-bottom: 20px;
-    display: flex; align-items: center; gap: 16px;
+  /* ── CONTEÚDO PROGRAMÁTICO ── */
+  .conteudo-box { background: white; border: 1px solid var(--gray-200); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+  .conteudo-title { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .conteudo-list { list-style: none; padding: 0; margin: 0; }
+  .conteudo-list li {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 9px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px; color: #374151;
   }
-  .materia-progress-icon { font-size: 28px; flex-shrink: 0; }
-  .materia-progress-info { flex: 1; }
-  .materia-progress-label { font-size: 12px; font-weight: 600; color: var(--gray-400); margin-bottom: 6px; }
-  .materia-progress-pct { font-size: 20px; font-weight: 700; color: var(--navy); }
+  .conteudo-list li:last-child { border-bottom: none; }
+  .conteudo-list li::before { content: '•'; color: #C8951A; font-size: 18px; line-height: 1; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── QUESTÕES ── */
+  .questao-card {
+    background: white; border: 1px solid var(--gray-200);
+    border-radius: 14px; padding: 20px; margin-bottom: 14px;
+  }
+  .questao-num { font-size: 11px; font-weight: 700; color: #C8951A; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .questao-enunciado { font-size: 14px; color: var(--navy); font-weight: 600; line-height: 1.6; margin-bottom: 14px; }
+  .questao-opcoes { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+  .questao-opcao {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 14px; border-radius: 10px; border: 1.5px solid #e5e7eb;
+    font-size: 13px; color: #374151; cursor: pointer; transition: all 0.15s;
+  }
+  .questao-opcao:hover { border-color: #C8951A; background: #fffbf0; }
+  .questao-opcao.correta { border-color: #10b981; background: #f0fdf4; color: #065f46; font-weight: 600; }
+  .questao-opcao.errada { border-color: #ef4444; background: #fef2f2; color: #991b1b; }
+  .questao-letra { font-weight: 700; flex-shrink: 0; }
+  .gabarito-btn {
+    background: #f8f9fa; border: 1.5px solid #e5e7eb;
+    border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600;
+    color: #374151; cursor: pointer; transition: all 0.15s;
+  }
+  .gabarito-btn:hover { border-color: #C8951A; color: #C8951A; }
+
+  /* ── RESUMO ── */
+  .resumo-section { background: white; border: 1px solid var(--gray-200); border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
+  .resumo-header { background: #f8f9fa; border-bottom: 1px solid var(--gray-200); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; }
+  .resumo-header-title { font-size: 14px; font-weight: 700; color: var(--navy); }
+  .resumo-body { padding: 24px; }
+  .resumo-body h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin: 20px 0 10px; padding-bottom: 6px; border-bottom: 2px solid rgba(200,149,26,0.2); }
+  .resumo-body h3:first-child { margin-top: 0; }
+  .resumo-body p { font-size: 14px; color: #374151; line-height: 1.7; margin-bottom: 10px; }
+  .resumo-body ul { padding-left: 20px; margin-bottom: 12px; }
+  .resumo-body ul li { font-size: 14px; color: #374151; line-height: 1.7; margin-bottom: 4px; }
+  .highlight-box { background: #fffbf0; border-left: 4px solid #C8951A; border-radius: 0 10px 10px 0; padding: 14px 16px; margin: 16px 0; }
+  .highlight-box p { margin: 0; font-size: 14px; color: #374151; }
+  .formula-box { background: #f0f4ff; border: 1px solid #c7d2fe; border-radius: 10px; padding: 14px 16px; margin: 12px 0; font-family: monospace; font-size: 14px; color: #1e1b4b; text-align: center; font-weight: 600; }
 
   /* ── MOBILE ── */
   .mobile-topbar { display: none; }
   @media (max-width: 768px) {
-    .mobile-topbar { display: flex; }
+    .mobile-topbar { display: flex !important; }
     .topbar { display: none; }
     .tabs-nav { top: 52px; padding: 0 12px; }
     .panel { padding: 16px; }
     .video-placeholder { height: 180px; }
     .materiais-grid { grid-template-columns: repeat(3, 1fr); }
-    .topbar-badge { display: none; }
   }
 </style>
 </head>
 <body>
 
 <!-- MOBILE TOPBAR -->
-<div class="mobile-topbar" style="background:var(--navy);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;">
+<div class="mobile-topbar" style="background:var(--navy);padding:12px 16px;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;display:none;">
   <a href="dashboard.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;font-weight:600;">← Dashboard</a>
-  <span style="font-family:'DM Serif Display',serif;color:white;font-size:16px;">🧮 Raciocinio Logico</span>
+  <span style="font-family:'DM Serif Display',serif;color:white;font-size:16px;">🧮 Raciocínio Lógico</span>
   <a href="perfil.html" id="mobileAvatar" class="avatar avatar-sm" style="text-decoration:none;background:rgba(255,255,255,0.15);color:white;">👤</a>
 </div>
 
@@ -163,8 +208,8 @@
     <a href="dashboard.html" class="back-btn">← Dashboard</a>
     <div class="topbar-divider"></div>
     <span style="font-size:20px;">🧮</span>
-    <div class="topbar-title">Raciocinio Logico</div>
-    <div class="topbar-badge">Raciocinio</div>
+    <div class="topbar-title">Raciocínio Lógico e Matemático</div>
+    <div class="topbar-badge">UFG · Câmara</div>
   </div>
   <a href="perfil.html" class="user-btn" id="userBtn">
     <div class="avatar avatar-sm" id="userAvatar">👤</div>
@@ -180,8 +225,11 @@
   <div class="tab-btn" onclick="switchTab('resumo', this)">📝 Resumo</div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════ -->
 <!-- PANEL: AULA -->
+<!-- ═══════════════════════════════════════════════════════════ -->
 <div id="panel-aula" class="panel active">
+
   <div class="materia-progress">
     <div class="materia-progress-icon">🧮</div>
     <div class="materia-progress-info">
@@ -194,20 +242,77 @@
   </div>
 
   <div class="video-placeholder" onclick="showVideoMsg()">
-    <div class="video-placeholder-tag">Raciocinio Logico</div>
+    <div class="video-placeholder-tag">Raciocínio Lógico e Matemático</div>
     <div class="video-placeholder-icon">🎬</div>
     <div class="video-placeholder-text">Nenhuma aula adicionada ainda</div>
   </div>
 
-  <div class="empty-state">
-    <div class="empty-icon">📭</div>
-    <div class="empty-title">Aulas em breve</div>
-    <div class="empty-desc">As videoaulas de <strong>Raciocinio Logico</strong> serão adicionadas em breve. Fique de olho nas atualizações!</div>
+  <!-- CONTEÚDO PROGRAMÁTICO -->
+  <div class="topicos-section">
+    <div class="topicos-header">
+      <span style="font-size:18px;">📋</span>
+      <div class="topicos-header-title">Conteúdo Programático — Raciocínio Lógico e Matemático</div>
+    </div>
+    <div class="topicos-body">
+
+      <div class="topico-item">
+        <div class="topico-num">1</div>
+        <div style="flex:1">
+          <div class="topico-name">Raciocínio Lógico</div>
+          <div class="topico-sub">Sequências lógicas, analogias, proposições, diagramas lógicos</div>
+        </div>
+      </div>
+
+      <div class="topico-item">
+        <div class="topico-num">2</div>
+        <div style="flex:1">
+          <div class="topico-name">Operações Fundamentais</div>
+          <div class="topico-sub">Adição, subtração, multiplicação, divisão</div>
+        </div>
+      </div>
+
+      <div class="topico-item">
+        <div class="topico-num">3</div>
+        <div style="flex:1">
+          <div class="topico-name">Porcentagem e Regra de Três</div>
+          <div class="topico-sub">Regra de três simples e composta, porcentagem aplicada</div>
+        </div>
+      </div>
+
+      <div class="topico-item">
+        <div class="topico-num">4</div>
+        <div style="flex:1">
+          <div class="topico-name">Razões e Proporções</div>
+          <div class="topico-sub">Grandezas diretamente e inversamente proporcionais</div>
+        </div>
+      </div>
+
+      <div class="topico-item">
+        <div class="topico-num">5</div>
+        <div style="flex:1">
+          <div class="topico-name">Estatística Básica</div>
+          <div class="topico-sub">Média aritmética, mediana, moda</div>
+        </div>
+      </div>
+
+      <div class="topico-item">
+        <div class="topico-num">6</div>
+        <div style="flex:1">
+          <div class="topico-name">Problemas Contextualizados</div>
+          <div class="topico-sub">Tempo, distância e velocidade</div>
+        </div>
+      </div>
+
+    </div>
   </div>
+
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════ -->
 <!-- PANEL: MATERIAIS -->
+<!-- ═══════════════════════════════════════════════════════════ -->
 <div id="panel-materiais" class="panel">
+
   <div class="materiais-grid">
     <div class="material-card material-card-empty">
       <div class="material-card-icon" style="background:#FEF3C7">📕</div>
@@ -235,70 +340,225 @@
       <div class="material-card-sub">Em breve</div>
     </div>
     <div class="material-card material-card-empty">
-      <div class="material-card-icon" style="background:var(--gold-pale)">📋</div>
-      <div class="material-card-label">Legislação</div>
+      <div class="material-card-icon" style="background:#FEF3C7">📋</div>
+      <div class="material-card-label">Simulado</div>
       <div class="material-card-sub">Em breve</div>
     </div>
   </div>
 
-  <div class="empty-state">
-    <div class="empty-icon">📂</div>
-    <div class="empty-title">Materiais em preparação</div>
-    <div class="empty-desc">Os materiais de <strong>Raciocinio Logico</strong> estão sendo organizados. Apostilas, slides e mapas mentais serão disponibilizados em breve.</div>
+  <!-- Conteúdo Programático completo -->
+  <div class="conteudo-box">
+    <div class="conteudo-title">📋 Tópicos da Matéria</div>
+    <ul class="conteudo-list">
+      <li>Sequências lógicas e analogias</li>
+      <li>Proposições lógicas (V/F) e diagramas lógicos</li>
+      <li>Operações fundamentais: adição, subtração, multiplicação, divisão</li>
+      <li>Porcentagem e aplicações práticas</li>
+      <li>Regra de três simples e composta</li>
+      <li>Razões e proporções</li>
+      <li>Média aritmética, mediana e moda</li>
+      <li>Problemas de tempo, distância e velocidade</li>
+    </ul>
   </div>
+
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════ -->
 <!-- PANEL: QUESTÕES -->
+<!-- (Extraídas do Simulado Concurso UFG — Raciocínio Lógico) -->
+<!-- ═══════════════════════════════════════════════════════════ -->
 <div id="panel-questoes" class="panel">
-  <div class="empty-state">
-    <div class="empty-icon">✏️</div>
-    <div class="empty-title">Questões em breve</div>
-    <div class="empty-desc">O banco de questões de <strong>Raciocinio Logico</strong> está sendo montado com questões de concursos anteriores comentadas.</div>
-    <a href="dashboard.html" class="btn btn-primary">← Voltar ao Dashboard</a>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <div>
+      <div style="font-size:18px;font-weight:700;color:var(--navy);">Banco de Questões</div>
+      <div style="font-size:13px;color:var(--gray-400);margin-top:2px;">5 questões · Simulado Concurso UFG</div>
+    </div>
+    <div style="background:#f0fdf4;border:1px solid #a7f3d0;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:700;color:#065f46;" id="scoreDisplay">0/5 acertos</div>
   </div>
+
+  <!-- Q1 -->
+  <div class="questao-card" id="q1">
+    <div class="questao-num">Questão 1 · Operações Básicas</div>
+    <div class="questao-enunciado">Qual é o resultado de 15 + 27?</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q1','a','c')"><span class="questao-letra">A)</span> 32</div>
+      <div class="questao-opcao" onclick="responder('q1','b','c')"><span class="questao-letra">B)</span> 42</div>
+      <div class="questao-opcao" onclick="responder('q1','c','c')"><span class="questao-letra">C)</span> 40</div>
+      <div class="questao-opcao" onclick="responder('q1','d','c')"><span class="questao-letra">D)</span> 52</div>
+      <div class="questao-opcao" onclick="responder('q1','e','c')"><span class="questao-letra">E)</span> 45</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q1','c')">Ver gabarito</button>
+  </div>
+
+  <!-- Q2 -->
+  <div class="questao-card" id="q2">
+    <div class="questao-num">Questão 2 · Álgebra Básica</div>
+    <div class="questao-enunciado">Se 2x = 10, então x = ?</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q2','a','c')"><span class="questao-letra">A)</span> 2</div>
+      <div class="questao-opcao" onclick="responder('q2','b','c')"><span class="questao-letra">B)</span> 3</div>
+      <div class="questao-opcao" onclick="responder('q2','c','c')"><span class="questao-letra">C)</span> 5</div>
+      <div class="questao-opcao" onclick="responder('q2','d','c')"><span class="questao-letra">D)</span> 10</div>
+      <div class="questao-opcao" onclick="responder('q2','e','c')"><span class="questao-letra">E)</span> 20</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q2','c')">Ver gabarito</button>
+  </div>
+
+  <!-- Q3 -->
+  <div class="questao-card" id="q3">
+    <div class="questao-num">Questão 3 · Sequências Lógicas</div>
+    <div class="questao-enunciado">Qual número completa a sequência: 2, 4, 6, 8, ___?</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q3','a','b')"><span class="questao-letra">A)</span> 9</div>
+      <div class="questao-opcao" onclick="responder('q3','b','b')"><span class="questao-letra">B)</span> 10</div>
+      <div class="questao-opcao" onclick="responder('q3','c','b')"><span class="questao-letra">C)</span> 12</div>
+      <div class="questao-opcao" onclick="responder('q3','d','b')"><span class="questao-letra">D)</span> 11</div>
+      <div class="questao-opcao" onclick="responder('q3','e','b')"><span class="questao-letra">E)</span> 14</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q3','b')">Ver gabarito</button>
+  </div>
+
+  <!-- Q4 -->
+  <div class="questao-card" id="q4">
+    <div class="questao-num">Questão 4 · Problemas Matemáticos</div>
+    <div class="questao-enunciado">Em uma sala com 20 alunos, 12 são meninas. Quantos são meninos?</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q4','a','a')"><span class="questao-letra">A)</span> 8</div>
+      <div class="questao-opcao" onclick="responder('q4','b','a')"><span class="questao-letra">B)</span> 10</div>
+      <div class="questao-opcao" onclick="responder('q4','c','a')"><span class="questao-letra">C)</span> 12</div>
+      <div class="questao-opcao" onclick="responder('q4','d','a')"><span class="questao-letra">D)</span> 20</div>
+      <div class="questao-opcao" onclick="responder('q4','e','a')"><span class="questao-letra">E)</span> 15</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q4','a')">Ver gabarito</button>
+  </div>
+
+  <!-- Q5 -->
+  <div class="questao-card" id="q5">
+    <div class="questao-num">Questão 5 · Estatística — Média</div>
+    <div class="questao-enunciado">Qual é a média de 5, 7, 9 e 11?</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q5','a','b')"><span class="questao-letra">A)</span> 7</div>
+      <div class="questao-opcao" onclick="responder('q5','b','b')"><span class="questao-letra">B)</span> 8</div>
+      <div class="questao-opcao" onclick="responder('q5','c','b')"><span class="questao-letra">C)</span> 9</div>
+      <div class="questao-opcao" onclick="responder('q5','d','b')"><span class="questao-letra">D)</span> 10</div>
+      <div class="questao-opcao" onclick="responder('q5','e','b')"><span class="questao-letra">E)</span> 11</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q5','b')">Ver gabarito</button>
+  </div>
+
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════ -->
 <!-- PANEL: RESUMO -->
+<!-- (Baseado no Conteúdo Programático UFG + Simulado) -->
+<!-- ═══════════════════════════════════════════════════════════ -->
 <div id="panel-resumo" class="panel">
-  <div class="resumo-editor">
+
+  <div class="resumo-section">
     <div class="resumo-header">
-      <div class="resumo-header-title">📝 Resumo de Raciocinio Logico</div>
+      <div class="resumo-header-title">📝 Resumo — Raciocínio Lógico e Matemático</div>
+      <span style="font-size:11px;color:var(--gray-400);font-weight:600;">Concurso UFG · Câmara de Goiânia</span>
     </div>
     <div class="resumo-body">
-      <div class="resumo-empty">O resumo desta matéria ainda não foi adicionado. Em breve estará disponível aqui.</div>
+
+      <h3>🔢 1. Raciocínio Lógico</h3>
+      <p>O raciocínio lógico é a capacidade de identificar padrões, relações e estruturas para chegar a conclusões corretas. Nos concursos, costuma aparecer em quatro grandes blocos:</p>
+      <ul>
+        <li><strong>Sequências lógicas:</strong> identificar o próximo elemento de uma série numérica ou figurativa. Exemplo: 2, 4, 6, 8, <em>10</em> (progressão aritmética de razão +2).</li>
+        <li><strong>Analogias:</strong> identificar a relação entre pares de conceitos (A está para B assim como C está para ?).</li>
+        <li><strong>Proposições lógicas:</strong> avaliar se uma afirmação é Verdadeira (V) ou Falsa (F) com base em conectivos como "e", "ou", "se… então", "não".</li>
+        <li><strong>Diagramas lógicos:</strong> relacionar conjuntos (tipo diagrama de Euler-Venn) para tirar conclusões sobre grupos.</li>
+      </ul>
+
+      <div class="highlight-box">
+        <p>💡 <strong>Dica de prova:</strong> Em sequências, sempre calcule a diferença entre termos consecutivos primeiro. Se a diferença for constante → Progressão Aritmética (PA). Se a razão entre termos for constante → Progressão Geométrica (PG).</p>
+      </div>
+
+      <h3>➕ 2. Operações Fundamentais</h3>
+      <p>As quatro operações básicas são cobradas em contextos de problemas:</p>
+      <ul>
+        <li><strong>Adição e Subtração:</strong> base de todos os cálculos. Atenção ao "vai um" e ao "empresta".</li>
+        <li><strong>Multiplicação:</strong> soma repetida. Importante dominar a tabuada até 12.</li>
+        <li><strong>Divisão:</strong> distribuição igualitária. O resultado é o <em>quociente</em>; o que sobra é o <em>resto</em>.</li>
+      </ul>
+      <div class="formula-box">Resultado = 15 + 27 = 42 &nbsp;|&nbsp; 2x = 10 → x = 5</div>
+
+      <h3>📊 3. Porcentagem e Regra de Três</h3>
+      <p>Porcentagem (%) significa "por cem". Para calcular x% de um número N:</p>
+      <div class="formula-box">Valor = (x ÷ 100) × N</div>
+      <p><strong>Regra de três simples:</strong> usada quando existe proporcionalidade entre duas grandezas.</p>
+      <ul>
+        <li>Se grandezas são <em>diretamente proporcionais</em>: quando uma aumenta, a outra aumenta.</li>
+        <li>Se grandezas são <em>inversamente proporcionais</em>: quando uma aumenta, a outra diminui.</li>
+      </ul>
+      <p><strong>Regra de três composta:</strong> envolve 3 ou mais grandezas simultaneamente.</p>
+
+      <h3>⚖️ 4. Razões e Proporções</h3>
+      <p>Razão é a comparação entre dois valores por divisão: <strong>a/b</strong>. Proporção é a igualdade de duas razões: <strong>a/b = c/d</strong>.</p>
+      <div class="formula-box">Produto dos meios = Produto dos extremos &nbsp;→&nbsp; b × c = a × d</div>
+
+      <h3>📈 5. Estatística Básica</h3>
+      <ul>
+        <li><strong>Média Aritmética:</strong> soma de todos os valores dividida pela quantidade de valores.<br>Exemplo: média de 5, 7, 9 e 11 = (5+7+9+11) ÷ 4 = 32 ÷ 4 = <strong>8</strong></li>
+        <li><strong>Mediana:</strong> valor central após ordenar os dados. Se houver número par de dados, é a média dos dois centrais.</li>
+        <li><strong>Moda:</strong> valor que aparece com maior frequência no conjunto de dados.</li>
+      </ul>
+      <div class="highlight-box">
+        <p>💡 <strong>Dica de prova:</strong> Para calcular a média, some tudo e divida pela quantidade de elementos. Nunca esqueça de ordenar os dados antes de calcular a mediana!</p>
+      </div>
+
+      <h3>🚗 6. Problemas de Tempo, Distância e Velocidade</h3>
+      <p>A fórmula fundamental é:</p>
+      <div class="formula-box">Velocidade = Distância ÷ Tempo &nbsp;|&nbsp; V = D / T</div>
+      <ul>
+        <li>Para encontrar a <strong>distância</strong>: D = V × T</li>
+        <li>Para encontrar o <strong>tempo</strong>: T = D ÷ V</li>
+        <li>Atenção às unidades: km/h vs m/s (1 m/s = 3,6 km/h)</li>
+      </ul>
+
     </div>
   </div>
+
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SCRIPTS -->
+<!-- ═══════════════════════════════════════════════════════════ -->
 <script>
   let currentUser = null;
+  const acertos = {};
 
   window.addEventListener('DOMContentLoaded', async () => {
-    currentUser = await requireAuth();
-    if (!currentUser) return;
-    loadUserInfo();
-    loadProgress();
+    // Auth (mantido do original)
+    if (typeof requireAuth === 'function') {
+      currentUser = await requireAuth();
+      if (!currentUser) return;
+      loadUserInfo();
+      loadProgress();
+    }
+    // Mobile topbar fix
+    const mb = document.querySelector('.mobile-topbar');
+    if (mb && window.innerWidth <= 768) mb.style.display = 'flex';
   });
 
   async function loadUserInfo() {
+    if (typeof getUserProfile !== 'function') return;
     const profile = await getUserProfile(currentUser.id);
     const name = profile?.full_name || currentUser.email.split('@')[0];
     const el = document.getElementById('userName');
     if (el) el.textContent = name;
-
     const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
-    const avatarEls = [document.getElementById('userAvatar'), document.getElementById('mobileAvatar')];
-    avatarEls.forEach(el => {
+    [document.getElementById('userAvatar'), document.getElementById('mobileAvatar')].forEach(el => {
       if (!el) return;
       if (profile?.avatar_url) {
         el.innerHTML = `<img src="${profile.avatar_url}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
-      } else {
-        el.textContent = initials;
-      }
+      } else { el.textContent = initials; }
     });
   }
 
   async function loadProgress() {
+    if (typeof getProgress !== 'function') return;
     const progress = await getProgress(currentUser.id);
     const p = progress.find(p => p.materia === 'Raciocínio Lógico');
     const pct = p ? p.percentual : 0;
@@ -315,6 +575,56 @@
 
   function showVideoMsg() {
     alert('Nenhum vídeo adicionado ainda para esta matéria.');
+  }
+
+  // ── Sistema de questões interativo ──
+  const respondidas = {};
+
+  function responder(questaoId, letraClicada, letraCorreta) {
+    if (respondidas[questaoId]) return; // já respondida
+    respondidas[questaoId] = true;
+
+    const card = document.getElementById(questaoId);
+    const opcoes = card.querySelectorAll('.questao-opcao');
+    const letras = ['a','b','c','d','e'];
+
+    opcoes.forEach((op, i) => {
+      const letra = letras[i];
+      if (letra === letraCorreta) {
+        op.classList.add('correta');
+      } else if (letra === letraClicada && letraClicada !== letraCorreta) {
+        op.classList.add('errada');
+      }
+      op.style.pointerEvents = 'none';
+    });
+
+    if (letraClicada === letraCorreta) {
+      acertos[questaoId] = true;
+    }
+
+    atualizarScore();
+  }
+
+  function verGabarito(questaoId, letraCorreta) {
+    if (respondidas[questaoId]) return;
+    respondidas[questaoId] = true;
+
+    const card = document.getElementById(questaoId);
+    const opcoes = card.querySelectorAll('.questao-opcao');
+    const letras = ['a','b','c','d','e'];
+
+    opcoes.forEach((op, i) => {
+      if (letras[i] === letraCorreta) op.classList.add('correta');
+      op.style.pointerEvents = 'none';
+    });
+
+    atualizarScore();
+  }
+
+  function atualizarScore() {
+    const total = 5;
+    const certas = Object.keys(acertos).length;
+    document.getElementById('scoreDisplay').textContent = certas + '/' + total + ' acertos';
   }
 </script>
 </body>

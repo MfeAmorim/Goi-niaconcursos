@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GoiâniaConc — Conhecimentos Especificos</title>
+<title>GoiâniaConc — Conhecimentos Específicos</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -11,149 +11,122 @@
 <style>
   body { display: flex; flex-direction: column; min-height: 100vh; background: var(--bg); }
 
-  /* ── TOPBAR ── */
   .topbar {
     background: var(--navy); padding: 0 24px; height: 56px;
     display: flex; align-items: center; justify-content: space-between;
     flex-shrink: 0; position: sticky; top: 0; z-index: 100;
   }
   .topbar-left { display: flex; align-items: center; gap: 16px; }
-  .back-btn {
-    display: flex; align-items: center; gap: 6px;
-    color: rgba(255,255,255,0.6); text-decoration: none;
-    font-size: 13px; font-weight: 500; transition: color 0.15s;
-  }
+  .back-btn { display: flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.6); text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.15s; }
   .back-btn:hover { color: white; }
   .topbar-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.15); }
   .topbar-title { font-family: 'DM Serif Display', serif; font-size: 17px; color: white; }
-  .topbar-badge {
-    background: rgba(200,149,26,0.2); border: 1px solid rgba(200,149,26,0.4);
-    color: var(--gold-light); font-size: 11px; font-weight: 700;
-    padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px;
-  }
-
-  .user-btn {
-    display: flex; align-items: center; gap: 8px;
-    padding: 5px 12px 5px 6px; border-radius: 30px;
-    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
-    cursor: pointer; transition: all 0.15s; text-decoration: none;
-  }
+  .topbar-badge { background: rgba(200,149,26,0.2); border: 1px solid rgba(200,149,26,0.4); color: var(--gold-light); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px; }
+  .user-btn { display: flex; align-items: center; gap: 8px; padding: 5px 12px 5px 6px; border-radius: 30px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); cursor: pointer; transition: all 0.15s; text-decoration: none; }
   .user-btn:hover { background: rgba(255,255,255,0.18); }
   .user-name { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85); max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-  /* ── TABS ── */
-  .tabs-nav {
-    background: white; border-bottom: 1px solid var(--gray-200);
-    display: flex; padding: 0 24px; overflow-x: auto;
-    position: sticky; top: 56px; z-index: 99;
-  }
-  .tab-btn {
-    padding: 0 20px; height: 48px; display: flex; align-items: center; gap: 7px;
-    font-size: 13px; font-weight: 600; color: var(--gray-400);
-    cursor: pointer; border-bottom: 2px solid transparent;
-    transition: all 0.15s; white-space: nowrap; flex-shrink: 0;
-  }
+  .tabs-nav { background: white; border-bottom: 1px solid var(--gray-200); display: flex; padding: 0 24px; overflow-x: auto; position: sticky; top: 56px; z-index: 99; }
+  .tab-btn { padding: 0 20px; height: 48px; display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--gray-400); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; }
   .tab-btn:hover { color: var(--navy); }
   .tab-btn.active { color: var(--navy); border-bottom-color: var(--gold); }
 
-  /* ── PANELS ── */
   .panel { display: none; padding: 28px 24px; max-width: 900px; margin: 0 auto; width: 100%; }
   .panel.active { display: block; animation: fadeIn 0.25s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
-  /* ── EMPTY STATE ── */
-  .empty-state {
-    background: white; border: 2px dashed var(--gray-200);
-    border-radius: 16px; padding: 56px 32px;
-    text-align: center;
-  }
-  .empty-icon { font-size: 48px; margin-bottom: 16px; }
-  .empty-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--navy); margin-bottom: 8px; }
-  .empty-desc { font-size: 14px; color: var(--gray-400); line-height: 1.7; max-width: 400px; margin: 0 auto 24px; }
+  /* progress */
+  .materia-progress { background: white; border: 1px solid var(--gray-200); border-radius: 14px; padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 16px; }
+  .materia-progress-icon { font-size: 28px; flex-shrink: 0; }
+  .materia-progress-info { flex: 1; }
+  .materia-progress-label { font-size: 12px; font-weight: 600; color: var(--gray-400); margin-bottom: 6px; }
+  .materia-progress-pct { font-size: 20px; font-weight: 700; color: var(--navy); }
+  .progress-wrap { background: #e5e7eb; border-radius: 99px; height: 8px; flex: 1; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #C8951A, #e6b022); border-radius: 99px; transition: width 0.6s ease; }
 
-  /* ── VIDEO PLACEHOLDER ── */
-  .video-placeholder {
-    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
-    border-radius: 16px; height: 240px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 12px; margin-bottom: 20px; position: relative; overflow: hidden; cursor: pointer;
-  }
-  .video-placeholder::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 30% 50%, rgba(200,149,26,0.1) 0%, transparent 60%);
-  }
+  /* video */
+  .video-placeholder { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%); border-radius: 16px; height: 240px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px; position: relative; overflow: hidden; cursor: pointer; }
+  .video-placeholder::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 50%, rgba(200,149,26,0.1) 0%, transparent 60%); }
   .video-placeholder-icon { font-size: 48px; z-index: 1; }
   .video-placeholder-text { color: rgba(255,255,255,0.6); font-size: 14px; z-index: 1; }
-  .video-placeholder-tag {
-    position: absolute; top: 14px; left: 14px;
-    background: rgba(200,149,26,0.25); border: 1px solid rgba(200,149,26,0.4);
-    color: var(--gold-light); font-size: 11px; font-weight: 700;
-    padding: 4px 12px; border-radius: 20px;
-  }
+  .video-placeholder-tag { position: absolute; top: 14px; left: 14px; background: rgba(200,149,26,0.25); border: 1px solid rgba(200,149,26,0.4); color: var(--gold-light); font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
 
-  /* ── RESUMO ── */
-  .resumo-editor {
-    background: white; border: 1px solid var(--gray-200);
-    border-radius: 16px; overflow: hidden; margin-bottom: 20px;
-  }
-  .resumo-header {
-    background: var(--gray-50); border-bottom: 1px solid var(--gray-200);
-    padding: 14px 20px; display: flex; align-items: center; justify-content: space-between;
-  }
-  .resumo-header-title { font-size: 14px; font-weight: 700; color: var(--navy); }
-  .resumo-body { padding: 20px; min-height: 200px; }
-  .resumo-empty { color: var(--gray-400); font-size: 14px; font-style: italic; }
+  /* tópicos */
+  .topicos-section { background: white; border: 1px solid var(--gray-200); border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
+  .topicos-header { background: #f8f9fa; border-bottom: 1px solid var(--gray-200); padding: 14px 20px; display: flex; align-items: center; gap: 10px; }
+  .topicos-header-title { font-size: 14px; font-weight: 700; color: var(--navy); }
+  .topicos-body { padding: 8px 0; }
+  .topico-item { display: flex; align-items: flex-start; gap: 12px; padding: 13px 20px; border-bottom: 1px solid #f3f4f6; transition: background 0.15s; }
+  .topico-item:last-child { border-bottom: none; }
+  .topico-item:hover { background: #fafafa; }
+  .topico-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(200,149,26,0.1); color: #C8951A; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .topico-name { font-size: 14px; font-weight: 600; color: var(--navy); }
+  .topico-sub { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
 
-  /* ── MATERIAIS GRID ── */
-  .materiais-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 12px; margin-bottom: 24px;
-  }
-  .material-card {
-    background: white; border: 1.5px solid var(--gray-200);
-    border-radius: 12px; padding: 18px 12px 14px;
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
-    cursor: pointer; transition: all 0.2s; text-align: center;
-  }
-  .material-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(200,149,26,0.1); }
+  /* materiais */
+  .materiais-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .material-card { background: white; border: 1.5px solid var(--gray-200); border-radius: 12px; padding: 18px 12px 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s; text-align: center; }
+  .material-card:hover { border-color: #C8951A; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(200,149,26,0.1); }
   .material-card-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
   .material-card-label { font-size: 12px; font-weight: 700; color: var(--navy); }
   .material-card-sub { font-size: 11px; color: var(--gray-400); }
   .material-card-empty { border-style: dashed; opacity: 0.5; cursor: default; }
   .material-card-empty:hover { border-color: var(--gray-200); transform: none; box-shadow: none; }
 
-  /* ── QUESTÕES ── */
-  .questoes-empty { background: white; border: 1px solid var(--gray-200); border-radius: 16px; padding: 40px; text-align: center; }
+  /* questões */
+  .questao-card { background: white; border: 1px solid var(--gray-200); border-radius: 14px; padding: 20px; margin-bottom: 14px; }
+  .questao-num { font-size: 11px; font-weight: 700; color: #C8951A; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .questao-enunciado { font-size: 14px; color: var(--navy); font-weight: 600; line-height: 1.6; margin-bottom: 14px; }
+  .questao-opcoes { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+  .questao-opcao { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border-radius: 10px; border: 1.5px solid #e5e7eb; font-size: 13px; color: #374151; cursor: pointer; transition: all 0.15s; }
+  .questao-opcao:hover { border-color: #C8951A; background: #fffbf0; }
+  .questao-opcao.correta { border-color: #10b981; background: #f0fdf4; color: #065f46; font-weight: 600; }
+  .questao-opcao.errada { border-color: #ef4444; background: #fef2f2; color: #991b1b; }
+  .questao-letra { font-weight: 700; flex-shrink: 0; }
+  .gabarito-btn { background: #f8f9fa; border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600; color: #374151; cursor: pointer; transition: all 0.15s; }
+  .gabarito-btn:hover { border-color: #C8951A; color: #C8951A; }
 
-  /* ── PROGRESS BAR MATÉRIA ── */
-  .materia-progress {
-    background: white; border: 1px solid var(--gray-200);
-    border-radius: 14px; padding: 16px 20px; margin-bottom: 20px;
-    display: flex; align-items: center; gap: 16px;
-  }
-  .materia-progress-icon { font-size: 28px; flex-shrink: 0; }
-  .materia-progress-info { flex: 1; }
-  .materia-progress-label { font-size: 12px; font-weight: 600; color: var(--gray-400); margin-bottom: 6px; }
-  .materia-progress-pct { font-size: 20px; font-weight: 700; color: var(--navy); }
+  /* resumo */
+  .resumo-section { background: white; border: 1px solid var(--gray-200); border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
+  .resumo-header { background: #f8f9fa; border-bottom: 1px solid var(--gray-200); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; }
+  .resumo-header-title { font-size: 14px; font-weight: 700; color: var(--navy); }
+  .resumo-body { padding: 24px; }
+  .resumo-body h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin: 22px 0 10px; padding-bottom: 6px; border-bottom: 2px solid rgba(200,149,26,0.2); }
+  .resumo-body h3:first-child { margin-top: 0; }
+  .resumo-body h4 { font-size: 13px; font-weight: 700; color: #374151; margin: 14px 0 6px; }
+  .resumo-body p { font-size: 14px; color: #374151; line-height: 1.7; margin-bottom: 10px; }
+  .resumo-body ul { padding-left: 20px; margin-bottom: 12px; }
+  .resumo-body ul li { font-size: 14px; color: #374151; line-height: 1.7; margin-bottom: 4px; }
+  .highlight-box { background: #fffbf0; border-left: 4px solid #C8951A; border-radius: 0 10px 10px 0; padding: 14px 16px; margin: 14px 0; }
+  .highlight-box p { margin: 0; font-size: 14px; color: #374151; }
+  .lei-box { background: #f0f4ff; border: 1px solid #c7d2fe; border-radius: 10px; padding: 14px 16px; margin: 12px 0; }
+  .lei-box strong { color: #1e1b4b; font-size: 13px; }
+  .lei-box p { margin: 4px 0 0; font-size: 13px; color: #374151; }
+  .limpe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin: 14px 0; }
+  .limpe-card { background: white; border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 12px 14px; }
+  .limpe-letter { font-size: 22px; font-weight: 800; color: #C8951A; }
+  .limpe-word { font-size: 12px; font-weight: 700; color: var(--navy); margin-top: 2px; }
+  .limpe-desc { font-size: 11px; color: #6b7280; margin-top: 3px; line-height: 1.4; }
 
-  /* ── MOBILE ── */
+  /* mobile */
   .mobile-topbar { display: none; }
   @media (max-width: 768px) {
-    .mobile-topbar { display: flex; }
+    .mobile-topbar { display: flex !important; }
     .topbar { display: none; }
     .tabs-nav { top: 52px; padding: 0 12px; }
     .panel { padding: 16px; }
     .video-placeholder { height: 180px; }
     .materiais-grid { grid-template-columns: repeat(3, 1fr); }
-    .topbar-badge { display: none; }
+    .limpe-grid { grid-template-columns: repeat(2, 1fr); }
   }
 </style>
 </head>
 <body>
 
 <!-- MOBILE TOPBAR -->
-<div class="mobile-topbar" style="background:var(--navy);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;">
+<div class="mobile-topbar" style="background:var(--navy);padding:12px 16px;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;display:none;">
   <a href="dashboard.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;font-weight:600;">← Dashboard</a>
-  <span style="font-family:'DM Serif Display',serif;color:white;font-size:16px;">🎯 Conhecimentos Especificos</span>
+  <span style="font-family:'DM Serif Display',serif;color:white;font-size:16px;">🎯 Conhecimentos Específicos</span>
   <a href="perfil.html" id="mobileAvatar" class="avatar avatar-sm" style="text-decoration:none;background:rgba(255,255,255,0.15);color:white;">👤</a>
 </div>
 
@@ -163,8 +136,8 @@
     <a href="dashboard.html" class="back-btn">← Dashboard</a>
     <div class="topbar-divider"></div>
     <span style="font-size:20px;">🎯</span>
-    <div class="topbar-title">Conhecimentos Especificos</div>
-    <div class="topbar-badge">Especificos</div>
+    <div class="topbar-title">Conhecimentos Específicos</div>
+    <div class="topbar-badge">Câmara de Goiânia · Agente Adm.</div>
   </div>
   <a href="perfil.html" class="user-btn" id="userBtn">
     <div class="avatar avatar-sm" id="userAvatar">👤</div>
@@ -180,8 +153,11 @@
   <div class="tab-btn" onclick="switchTab('resumo', this)">📝 Resumo</div>
 </div>
 
+<!-- ══════════════════════════════════════════ -->
 <!-- PANEL: AULA -->
+<!-- ══════════════════════════════════════════ -->
 <div id="panel-aula" class="panel active">
+
   <div class="materia-progress">
     <div class="materia-progress-icon">🎯</div>
     <div class="materia-progress-info">
@@ -194,20 +170,117 @@
   </div>
 
   <div class="video-placeholder" onclick="showVideoMsg()">
-    <div class="video-placeholder-tag">Conhecimentos Especificos</div>
+    <div class="video-placeholder-tag">Conhecimentos Específicos — 30 questões · Peso 2</div>
     <div class="video-placeholder-icon">🎬</div>
     <div class="video-placeholder-text">Nenhuma aula adicionada ainda</div>
   </div>
 
-  <div class="empty-state">
-    <div class="empty-icon">📭</div>
-    <div class="empty-title">Aulas em breve</div>
-    <div class="empty-desc">As videoaulas de <strong>Conhecimentos Especificos</strong> serão adicionadas em breve. Fique de olho nas atualizações!</div>
+  <!-- TÓPICOS DO EDITAL -->
+  <div class="topicos-section">
+    <div class="topicos-header">
+      <span style="font-size:18px;">📋</span>
+      <div class="topicos-header-title">Conteúdo Programático — Conhecimentos Específicos (30 questões · Peso 2)</div>
+    </div>
+    <div class="topicos-body">
+
+      <div class="topico-item">
+        <div class="topico-num">1</div>
+        <div>
+          <div class="topico-name">Administração Pública</div>
+          <div class="topico-sub">Conceito, princípios LIMPE, adm. direta e indireta, modelos administrativos</div>
+        </div>
+      </div>
+
+      <div class="topico-item">
+        <div class="topico-num">2</div>
+        <div>
+          <div class="topico-name">Poderes Administrativos</div>
+          <div class="topico-sub">Poder normativo, hierárquico, disciplinar, vinculado e discricionário; abuso de poder</div>
+        </div>
+      </div>
+
+      <div class="topico-item">
+        <div class="topico-num">3</div>
+        <div>
+          <div class="topico-name">Atos Administrativos</div>
+          <div class="topico-sub">Elementos essenciais, classificação, princípios constitucionais</div>
+        </div>
+      </div>
+
+      <div class="topico-item">
+        <div class="topico-num">4</div>
+        <div>
+          <div class="topico-name">Controle da Administração Pública</div>
+          <div class="topico-sub">Controle interno, externo, judicial, legislativo; TCU; direito de petição</div>
+        </div>
+      </div>
+
+      <div class="topico-item">
+        <div class="topico-num">5</div>
+        <div>
+          <div class="topico-name">Organização da Administração Pública</div>
+          <div class="topico-sub">Órgãos públicos, entidades, centralização, descentralização, desconcentração</div>
+        </div>
+      </div>
+
+      <div class="topico-item">
+        <div class="topico-num">6</div>
+        <div>
+          <div class="topico-name">Gestão de Pessoas no Setor Público</div>
+          <div class="topico-sub">Recrutamento, seleção, avaliação de desempenho, estabilidade, ética e conduta</div>
+        </div>
+      </div>
+
+      <div class="topico-item">
+        <div class="topico-num">7</div>
+        <div>
+          <div class="topico-name">Noções de Arquivologia</div>
+          <div class="topico-sub">Lei 8.159/91, tipos de arquivo (corrente, intermediário, permanente), tabela de temporalidade</div>
+        </div>
+      </div>
+
+      <div class="topico-item">
+        <div class="topico-num">8</div>
+        <div>
+          <div class="topico-name">Documentação e Redação Oficial</div>
+          <div class="topico-sub">Padrão ofício, memorando, despacho, requerimento, atas e relatórios; Lei 15.263/2025</div>
+        </div>
+      </div>
+
+      <div class="topico-item">
+        <div class="topico-num">9</div>
+        <div>
+          <div class="topico-name">Rotinas Administrativas</div>
+          <div class="topico-sub">Protocolos, controle de materiais, controle de patrimônio, compras e almoxarifado</div>
+        </div>
+      </div>
+
+      <div class="topico-item">
+        <div class="topico-num">10</div>
+        <div>
+          <div class="topico-name">Noções de Informática Aplicada</div>
+          <div class="topico-sub">Editor de texto, planilhas, e-mail, sistemas administrativos, segurança da informação</div>
+        </div>
+      </div>
+
+      <div class="topico-item">
+        <div class="topico-num">11</div>
+        <div>
+          <div class="topico-name">Legislação Aplicada ao Cargo</div>
+          <div class="topico-sub">Lei 8.112/90, direitos e deveres, responsabilidade administrativa, PAD</div>
+        </div>
+      </div>
+
+    </div>
   </div>
+
 </div>
 
+<!-- ══════════════════════════════════════════ -->
 <!-- PANEL: MATERIAIS -->
+<!-- ══════════════════════════════════════════ -->
 <div id="panel-materiais" class="panel">
+
   <div class="materiais-grid">
     <div class="material-card material-card-empty">
       <div class="material-card-icon" style="background:#FEF3C7">📕</div>
@@ -235,70 +308,310 @@
       <div class="material-card-sub">Em breve</div>
     </div>
     <div class="material-card material-card-empty">
-      <div class="material-card-icon" style="background:var(--gold-pale)">📋</div>
+      <div class="material-card-icon" style="background:#FEF3C7">📋</div>
       <div class="material-card-label">Legislação</div>
       <div class="material-card-sub">Em breve</div>
     </div>
   </div>
 
-  <div class="empty-state">
-    <div class="empty-icon">📂</div>
-    <div class="empty-title">Materiais em preparação</div>
-    <div class="empty-desc">Os materiais de <strong>Conhecimentos Especificos</strong> estão sendo organizados. Apostilas, slides e mapas mentais serão disponibilizados em breve.</div>
+  <!-- leis de referência -->
+  <div style="background:white;border:1px solid var(--gray-200);border-radius:16px;padding:24px;">
+    <div style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:16px;">⚖️ Legislação de Referência</div>
+
+    <div class="lei-box">
+      <strong>Lei nº 8.112/1990</strong>
+      <p>Regime Jurídico dos Servidores Públicos Civis da União — direitos, deveres, proibições, responsabilidades, penalidades e PAD.</p>
+    </div>
+    <div class="lei-box">
+      <strong>CF/88 — Art. 37 ao 41</strong>
+      <p>Princípios da Administração Pública: legalidade, impessoalidade, moralidade, publicidade e eficiência (LIMPE).</p>
+    </div>
+    <div class="lei-box">
+      <strong>Lei nº 8.159/1991</strong>
+      <p>Política Nacional de Arquivos Públicos e Privados — gestão documental, tipos de arquivo, tabela de temporalidade.</p>
+    </div>
+    <div class="lei-box">
+      <strong>Lei nº 13.303/2016</strong>
+      <p>Estatuto Jurídico das Estatais — empresas públicas e sociedades de economia mista.</p>
+    </div>
+    <div class="lei-box">
+      <strong>Lei nº 12.846/2013</strong>
+      <p>Lei Anticorrupção — penalidades para empresas envolvidas em ilícitos contra a administração pública.</p>
+    </div>
+    <div class="lei-box">
+      <strong>Lei nº 15.263/2025</strong>
+      <p>Política Nacional de Linguagem Simples — padroniza a comunicação oficial com o cidadão.</p>
+    </div>
   </div>
+
 </div>
 
+<!-- ══════════════════════════════════════════ -->
 <!-- PANEL: QUESTÕES -->
+<!-- ══════════════════════════════════════════ -->
 <div id="panel-questoes" class="panel">
-  <div class="empty-state">
-    <div class="empty-icon">✏️</div>
-    <div class="empty-title">Questões em breve</div>
-    <div class="empty-desc">O banco de questões de <strong>Conhecimentos Especificos</strong> está sendo montado com questões de concursos anteriores comentadas.</div>
-    <a href="dashboard.html" class="btn btn-primary">← Voltar ao Dashboard</a>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <div>
+      <div style="font-size:18px;font-weight:700;color:var(--navy);">Banco de Questões</div>
+      <div style="font-size:13px;color:var(--gray-400);margin-top:2px;">8 questões · Concurso Câmara de Goiânia — Agente Administrativo</div>
+    </div>
+    <div style="background:#f0fdf4;border:1px solid #a7f3d0;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:700;color:#065f46;" id="scoreDisplay">0/8 acertos</div>
   </div>
+
+  <!-- Q1 -->
+  <div class="questao-card" id="q1">
+    <div class="questao-num">Questão 1 · Princípios da Administração Pública</div>
+    <div class="questao-enunciado">O conjunto de princípios constitucionais da Administração Pública previsto no art. 37 da CF/88 é conhecido pela sigla LIMPE. Qual alternativa representa corretamente esses princípios?</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q1','a','b')"><span class="questao-letra">A)</span> Legalidade, Imparcialidade, Moralidade, Publicidade e Efetividade</div>
+      <div class="questao-opcao" onclick="responder('q1','b','b')"><span class="questao-letra">B)</span> Legalidade, Impessoalidade, Moralidade, Publicidade e Eficiência</div>
+      <div class="questao-opcao" onclick="responder('q1','c','b')"><span class="questao-letra">C)</span> Legalidade, Isonomia, Moralidade, Publicidade e Eficiência</div>
+      <div class="questao-opcao" onclick="responder('q1','d','b')"><span class="questao-letra">D)</span> Legalidade, Impessoalidade, Meritocracia, Publicidade e Eficiência</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q1','b')">Ver gabarito</button>
+  </div>
+
+  <!-- Q2 -->
+  <div class="questao-card" id="q2">
+    <div class="questao-num">Questão 2 · Administração Direta e Indireta</div>
+    <div class="questao-enunciado">Assinale a alternativa que apresenta corretamente um exemplo de entidade da Administração Indireta com capital 100% estatal:</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q2','a','c')"><span class="questao-letra">A)</span> Petrobras</div>
+      <div class="questao-opcao" onclick="responder('q2','b','c')"><span class="questao-letra">B)</span> Ministério da Economia</div>
+      <div class="questao-opcao" onclick="responder('q2','c','c')"><span class="questao-letra">C)</span> Caixa Econômica Federal</div>
+      <div class="questao-opcao" onclick="responder('q2','d','c')"><span class="questao-letra">D)</span> Secretaria de Saúde</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q2','c')">Ver gabarito</button>
+  </div>
+
+  <!-- Q3 -->
+  <div class="questao-card" id="q3">
+    <div class="questao-num">Questão 3 · Poderes Administrativos</div>
+    <div class="questao-enunciado">Ocorre abuso de poder na modalidade "desvio de poder" quando o agente público:</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q3','a','b')"><span class="questao-letra">A)</span> Pratica ato fora dos limites de sua competência legal</div>
+      <div class="questao-opcao" onclick="responder('q3','b','b')"><span class="questao-letra">B)</span> Pratica ato com finalidade diversa da prevista em lei</div>
+      <div class="questao-opcao" onclick="responder('q3','c','b')"><span class="questao-letra">C)</span> Deixa de publicar o ato no diário oficial</div>
+      <div class="questao-opcao" onclick="responder('q3','d','b')"><span class="questao-letra">D)</span> Aplica penalidade desproporcional ao servidor</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q3','b')">Ver gabarito</button>
+  </div>
+
+  <!-- Q4 -->
+  <div class="questao-card" id="q4">
+    <div class="questao-num">Questão 4 · Atos Administrativos</div>
+    <div class="questao-enunciado">São elementos essenciais dos atos administrativos, segundo a doutrina clássica:</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q4','a','b')"><span class="questao-letra">A)</span> Competência, finalidade, forma, motivo e objeto</div>
+      <div class="questao-opcao" onclick="responder('q4','b','b')"><span class="questao-letra">B)</span> Competência, finalidade, forma, motivo e objeto ✓</div>
+      <div class="questao-opcao" onclick="responder('q4','c','b')"><span class="questao-letra">C)</span> Publicidade, eficiência, legalidade, motivo e objeto</div>
+      <div class="questao-opcao" onclick="responder('q4','d','b')"><span class="questao-letra">D)</span> Hierarquia, norma, forma, competência e eficiência</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q4','a')">Ver gabarito</button>
+  </div>
+
+  <!-- Q5 -->
+  <div class="questao-card" id="q5">
+    <div class="questao-num">Questão 5 · Arquivologia</div>
+    <div class="questao-enunciado">Conforme a Lei 8.159/1991, os documentos em curso ou que, mesmo sem movimentação, constituam objeto de consultas frequentes são classificados como:</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q5','a','a')"><span class="questao-letra">A)</span> Documentos correntes</div>
+      <div class="questao-opcao" onclick="responder('q5','b','a')"><span class="questao-letra">B)</span> Documentos intermediários</div>
+      <div class="questao-opcao" onclick="responder('q5','c','a')"><span class="questao-letra">C)</span> Documentos permanentes</div>
+      <div class="questao-opcao" onclick="responder('q5','d','a')"><span class="questao-letra">D)</span> Documentos sigilosos</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q5','a')">Ver gabarito</button>
+  </div>
+
+  <!-- Q6 -->
+  <div class="questao-card" id="q6">
+    <div class="questao-num">Questão 6 · Redação Oficial</div>
+    <div class="questao-enunciado">O padrão ofício, estabelecido pelo Manual de Redação da Presidência da República, unificou três tipos de documentos anteriores. Qual das alternativas NÃO era um desses documentos?</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q6','a','d')"><span class="questao-letra">A)</span> Aviso</div>
+      <div class="questao-opcao" onclick="responder('q6','b','d')"><span class="questao-letra">B)</span> Ofício</div>
+      <div class="questao-opcao" onclick="responder('q6','c','d')"><span class="questao-letra">C)</span> Memorando</div>
+      <div class="questao-opcao" onclick="responder('q6','d','d')"><span class="questao-letra">D)</span> Requerimento</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q6','d')">Ver gabarito</button>
+  </div>
+
+  <!-- Q7 -->
+  <div class="questao-card" id="q7">
+    <div class="questao-num">Questão 7 · Controle Administrativo</div>
+    <div class="questao-enunciado">O controle exercido pelo Tribunal de Contas da União (TCU) sobre a Administração Pública Federal é classificado como:</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q7','a','b')"><span class="questao-letra">A)</span> Controle interno hierárquico</div>
+      <div class="questao-opcao" onclick="responder('q7','b','b')"><span class="questao-letra">B)</span> Controle externo legislativo</div>
+      <div class="questao-opcao" onclick="responder('q7','c','b')"><span class="questao-letra">C)</span> Controle judicial repressivo</div>
+      <div class="questao-opcao" onclick="responder('q7','d','b')"><span class="questao-letra">D)</span> Controle administrativo de mérito</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q7','b')">Ver gabarito</button>
+  </div>
+
+  <!-- Q8 -->
+  <div class="questao-card" id="q8">
+    <div class="questao-num">Questão 8 · Gestão de Pessoas</div>
+    <div class="questao-enunciado">No serviço público, após o estágio probatório o servidor adquire estabilidade. Essa estabilidade existe principalmente para garantir:</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q8','a','b')"><span class="questao-letra">A)</span> Vantagens salariais automáticas ao servidor</div>
+      <div class="questao-opcao" onclick="responder('q8','b','b')"><span class="questao-letra">B)</span> A impessoalidade e a atuação imparcial do quadro permanente</div>
+      <div class="questao-opcao" onclick="responder('q8','c','b')"><span class="questao-letra">C)</span> A impossibilidade de demissão em qualquer hipótese</div>
+      <div class="questao-opcao" onclick="responder('q8','d','b')"><span class="questao-letra">D)</span> A progressão automática na carreira por tempo de serviço</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q8','b')">Ver gabarito</button>
+  </div>
+
 </div>
 
+<!-- ══════════════════════════════════════════ -->
 <!-- PANEL: RESUMO -->
+<!-- ══════════════════════════════════════════ -->
 <div id="panel-resumo" class="panel">
-  <div class="resumo-editor">
+  <div class="resumo-section">
     <div class="resumo-header">
-      <div class="resumo-header-title">📝 Resumo de Conhecimentos Especificos</div>
+      <div class="resumo-header-title">📝 Resumo — Conhecimentos Específicos</div>
+      <span style="font-size:11px;color:var(--gray-400);font-weight:600;">Câmara de Goiânia · Agente Administrativo</span>
     </div>
     <div class="resumo-body">
-      <div class="resumo-empty">O resumo desta matéria ainda não foi adicionado. Em breve estará disponível aqui.</div>
+
+      <h3>🏛️ 1. Administração Pública — Conceito e Princípios</h3>
+      <p>A Administração Pública é o conjunto de atividades e processos executados por órgãos e entidades governamentais para gerir os recursos públicos e garantir o bem-estar da sociedade.</p>
+
+      <p><strong>Princípios LIMPE (art. 37 CF/88):</strong></p>
+      <div class="limpe-grid">
+        <div class="limpe-card"><div class="limpe-letter">L</div><div class="limpe-word">Legalidade</div><div class="limpe-desc">Só pode fazer o que a lei autoriza</div></div>
+        <div class="limpe-card"><div class="limpe-letter">I</div><div class="limpe-word">Impessoalidade</div><div class="limpe-desc">Atos voltados ao interesse público, não pessoal</div></div>
+        <div class="limpe-card"><div class="limpe-letter">M</div><div class="limpe-word">Moralidade</div><div class="limpe-desc">Conduta ética e probidade</div></div>
+        <div class="limpe-card"><div class="limpe-letter">P</div><div class="limpe-word">Publicidade</div><div class="limpe-desc">Transparência como regra</div></div>
+        <div class="limpe-card"><div class="limpe-letter">E</div><div class="limpe-word">Eficiência</div><div class="limpe-desc">Resultados com otimização de recursos</div></div>
+      </div>
+
+      <h3>🏢 2. Administração Direta e Indireta</h3>
+      <h4>Administração Direta</h4>
+      <p>Órgãos sem personalidade jurídica própria, subordinados diretamente aos entes federativos (União, Estados, DF e Municípios). Ex: Ministérios, Secretarias, Prefeituras.</p>
+
+      <h4>Administração Indireta</h4>
+      <ul>
+        <li><strong>Autarquias:</strong> serviços típicos de Estado, com autonomia administrativa. Ex: INSS, ANVISA.</li>
+        <li><strong>Fundações Públicas:</strong> atividades de interesse público não exclusivas do Estado. Ex: Fiocruz.</li>
+        <li><strong>Empresas Públicas:</strong> capital 100% estatal. Ex: Caixa Econômica Federal.</li>
+        <li><strong>Sociedades de Economia Mista:</strong> capital misto (público + privado). Ex: Petrobras.</li>
+        <li><strong>Agências Reguladoras:</strong> regulação técnica de setores estratégicos. Ex: ANATEL, ANP.</li>
+      </ul>
+
+      <h3>⚡ 3. Poderes Administrativos</h3>
+      <ul>
+        <li><strong>Poder Normativo:</strong> edição de normas gerais dentro dos limites da lei (decretos, regulamentos).</li>
+        <li><strong>Poder Hierárquico:</strong> organização interna, delegação e avocação de competências.</li>
+        <li><strong>Poder Disciplinar:</strong> aplicação de penalidades a quem tem vínculo especial com a administração.</li>
+        <li><strong>Vinculado:</strong> lei prevê critérios objetivos — sem margem de escolha ao agente.</li>
+        <li><strong>Discricionário:</strong> lei confere margem de escolha ao agente (oportunidade e conveniência).</li>
+      </ul>
+      <div class="highlight-box">
+        <p>⚠️ <strong>Abuso de poder:</strong> Excesso de poder = vício de <em>competência</em> (agiu além do que podia). Desvio de poder = vício de <em>finalidade</em> (agiu para fim diferente do previsto em lei).</p>
+      </div>
+
+      <h3>📄 4. Atos Administrativos</h3>
+      <p>São manifestações unilaterais, concretas e voluntárias da Administração Pública que produzem efeitos jurídicos imediatos. Seus <strong>5 elementos essenciais</strong>: Competência, Finalidade, Forma, Motivo e Objeto.</p>
+      <ul>
+        <li><strong>Atos Normativos:</strong> decretos, resoluções, portarias.</li>
+        <li><strong>Atos Ordinatórios:</strong> instruções normativas, circulares, ordens de serviço.</li>
+        <li><strong>Atos Negociais:</strong> autorização, licença, contratos administrativos.</li>
+        <li><strong>Atos Punitivos:</strong> multas, cassação, interdição.</li>
+        <li><strong>Atos Enunciativos:</strong> certidões, pareceres técnicos.</li>
+      </ul>
+
+      <h3>🔍 5. Controle da Administração Pública</h3>
+      <ul>
+        <li><strong>Quanto ao momento:</strong> Prévio (antes do ato) | Concomitante (durante) | Subsequente/Posterior (após).</li>
+        <li><strong>Quanto à natureza:</strong> Legalidade (conformidade com a lei) | Mérito (oportunidade e conveniência).</li>
+        <li><strong>Quanto à extensão:</strong> Interno (mesmo poder) | Externo (outro poder).</li>
+        <li><strong>Controle Legislativo:</strong> exercido pelo Congresso e pelo TCU (Tribunal de Contas da União).</li>
+        <li><strong>Controle Judicial:</strong> exercido pelo Judiciário — apenas legalidade, não mérito.</li>
+      </ul>
+
+      <h3>🗂️ 6. Arquivologia — Lei 8.159/1991</h3>
+      <ul>
+        <li><strong>Arquivo Corrente:</strong> documentos em uso constante, consultas frequentes.</li>
+        <li><strong>Arquivo Intermediário:</strong> documentos que aguardam eliminação ou recolhimento — não são de uso corrente mas ainda podem ser consultados.</li>
+        <li><strong>Arquivo Permanente:</strong> valor histórico, probatório e informativo — preservação definitiva. São <em>inalienáveis e imprescritíveis</em>.</li>
+      </ul>
+      <div class="highlight-box">
+        <p>💡 A <strong>Tabela de Temporalidade</strong> define os prazos de guarda e destinação final dos documentos, garantindo a gestão racional do ciclo de vida documental.</p>
+      </div>
+
+      <h3>✉️ 7. Redação Oficial — Padrão Ofício</h3>
+      <p>O padrão ofício unificou aviso, ofício e memorando em um único modelo. Estrutura: <strong>Cabeçalho → Identificação → Local e Data → Endereçamento → Assunto → Texto → Fecho → Assinatura</strong>.</p>
+      <ul>
+        <li><strong>Ofício:</strong> comunicação com entes externos. Cada ofício trata de um único assunto.</li>
+        <li><strong>Memorando:</strong> comunicação interna entre unidades do mesmo órgão — ágil e direta.</li>
+        <li><strong>Despacho:</strong> decisão ou encaminhamento de autoridade sobre assunto submetido à apreciação.</li>
+        <li><strong>Requerimento:</strong> documento formal para solicitar informações ou serviços a órgão público.</li>
+      </ul>
+      <div class="highlight-box">
+        <p>📌 <strong>Lei 15.263/2025 — Linguagem Simples:</strong> proíbe jargões e linguagem neutra em documentos oficiais. Frases curtas, ordem direta, uma ideia por parágrafo.</p>
+      </div>
+
+      <h3>👥 8. Gestão de Pessoas no Setor Público</h3>
+      <ul>
+        <li>Ingresso obrigatório por <strong>concurso público</strong> (exceto cargos em comissão).</li>
+        <li>Funções de confiança: apenas para servidores efetivos.</li>
+        <li><strong>Estabilidade:</strong> adquirida após estágio probatório — garante impessoalidade e imparcialidade.</li>
+        <li>Remuneração e benefícios só podem ser alterados por lei.</li>
+        <li>Teto constitucional: nenhum servidor pode ganhar mais que o subsídio dos ministros do STF.</li>
+      </ul>
+
+      <h3>⚖️ 9. Legislação Aplicada ao Cargo — Lei 8.112/90</h3>
+      <ul>
+        <li>Regula o regime jurídico dos servidores públicos civis da União, autarquias e fundações.</li>
+        <li><strong>Reversão:</strong> retorno do servidor aposentado à atividade.</li>
+        <li><strong>Recondução:</strong> retorno do servidor ao cargo anterior em caso de novo concurso ou reprovação no estágio probatório.</li>
+        <li><strong>Readaptação:</strong> investidura em cargo compatível com limitação física ou mental.</li>
+        <li>Critérios do estágio probatório: Assiduidade, Disciplina, Capacidade, Produtividade e Responsabilidade (<strong>ADCAPR</strong>).</li>
+      </ul>
+
     </div>
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════ -->
+<!-- SCRIPTS -->
+<!-- ══════════════════════════════════════════ -->
 <script>
   let currentUser = null;
+  const acertos = {};
+  const respondidas = {};
+  const TOTAL = 8;
 
   window.addEventListener('DOMContentLoaded', async () => {
-    currentUser = await requireAuth();
-    if (!currentUser) return;
-    loadUserInfo();
-    loadProgress();
+    if (typeof requireAuth === 'function') {
+      currentUser = await requireAuth();
+      if (!currentUser) return;
+      loadUserInfo();
+      loadProgress();
+    }
+    const mb = document.querySelector('.mobile-topbar');
+    if (mb && window.innerWidth <= 768) mb.style.display = 'flex';
   });
 
   async function loadUserInfo() {
+    if (typeof getUserProfile !== 'function') return;
     const profile = await getUserProfile(currentUser.id);
     const name = profile?.full_name || currentUser.email.split('@')[0];
     const el = document.getElementById('userName');
     if (el) el.textContent = name;
-
     const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
-    const avatarEls = [document.getElementById('userAvatar'), document.getElementById('mobileAvatar')];
-    avatarEls.forEach(el => {
+    [document.getElementById('userAvatar'), document.getElementById('mobileAvatar')].forEach(el => {
       if (!el) return;
-      if (profile?.avatar_url) {
-        el.innerHTML = `<img src="${profile.avatar_url}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
-      } else {
-        el.textContent = initials;
-      }
+      if (profile?.avatar_url) el.innerHTML = `<img src="${profile.avatar_url}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+      else el.textContent = initials;
     });
   }
 
   async function loadProgress() {
+    if (typeof getProgress !== 'function') return;
     const progress = await getProgress(currentUser.id);
     const p = progress.find(p => p.materia === 'Conhecimentos Específicos');
     const pct = p ? p.percentual : 0;
@@ -315,6 +628,39 @@
 
   function showVideoMsg() {
     alert('Nenhum vídeo adicionado ainda para esta matéria.');
+  }
+
+  function responder(questaoId, letraClicada, letraCorreta) {
+    if (respondidas[questaoId]) return;
+    respondidas[questaoId] = true;
+    const card = document.getElementById(questaoId);
+    const opcoes = card.querySelectorAll('.questao-opcao');
+    const letras = ['a','b','c','d'];
+    opcoes.forEach((op, i) => {
+      if (letras[i] === letraCorreta) op.classList.add('correta');
+      else if (letras[i] === letraClicada && letraClicada !== letraCorreta) op.classList.add('errada');
+      op.style.pointerEvents = 'none';
+    });
+    if (letraClicada === letraCorreta) acertos[questaoId] = true;
+    atualizarScore();
+  }
+
+  function verGabarito(questaoId, letraCorreta) {
+    if (respondidas[questaoId]) return;
+    respondidas[questaoId] = true;
+    const card = document.getElementById(questaoId);
+    const opcoes = card.querySelectorAll('.questao-opcao');
+    const letras = ['a','b','c','d'];
+    opcoes.forEach((op, i) => {
+      if (letras[i] === letraCorreta) op.classList.add('correta');
+      op.style.pointerEvents = 'none';
+    });
+    atualizarScore();
+  }
+
+  function atualizarScore() {
+    const certas = Object.keys(acertos).length;
+    document.getElementById('scoreDisplay').textContent = certas + '/' + TOTAL + ' acertos';
   }
 </script>
 </body>

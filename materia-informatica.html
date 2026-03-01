@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GoiâniaConc — Informatica</title>
+<title>GoiâniaConc — Informática</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -11,149 +11,119 @@
 <style>
   body { display: flex; flex-direction: column; min-height: 100vh; background: var(--bg); }
 
-  /* ── TOPBAR ── */
-  .topbar {
-    background: var(--navy); padding: 0 24px; height: 56px;
-    display: flex; align-items: center; justify-content: space-between;
-    flex-shrink: 0; position: sticky; top: 0; z-index: 100;
-  }
+  .topbar { background: var(--navy); padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; position: sticky; top: 0; z-index: 100; }
   .topbar-left { display: flex; align-items: center; gap: 16px; }
-  .back-btn {
-    display: flex; align-items: center; gap: 6px;
-    color: rgba(255,255,255,0.6); text-decoration: none;
-    font-size: 13px; font-weight: 500; transition: color 0.15s;
-  }
+  .back-btn { display: flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.6); text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.15s; }
   .back-btn:hover { color: white; }
   .topbar-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.15); }
   .topbar-title { font-family: 'DM Serif Display', serif; font-size: 17px; color: white; }
-  .topbar-badge {
-    background: rgba(200,149,26,0.2); border: 1px solid rgba(200,149,26,0.4);
-    color: var(--gold-light); font-size: 11px; font-weight: 700;
-    padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px;
-  }
-
-  .user-btn {
-    display: flex; align-items: center; gap: 8px;
-    padding: 5px 12px 5px 6px; border-radius: 30px;
-    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
-    cursor: pointer; transition: all 0.15s; text-decoration: none;
-  }
+  .topbar-badge { background: rgba(200,149,26,0.2); border: 1px solid rgba(200,149,26,0.4); color: var(--gold-light); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px; }
+  .user-btn { display: flex; align-items: center; gap: 8px; padding: 5px 12px 5px 6px; border-radius: 30px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); cursor: pointer; transition: all 0.15s; text-decoration: none; }
   .user-btn:hover { background: rgba(255,255,255,0.18); }
   .user-name { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85); max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-  /* ── TABS ── */
-  .tabs-nav {
-    background: white; border-bottom: 1px solid var(--gray-200);
-    display: flex; padding: 0 24px; overflow-x: auto;
-    position: sticky; top: 56px; z-index: 99;
-  }
-  .tab-btn {
-    padding: 0 20px; height: 48px; display: flex; align-items: center; gap: 7px;
-    font-size: 13px; font-weight: 600; color: var(--gray-400);
-    cursor: pointer; border-bottom: 2px solid transparent;
-    transition: all 0.15s; white-space: nowrap; flex-shrink: 0;
-  }
+  .tabs-nav { background: white; border-bottom: 1px solid var(--gray-200); display: flex; padding: 0 24px; overflow-x: auto; position: sticky; top: 56px; z-index: 99; }
+  .tab-btn { padding: 0 20px; height: 48px; display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--gray-400); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; }
   .tab-btn:hover { color: var(--navy); }
   .tab-btn.active { color: var(--navy); border-bottom-color: var(--gold); }
 
-  /* ── PANELS ── */
   .panel { display: none; padding: 28px 24px; max-width: 900px; margin: 0 auto; width: 100%; }
   .panel.active { display: block; animation: fadeIn 0.25s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
-  /* ── EMPTY STATE ── */
-  .empty-state {
-    background: white; border: 2px dashed var(--gray-200);
-    border-radius: 16px; padding: 56px 32px;
-    text-align: center;
-  }
-  .empty-icon { font-size: 48px; margin-bottom: 16px; }
-  .empty-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--navy); margin-bottom: 8px; }
-  .empty-desc { font-size: 14px; color: var(--gray-400); line-height: 1.7; max-width: 400px; margin: 0 auto 24px; }
+  /* progress */
+  .materia-progress { background: white; border: 1px solid var(--gray-200); border-radius: 14px; padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 16px; }
+  .materia-progress-icon { font-size: 28px; flex-shrink: 0; }
+  .materia-progress-info { flex: 1; }
+  .materia-progress-label { font-size: 12px; font-weight: 600; color: var(--gray-400); margin-bottom: 6px; }
+  .materia-progress-pct { font-size: 20px; font-weight: 700; color: var(--navy); }
+  .progress-wrap { background: #e5e7eb; border-radius: 99px; height: 8px; flex: 1; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #C8951A, #e6b022); border-radius: 99px; transition: width 0.6s ease; }
 
-  /* ── VIDEO PLACEHOLDER ── */
-  .video-placeholder {
-    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
-    border-radius: 16px; height: 240px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 12px; margin-bottom: 20px; position: relative; overflow: hidden; cursor: pointer;
-  }
-  .video-placeholder::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 30% 50%, rgba(200,149,26,0.1) 0%, transparent 60%);
-  }
+  /* video */
+  .video-placeholder { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%); border-radius: 16px; height: 240px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px; position: relative; overflow: hidden; cursor: pointer; }
+  .video-placeholder::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 50%, rgba(200,149,26,0.1) 0%, transparent 60%); }
   .video-placeholder-icon { font-size: 48px; z-index: 1; }
   .video-placeholder-text { color: rgba(255,255,255,0.6); font-size: 14px; z-index: 1; }
-  .video-placeholder-tag {
-    position: absolute; top: 14px; left: 14px;
-    background: rgba(200,149,26,0.25); border: 1px solid rgba(200,149,26,0.4);
-    color: var(--gold-light); font-size: 11px; font-weight: 700;
-    padding: 4px 12px; border-radius: 20px;
-  }
+  .video-placeholder-tag { position: absolute; top: 14px; left: 14px; background: rgba(200,149,26,0.25); border: 1px solid rgba(200,149,26,0.4); color: var(--gold-light); font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
 
-  /* ── RESUMO ── */
-  .resumo-editor {
-    background: white; border: 1px solid var(--gray-200);
-    border-radius: 16px; overflow: hidden; margin-bottom: 20px;
-  }
-  .resumo-header {
-    background: var(--gray-50); border-bottom: 1px solid var(--gray-200);
-    padding: 14px 20px; display: flex; align-items: center; justify-content: space-between;
-  }
-  .resumo-header-title { font-size: 14px; font-weight: 700; color: var(--navy); }
-  .resumo-body { padding: 20px; min-height: 200px; }
-  .resumo-empty { color: var(--gray-400); font-size: 14px; font-style: italic; }
+  /* tópicos */
+  .topicos-section { background: white; border: 1px solid var(--gray-200); border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
+  .topicos-header { background: #f8f9fa; border-bottom: 1px solid var(--gray-200); padding: 14px 20px; display: flex; align-items: center; gap: 10px; }
+  .topicos-header-title { font-size: 14px; font-weight: 700; color: var(--navy); }
+  .topicos-body { padding: 8px 0; }
+  .topico-item { display: flex; align-items: flex-start; gap: 12px; padding: 13px 20px; border-bottom: 1px solid #f3f4f6; transition: background 0.15s; }
+  .topico-item:last-child { border-bottom: none; }
+  .topico-item:hover { background: #fafafa; }
+  .topico-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(200,149,26,0.1); color: #C8951A; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .topico-name { font-size: 14px; font-weight: 600; color: var(--navy); }
+  .topico-sub { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
 
-  /* ── MATERIAIS GRID ── */
-  .materiais-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 12px; margin-bottom: 24px;
-  }
-  .material-card {
-    background: white; border: 1.5px solid var(--gray-200);
-    border-radius: 12px; padding: 18px 12px 14px;
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
-    cursor: pointer; transition: all 0.2s; text-align: center;
-  }
-  .material-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(200,149,26,0.1); }
+  /* atalhos grid */
+  .atalhos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin: 16px 0; }
+  .atalho-card { background: white; border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; }
+  .atalho-keys { background: var(--navy); color: white; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 6px; white-space: nowrap; font-family: monospace; }
+  .atalho-desc { font-size: 13px; color: #374151; }
+
+  /* materiais */
+  .materiais-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .material-card { background: white; border: 1.5px solid var(--gray-200); border-radius: 12px; padding: 18px 12px 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s; text-align: center; }
+  .material-card:hover { border-color: #C8951A; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(200,149,26,0.1); }
   .material-card-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
   .material-card-label { font-size: 12px; font-weight: 700; color: var(--navy); }
   .material-card-sub { font-size: 11px; color: var(--gray-400); }
   .material-card-empty { border-style: dashed; opacity: 0.5; cursor: default; }
   .material-card-empty:hover { border-color: var(--gray-200); transform: none; box-shadow: none; }
 
-  /* ── QUESTÕES ── */
-  .questoes-empty { background: white; border: 1px solid var(--gray-200); border-radius: 16px; padding: 40px; text-align: center; }
+  /* questões */
+  .questao-card { background: white; border: 1px solid var(--gray-200); border-radius: 14px; padding: 20px; margin-bottom: 14px; }
+  .questao-num { font-size: 11px; font-weight: 700; color: #C8951A; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .questao-enunciado { font-size: 14px; color: var(--navy); font-weight: 600; line-height: 1.6; margin-bottom: 14px; }
+  .questao-opcoes { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+  .questao-opcao { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border-radius: 10px; border: 1.5px solid #e5e7eb; font-size: 13px; color: #374151; cursor: pointer; transition: all 0.15s; }
+  .questao-opcao:hover { border-color: #C8951A; background: #fffbf0; }
+  .questao-opcao.correta { border-color: #10b981; background: #f0fdf4; color: #065f46; font-weight: 600; }
+  .questao-opcao.errada { border-color: #ef4444; background: #fef2f2; color: #991b1b; }
+  .questao-letra { font-weight: 700; flex-shrink: 0; }
+  .gabarito-btn { background: #f8f9fa; border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600; color: #374151; cursor: pointer; transition: all 0.15s; }
+  .gabarito-btn:hover { border-color: #C8951A; color: #C8951A; }
 
-  /* ── PROGRESS BAR MATÉRIA ── */
-  .materia-progress {
-    background: white; border: 1px solid var(--gray-200);
-    border-radius: 14px; padding: 16px 20px; margin-bottom: 20px;
-    display: flex; align-items: center; gap: 16px;
-  }
-  .materia-progress-icon { font-size: 28px; flex-shrink: 0; }
-  .materia-progress-info { flex: 1; }
-  .materia-progress-label { font-size: 12px; font-weight: 600; color: var(--gray-400); margin-bottom: 6px; }
-  .materia-progress-pct { font-size: 20px; font-weight: 700; color: var(--navy); }
+  /* resumo */
+  .resumo-section { background: white; border: 1px solid var(--gray-200); border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
+  .resumo-header { background: #f8f9fa; border-bottom: 1px solid var(--gray-200); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; }
+  .resumo-header-title { font-size: 14px; font-weight: 700; color: var(--navy); }
+  .resumo-body { padding: 24px; }
+  .resumo-body h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin: 22px 0 10px; padding-bottom: 6px; border-bottom: 2px solid rgba(200,149,26,0.2); }
+  .resumo-body h3:first-child { margin-top: 0; }
+  .resumo-body h4 { font-size: 13px; font-weight: 700; color: #374151; margin: 14px 0 6px; }
+  .resumo-body p { font-size: 14px; color: #374151; line-height: 1.7; margin-bottom: 10px; }
+  .resumo-body ul { padding-left: 20px; margin-bottom: 12px; }
+  .resumo-body ul li { font-size: 14px; color: #374151; line-height: 1.7; margin-bottom: 5px; }
+  .highlight-box { background: #fffbf0; border-left: 4px solid #C8951A; border-radius: 0 10px 10px 0; padding: 14px 16px; margin: 14px 0; }
+  .highlight-box p { margin: 0; font-size: 14px; color: #374151; }
+  .code-box { background: #1e293b; color: #e2e8f0; border-radius: 10px; padding: 14px 18px; font-family: monospace; font-size: 13px; margin: 12px 0; line-height: 1.8; }
+  .code-box .kw { color: #93c5fd; }
+  .code-box .val { color: #86efac; }
 
-  /* ── MOBILE ── */
+  /* mobile */
   .mobile-topbar { display: none; }
   @media (max-width: 768px) {
-    .mobile-topbar { display: flex; }
+    .mobile-topbar { display: flex !important; }
     .topbar { display: none; }
     .tabs-nav { top: 52px; padding: 0 12px; }
     .panel { padding: 16px; }
     .video-placeholder { height: 180px; }
     .materiais-grid { grid-template-columns: repeat(3, 1fr); }
-    .topbar-badge { display: none; }
+    .atalhos-grid { grid-template-columns: 1fr 1fr; }
   }
 </style>
 </head>
 <body>
 
 <!-- MOBILE TOPBAR -->
-<div class="mobile-topbar" style="background:var(--navy);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;">
+<div class="mobile-topbar" style="background:var(--navy);padding:12px 16px;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;display:none;">
   <a href="dashboard.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;font-weight:600;">← Dashboard</a>
-  <span style="font-family:'DM Serif Display',serif;color:white;font-size:16px;">💻 Informatica</span>
+  <span style="font-family:'DM Serif Display',serif;color:white;font-size:16px;">💻 Informática</span>
   <a href="perfil.html" id="mobileAvatar" class="avatar avatar-sm" style="text-decoration:none;background:rgba(255,255,255,0.15);color:white;">👤</a>
 </div>
 
@@ -163,8 +133,8 @@
     <a href="dashboard.html" class="back-btn">← Dashboard</a>
     <div class="topbar-divider"></div>
     <span style="font-size:20px;">💻</span>
-    <div class="topbar-title">Informatica</div>
-    <div class="topbar-badge">TI</div>
+    <div class="topbar-title">Informática</div>
+    <div class="topbar-badge">UFG · Câmara</div>
   </div>
   <a href="perfil.html" class="user-btn" id="userBtn">
     <div class="avatar avatar-sm" id="userAvatar">👤</div>
@@ -180,8 +150,11 @@
   <div class="tab-btn" onclick="switchTab('resumo', this)">📝 Resumo</div>
 </div>
 
+<!-- ══════════════════════════════════════════ -->
 <!-- PANEL: AULA -->
+<!-- ══════════════════════════════════════════ -->
 <div id="panel-aula" class="panel active">
+
   <div class="materia-progress">
     <div class="materia-progress-icon">💻</div>
     <div class="materia-progress-info">
@@ -194,20 +167,116 @@
   </div>
 
   <div class="video-placeholder" onclick="showVideoMsg()">
-    <div class="video-placeholder-tag">Informatica</div>
+    <div class="video-placeholder-tag">Informática — UFG · Câmara de Goiânia</div>
     <div class="video-placeholder-icon">🎬</div>
     <div class="video-placeholder-text">Nenhuma aula adicionada ainda</div>
   </div>
 
-  <div class="empty-state">
-    <div class="empty-icon">📭</div>
-    <div class="empty-title">Aulas em breve</div>
-    <div class="empty-desc">As videoaulas de <strong>Informatica</strong> serão adicionadas em breve. Fique de olho nas atualizações!</div>
+  <div class="topicos-section">
+    <div class="topicos-header">
+      <span style="font-size:18px;">📋</span>
+      <div class="topicos-header-title">Conteúdo Programático — Informática</div>
+    </div>
+    <div class="topicos-body">
+
+      <div class="topico-item">
+        <div class="topico-num">1</div>
+        <div>
+          <div class="topico-name">Sistema Operacional Windows</div>
+          <div class="topico-sub">Interface gráfica, gerenciamento de arquivos e pastas, configurações básicas</div>
+        </div>
+      </div>
+
+      <div class="topico-item">
+        <div class="topico-num">2</div>
+        <div>
+          <div class="topico-name">Microsoft Word</div>
+          <div class="topico-sub">Formatação de documentos, estilos, tabelas, correção ortográfica, atalhos</div>
+        </div>
+      </div>
+
+      <div class="topico-item">
+        <div class="topico-num">3</div>
+        <div>
+          <div class="topico-name">Microsoft Excel</div>
+          <div class="topico-sub">Fórmulas (SOMA, MÉDIA), gráficos, tabelas dinâmicas, formatação condicional</div>
+        </div>
+      </div>
+
+      <div class="topico-item">
+        <div class="topico-num">4</div>
+        <div>
+          <div class="topico-name">Microsoft PowerPoint</div>
+          <div class="topico-sub">Criação de apresentações, animações, transições entre slides</div>
+        </div>
+      </div>
+
+      <div class="topico-item">
+        <div class="topico-num">5</div>
+        <div>
+          <div class="topico-name">Internet e Navegadores</div>
+          <div class="topico-sub">Navegação, pesquisa, segurança online, modo anônimo, URLs, e-mails</div>
+        </div>
+      </div>
+
+      <div class="topico-item">
+        <div class="topico-num">6</div>
+        <div>
+          <div class="topico-name">Segurança da Informação</div>
+          <div class="topico-sub">Antivírus, firewalls, proteção de dados, boas práticas, confidencialidade, integridade e disponibilidade (CID)</div>
+        </div>
+      </div>
+
+      <div class="topico-item">
+        <div class="topico-num">7</div>
+        <div>
+          <div class="topico-name">Correio Eletrônico</div>
+          <div class="topico-sub">Remetente, destinatário, assunto, anexos, protocolos SMTP, POP3 e IMAP</div>
+        </div>
+      </div>
+
+      <div class="topico-item">
+        <div class="topico-num">8</div>
+        <div>
+          <div class="topico-name">Sistemas Administrativos</div>
+          <div class="topico-sub">Planilhas eletrônicas aplicadas à gestão, banco de dados, redes de computadores</div>
+        </div>
+      </div>
+
+    </div>
   </div>
+
+  <!-- Atalhos de teclado -->
+  <div class="topicos-section">
+    <div class="topicos-header">
+      <span style="font-size:18px;">⌨️</span>
+      <div class="topicos-header-title">Atalhos de Teclado — Mais Cobrados em Prova</div>
+    </div>
+    <div style="padding:16px 20px;">
+      <div class="atalhos-grid">
+        <div class="atalho-card"><span class="atalho-keys">Ctrl + C</span><span class="atalho-desc">Copiar</span></div>
+        <div class="atalho-card"><span class="atalho-keys">Ctrl + V</span><span class="atalho-desc">Colar</span></div>
+        <div class="atalho-card"><span class="atalho-keys">Ctrl + X</span><span class="atalho-desc">Recortar</span></div>
+        <div class="atalho-card"><span class="atalho-keys">Ctrl + Z</span><span class="atalho-desc">Desfazer</span></div>
+        <div class="atalho-card"><span class="atalho-keys">Ctrl + S</span><span class="atalho-desc">Salvar</span></div>
+        <div class="atalho-card"><span class="atalho-keys">Ctrl + P</span><span class="atalho-desc">Imprimir</span></div>
+        <div class="atalho-card"><span class="atalho-keys">Ctrl + A</span><span class="atalho-desc">Selecionar tudo</span></div>
+        <div class="atalho-card"><span class="atalho-keys">Ctrl + B</span><span class="atalho-desc">Negrito</span></div>
+        <div class="atalho-card"><span class="atalho-keys">Ctrl + I</span><span class="atalho-desc">Itálico</span></div>
+        <div class="atalho-card"><span class="atalho-keys">Ctrl + U</span><span class="atalho-desc">Sublinhado</span></div>
+        <div class="atalho-card"><span class="atalho-keys">Alt + F4</span><span class="atalho-desc">Fechar programa</span></div>
+        <div class="atalho-card"><span class="atalho-keys">Ctrl + F</span><span class="atalho-desc">Localizar</span></div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
+<!-- ══════════════════════════════════════════ -->
 <!-- PANEL: MATERIAIS -->
+<!-- ══════════════════════════════════════════ -->
 <div id="panel-materiais" class="panel">
+
   <div class="materiais-grid">
     <div class="material-card material-card-empty">
       <div class="material-card-icon" style="background:#FEF3C7">📕</div>
@@ -235,70 +304,340 @@
       <div class="material-card-sub">Em breve</div>
     </div>
     <div class="material-card material-card-empty">
-      <div class="material-card-icon" style="background:var(--gold-pale)">📋</div>
-      <div class="material-card-label">Legislação</div>
+      <div class="material-card-icon" style="background:#FEF3C7">📋</div>
+      <div class="material-card-label">Simulado</div>
       <div class="material-card-sub">Em breve</div>
     </div>
   </div>
 
-  <div class="empty-state">
-    <div class="empty-icon">📂</div>
-    <div class="empty-title">Materiais em preparação</div>
-    <div class="empty-desc">Os materiais de <strong>Informatica</strong> estão sendo organizados. Apostilas, slides e mapas mentais serão disponibilizados em breve.</div>
+  <!-- Fórmulas Excel -->
+  <div style="background:white;border:1px solid var(--gray-200);border-radius:16px;padding:24px;margin-bottom:16px;">
+    <div style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:16px;">📊 Fórmulas Excel — Mais Cobradas</div>
+    <div class="code-box">
+      <span class="kw">=SOMA(A1:A10)</span>  → Soma os valores de A1 até A10<br>
+      <span class="kw">=MÉDIA(A1:A10)</span> → Calcula a média dos valores<br>
+      <span class="kw">=MÁXIMO(A1:A10)</span>→ Retorna o maior valor<br>
+      <span class="kw">=MÍNIMO(A1:A10)</span>→ Retorna o menor valor<br>
+      <span class="kw">=SE(A1>10;"Sim";"Não")</span> → Condição lógica<br>
+      <span class="kw">=CONT.SE(A1:A10;"aprovado")</span> → Conta células com critério<br>
+      <span class="kw">=PROCV(valor;tabela;col;0)</span> → Busca valor em tabela
+    </div>
   </div>
+
+  <!-- Extensões de arquivo -->
+  <div style="background:white;border:1px solid var(--gray-200);border-radius:16px;padding:24px;">
+    <div style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:16px;">📁 Extensões de Arquivo — Saiba Identificar</div>
+    <div class="atalhos-grid">
+      <div class="atalho-card"><span class="atalho-keys">.docx</span><span class="atalho-desc">Word — Documento</span></div>
+      <div class="atalho-card"><span class="atalho-keys">.xlsx</span><span class="atalho-desc">Excel — Planilha</span></div>
+      <div class="atalho-card"><span class="atalho-keys">.pptx</span><span class="atalho-desc">PowerPoint — Slides</span></div>
+      <div class="atalho-card"><span class="atalho-keys">.pdf</span><span class="atalho-desc">Documento portátil</span></div>
+      <div class="atalho-card"><span class="atalho-keys">.txt</span><span class="atalho-desc">Texto simples</span></div>
+      <div class="atalho-card"><span class="atalho-keys">.exe</span><span class="atalho-desc">Programa executável</span></div>
+      <div class="atalho-card"><span class="atalho-keys">.jpg / .png</span><span class="atalho-desc">Imagem</span></div>
+      <div class="atalho-card"><span class="atalho-keys">.mp4</span><span class="atalho-desc">Vídeo</span></div>
+    </div>
+  </div>
+
 </div>
 
+<!-- ══════════════════════════════════════════ -->
 <!-- PANEL: QUESTÕES -->
+<!-- (Extraídas do Simulado Concurso UFG — Informática) -->
+<!-- ══════════════════════════════════════════ -->
 <div id="panel-questoes" class="panel">
-  <div class="empty-state">
-    <div class="empty-icon">✏️</div>
-    <div class="empty-title">Questões em breve</div>
-    <div class="empty-desc">O banco de questões de <strong>Informatica</strong> está sendo montado com questões de concursos anteriores comentadas.</div>
-    <a href="dashboard.html" class="btn btn-primary">← Voltar ao Dashboard</a>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <div>
+      <div style="font-size:18px;font-weight:700;color:var(--navy);">Banco de Questões</div>
+      <div style="font-size:13px;color:var(--gray-400);margin-top:2px;">10 questões · Simulado Concurso UFG</div>
+    </div>
+    <div style="background:#f0fdf4;border:1px solid #a7f3d0;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:700;color:#065f46;" id="scoreDisplay">0/10 acertos</div>
   </div>
+
+  <!-- Q1 -->
+  <div class="questao-card" id="q1">
+    <div class="questao-num">Questão 1 · Atalhos de Teclado</div>
+    <div class="questao-enunciado">Qual tecla do teclado normalmente é usada para copiar um texto selecionado?</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q1','a','b')"><span class="questao-letra">A)</span> Ctrl + X</div>
+      <div class="questao-opcao" onclick="responder('q1','b','b')"><span class="questao-letra">B)</span> Ctrl + C</div>
+      <div class="questao-opcao" onclick="responder('q1','c','b')"><span class="questao-letra">C)</span> Ctrl + V</div>
+      <div class="questao-opcao" onclick="responder('q1','d','b')"><span class="questao-letra">D)</span> Ctrl + Z</div>
+      <div class="questao-opcao" onclick="responder('q1','e','b')"><span class="questao-letra">E)</span> Ctrl + P</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q1','b')">Ver gabarito</button>
+  </div>
+
+  <!-- Q2 -->
+  <div class="questao-card" id="q2">
+    <div class="questao-num">Questão 2 · Windows — Atalhos</div>
+    <div class="questao-enunciado">No Windows, qual é o atalho de teclado para colar um conteúdo copiado?</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q2','a','b')"><span class="questao-letra">A)</span> Ctrl + C</div>
+      <div class="questao-opcao" onclick="responder('q2','b','b')"><span class="questao-letra">B)</span> Ctrl + V</div>
+      <div class="questao-opcao" onclick="responder('q2','c','b')"><span class="questao-letra">C)</span> Ctrl + X</div>
+      <div class="questao-opcao" onclick="responder('q2','d','b')"><span class="questao-letra">D)</span> Ctrl + P</div>
+      <div class="questao-opcao" onclick="responder('q2','e','b')"><span class="questao-letra">E)</span> Ctrl + S</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q2','b')">Ver gabarito</button>
+  </div>
+
+  <!-- Q3 -->
+  <div class="questao-card" id="q3">
+    <div class="questao-num">Questão 3 · Planilhas Eletrônicas</div>
+    <div class="questao-enunciado">Qual é o programa do pacote Microsoft Office mais utilizado para planilhas eletrônicas?</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q3','a','b')"><span class="questao-letra">A)</span> Word</div>
+      <div class="questao-opcao" onclick="responder('q3','b','b')"><span class="questao-letra">B)</span> Excel</div>
+      <div class="questao-opcao" onclick="responder('q3','c','b')"><span class="questao-letra">C)</span> PowerPoint</div>
+      <div class="questao-opcao" onclick="responder('q3','d','b')"><span class="questao-letra">D)</span> Access</div>
+      <div class="questao-opcao" onclick="responder('q3','e','b')"><span class="questao-letra">E)</span> Outlook</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q3','b')">Ver gabarito</button>
+  </div>
+
+  <!-- Q4 -->
+  <div class="questao-card" id="q4">
+    <div class="questao-num">Questão 4 · Microsoft Word</div>
+    <div class="questao-enunciado">No Word, para alterar a fonte do texto, qual caminho deve ser seguido?</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q4','a','b')"><span class="questao-letra">A)</span> Menu Inserir → Fonte</div>
+      <div class="questao-opcao" onclick="responder('q4','b','b')"><span class="questao-letra">B)</span> Menu Página Inicial → Fonte</div>
+      <div class="questao-opcao" onclick="responder('q4','c','b')"><span class="questao-letra">C)</span> Menu Exibir → Fonte</div>
+      <div class="questao-opcao" onclick="responder('q4','d','b')"><span class="questao-letra">D)</span> Menu Layout → Fonte</div>
+      <div class="questao-opcao" onclick="responder('q4','e','b')"><span class="questao-letra">E)</span> Menu Revisão → Fonte</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q4','b')">Ver gabarito</button>
+  </div>
+
+  <!-- Q5 -->
+  <div class="questao-card" id="q5">
+    <div class="questao-num">Questão 5 · Internet</div>
+    <div class="questao-enunciado">O que significa a sigla URL?</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q5','a','b')"><span class="questao-letra">A)</span> Unidade de Rede Local</div>
+      <div class="questao-opcao" onclick="responder('q5','b','b')"><span class="questao-letra">B)</span> Uniform Resource Locator</div>
+      <div class="questao-opcao" onclick="responder('q5','c','b')"><span class="questao-letra">C)</span> Unidade de Recurso Lógico</div>
+      <div class="questao-opcao" onclick="responder('q5','d','b')"><span class="questao-letra">D)</span> Universal Resource Link</div>
+      <div class="questao-opcao" onclick="responder('q5','e','b')"><span class="questao-letra">E)</span> Unified Routing Location</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q5','b')">Ver gabarito</button>
+  </div>
+
+  <!-- Q6 -->
+  <div class="questao-card" id="q6">
+    <div class="questao-num">Questão 6 · Segurança da Informação</div>
+    <div class="questao-enunciado">Qual é a função principal de um antivírus?</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q6','a','b')"><span class="questao-letra">A)</span> Criar documentos de texto</div>
+      <div class="questao-opcao" onclick="responder('q6','b','b')"><span class="questao-letra">B)</span> Proteger o computador contra malwares e vírus</div>
+      <div class="questao-opcao" onclick="responder('q6','c','b')"><span class="questao-letra">C)</span> Melhorar a velocidade da internet</div>
+      <div class="questao-opcao" onclick="responder('q6','d','b')"><span class="questao-letra">D)</span> Editar fotos e vídeos</div>
+      <div class="questao-opcao" onclick="responder('q6','e','b')"><span class="questao-letra">E)</span> Gerenciar impressoras</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q6','b')">Ver gabarito</button>
+  </div>
+
+  <!-- Q7 -->
+  <div class="questao-card" id="q7">
+    <div class="questao-num">Questão 7 · Sistema Operacional</div>
+    <div class="questao-enunciado">Qual é o sistema operacional mais utilizado em computadores pessoais no ambiente corporativo?</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q7','a','b')"><span class="questao-letra">A)</span> Linux</div>
+      <div class="questao-opcao" onclick="responder('q7','b','b')"><span class="questao-letra">B)</span> Windows</div>
+      <div class="questao-opcao" onclick="responder('q7','c','b')"><span class="questao-letra">C)</span> Android</div>
+      <div class="questao-opcao" onclick="responder('q7','d','b')"><span class="questao-letra">D)</span> iOS</div>
+      <div class="questao-opcao" onclick="responder('q7','e','b')"><span class="questao-letra">E)</span> macOS</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q7','b')">Ver gabarito</button>
+  </div>
+
+  <!-- Q8 -->
+  <div class="questao-card" id="q8">
+    <div class="questao-num">Questão 8 · Excel — Fórmulas</div>
+    <div class="questao-enunciado">No Excel, a fórmula =SOMA(A1:A10) realiza qual operação?</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q8','a','b')"><span class="questao-letra">A)</span> Multiplica os valores de A1 a A10</div>
+      <div class="questao-opcao" onclick="responder('q8','b','b')"><span class="questao-letra">B)</span> Soma os valores de A1 a A10</div>
+      <div class="questao-opcao" onclick="responder('q8','c','b')"><span class="questao-letra">C)</span> Subtrai os valores de A1 a A10</div>
+      <div class="questao-opcao" onclick="responder('q8','d','b')"><span class="questao-letra">D)</span> Divide os valores de A1 a A10</div>
+      <div class="questao-opcao" onclick="responder('q8','e','b')"><span class="questao-letra">E)</span> Conta os valores de A1 a A10</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q8','b')">Ver gabarito</button>
+  </div>
+
+  <!-- Q9 -->
+  <div class="questao-card" id="q9">
+    <div class="questao-num">Questão 9 · Navegadores</div>
+    <div class="questao-enunciado">Em navegadores de internet, o modo anônimo serve para:</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q9','a','a')"><span class="questao-letra">A)</span> Navegar sem histórico, cookies ou cache salvos localmente</div>
+      <div class="questao-opcao" onclick="responder('q9','b','a')"><span class="questao-letra">B)</span> Aumentar a velocidade de navegação</div>
+      <div class="questao-opcao" onclick="responder('q9','c','a')"><span class="questao-letra">C)</span> Instalar programas automaticamente</div>
+      <div class="questao-opcao" onclick="responder('q9','d','a')"><span class="questao-letra">D)</span> Tornar o usuário completamente anônimo na internet</div>
+      <div class="questao-opcao" onclick="responder('q9','e','a')"><span class="questao-letra">E)</span> Bloquear propagandas automaticamente</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q9','a')">Ver gabarito</button>
+  </div>
+
+  <!-- Q10 -->
+  <div class="questao-card" id="q10">
+    <div class="questao-num">Questão 10 · Extensões de Arquivo</div>
+    <div class="questao-enunciado">Qual extensão de arquivo indica um documento criado no Microsoft Word?</div>
+    <div class="questao-opcoes">
+      <div class="questao-opcao" onclick="responder('q10','a','c')"><span class="questao-letra">A)</span> .exe</div>
+      <div class="questao-opcao" onclick="responder('q10','b','c')"><span class="questao-letra">B)</span> .txt</div>
+      <div class="questao-opcao" onclick="responder('q10','c','c')"><span class="questao-letra">C)</span> .docx</div>
+      <div class="questao-opcao" onclick="responder('q10','d','c')"><span class="questao-letra">D)</span> .xls</div>
+      <div class="questao-opcao" onclick="responder('q10','e','c')"><span class="questao-letra">E)</span> .ppt</div>
+    </div>
+    <button class="gabarito-btn" onclick="verGabarito('q10','c')">Ver gabarito</button>
+  </div>
+
 </div>
 
+<!-- ══════════════════════════════════════════ -->
 <!-- PANEL: RESUMO -->
+<!-- ══════════════════════════════════════════ -->
 <div id="panel-resumo" class="panel">
-  <div class="resumo-editor">
+  <div class="resumo-section">
     <div class="resumo-header">
-      <div class="resumo-header-title">📝 Resumo de Informatica</div>
+      <div class="resumo-header-title">📝 Resumo — Informática</div>
+      <span style="font-size:11px;color:var(--gray-400);font-weight:600;">UFG · Câmara de Goiânia</span>
     </div>
     <div class="resumo-body">
-      <div class="resumo-empty">O resumo desta matéria ainda não foi adicionado. Em breve estará disponível aqui.</div>
+
+      <h3>🖥️ 1. Sistema Operacional Windows</h3>
+      <p>O Windows é o sistema operacional mais usado em computadores pessoais e no ambiente corporativo público. Ele gerencia hardware e software, oferecendo uma interface gráfica (GUI) para o usuário.</p>
+      <ul>
+        <li><strong>Gerenciamento de arquivos:</strong> criação, cópia, movimentação, exclusão de arquivos e pastas via Windows Explorer.</li>
+        <li><strong>Área de trabalho:</strong> atalhos, barra de tarefas, menu Iniciar.</li>
+        <li><strong>Painel de Controle:</strong> configurações de sistema, usuários, impressoras, rede.</li>
+        <li><strong>Lixeira:</strong> armazena arquivos excluídos temporariamente antes da exclusão definitiva.</li>
+      </ul>
+      <div class="highlight-box">
+        <p>💡 <strong>Dica de prova:</strong> Ctrl + C = Copiar | Ctrl + X = Recortar | Ctrl + V = Colar | Ctrl + Z = Desfazer | Ctrl + S = Salvar | Ctrl + P = Imprimir.</p>
+      </div>
+
+      <h3>📝 2. Microsoft Word</h3>
+      <p>Editor de texto do pacote Office, utilizado para criar e formatar documentos. Extensão: <strong>.docx</strong></p>
+      <ul>
+        <li><strong>Formatação:</strong> fonte, tamanho, negrito, itálico, sublinhado, alinhamento, espaçamento.</li>
+        <li><strong>Menu Página Inicial:</strong> contém as opções de fonte e parágrafo mais usadas.</li>
+        <li><strong>Estilos:</strong> padrões de formatação (Título 1, Título 2, Normal).</li>
+        <li><strong>Tabelas:</strong> inseridas via Menu Inserir → Tabela.</li>
+        <li><strong>Correção ortográfica:</strong> ativada por padrão — sublinhado vermelho = erro ortográfico; azul = gramatical.</li>
+        <li><strong>Mala direta:</strong> recurso para envio de documentos personalizados em massa.</li>
+      </ul>
+
+      <h3>📊 3. Microsoft Excel</h3>
+      <p>Planilha eletrônica para organização de dados, cálculos e geração de gráficos. Extensão: <strong>.xlsx</strong></p>
+      <ul>
+        <li><strong>Célula:</strong> interseção de uma linha (número) e coluna (letra). Ex: A1, B2.</li>
+        <li><strong>Fórmulas:</strong> sempre começam com <code>=</code></li>
+      </ul>
+      <div class="code-box">
+        <span class="kw">=SOMA(A1:A10)</span>   → Soma intervalo<br>
+        <span class="kw">=MÉDIA(A1:A10)</span>  → Média aritmética<br>
+        <span class="kw">=SE(condição;"V";"F")</span> → Condicional<br>
+        <span class="kw">=MÁXIMO()</span> / <span class="kw">=MÍNIMO()</span> → Maior / menor valor
+      </div>
+      <ul>
+        <li><strong>Gráficos:</strong> criados selecionando dados e acessando Menu Inserir → Gráfico.</li>
+        <li><strong>Tabela dinâmica:</strong> resumo interativo de grandes volumes de dados.</li>
+        <li><strong>Formatação condicional:</strong> destaca células automaticamente com base em regras.</li>
+      </ul>
+
+      <h3>📽️ 4. Microsoft PowerPoint</h3>
+      <p>Programa para criação de apresentações de slides. Extensão: <strong>.pptx</strong></p>
+      <ul>
+        <li><strong>Slide:</strong> cada página da apresentação.</li>
+        <li><strong>Layout:</strong> modelo pré-definido para cada slide (título, conteúdo, comparação).</li>
+        <li><strong>Animações:</strong> efeitos aplicados a elementos dentro do slide.</li>
+        <li><strong>Transições:</strong> efeitos aplicados entre slides.</li>
+        <li><strong>Apresentação:</strong> iniciada com a tecla <strong>F5</strong> (do início) ou <strong>Shift + F5</strong> (slide atual).</li>
+      </ul>
+
+      <h3>🌐 5. Internet e Navegadores</h3>
+      <ul>
+        <li><strong>URL (Uniform Resource Locator):</strong> endereço de uma página na web. Ex: https://www.google.com</li>
+        <li><strong>HTTP / HTTPS:</strong> protocolo de transferência — HTTPS é a versão segura (criptografada).</li>
+        <li><strong>Navegadores:</strong> Google Chrome, Microsoft Edge, Mozilla Firefox.</li>
+        <li><strong>Modo anônimo:</strong> não salva histórico, cookies ou cache <em>localmente</em> — não garante anonimato total na internet.</li>
+        <li><strong>Cookies:</strong> arquivos salvos pelo navegador para lembrar preferências e sessões.</li>
+        <li><strong>Cache:</strong> arquivos temporários que aceleram o carregamento de páginas já visitadas.</li>
+      </ul>
+
+      <h3>🔒 6. Segurança da Informação</h3>
+      <p>Baseia-se na <strong>tríade CID</strong>:</p>
+      <ul>
+        <li><strong>Confidencialidade:</strong> apenas pessoas autorizadas acessam a informação.</li>
+        <li><strong>Integridade:</strong> a informação não é alterada sem autorização.</li>
+        <li><strong>Disponibilidade:</strong> a informação está acessível quando necessário.</li>
+      </ul>
+      <ul>
+        <li><strong>Antivírus:</strong> detecta e remove malwares, vírus, trojans e spywares.</li>
+        <li><strong>Firewall:</strong> filtra o tráfego de rede, bloqueando acessos não autorizados.</li>
+        <li><strong>Phishing:</strong> golpe por e-mail ou site falso que tenta roubar dados.</li>
+        <li><strong>Senha forte:</strong> mistura letras maiúsculas, minúsculas, números e símbolos.</li>
+        <li><strong>Backup:</strong> cópia de segurança dos dados para recuperação em caso de perda.</li>
+      </ul>
+      <div class="highlight-box">
+        <p>⚠️ <strong>Dica de prova:</strong> Antivírus protege contra vírus. Firewall protege a rede. Nenhum dos dois garante 100% de segurança — boas práticas do usuário são essenciais!</p>
+      </div>
+
+      <h3>📧 7. Correio Eletrônico (E-mail)</h3>
+      <ul>
+        <li><strong>Remetente:</strong> quem envia a mensagem.</li>
+        <li><strong>Destinatário (Para):</strong> quem recebe.</li>
+        <li><strong>CC (Com cópia):</strong> outros destinatários visíveis a todos.</li>
+        <li><strong>CCO (Cópia oculta):</strong> destinatários não visíveis uns aos outros.</li>
+        <li><strong>Assunto:</strong> título resumido do e-mail.</li>
+        <li><strong>Anexo:</strong> arquivo enviado junto com a mensagem.</li>
+        <li><strong>SMTP:</strong> protocolo para envio de e-mails.</li>
+        <li><strong>POP3:</strong> baixa e-mails do servidor para o dispositivo (remove do servidor).</li>
+        <li><strong>IMAP:</strong> acessa e-mails no servidor sem removê-los (sincronizado em vários dispositivos).</li>
+      </ul>
+
     </div>
   </div>
 </div>
 
+<!-- SCRIPTS -->
 <script>
   let currentUser = null;
+  const acertos = {};
+  const respondidas = {};
+  const TOTAL = 10;
 
   window.addEventListener('DOMContentLoaded', async () => {
-    currentUser = await requireAuth();
-    if (!currentUser) return;
-    loadUserInfo();
-    loadProgress();
+    if (typeof requireAuth === 'function') {
+      currentUser = await requireAuth();
+      if (!currentUser) return;
+      loadUserInfo();
+      loadProgress();
+    }
+    const mb = document.querySelector('.mobile-topbar');
+    if (mb && window.innerWidth <= 768) mb.style.display = 'flex';
   });
 
   async function loadUserInfo() {
+    if (typeof getUserProfile !== 'function') return;
     const profile = await getUserProfile(currentUser.id);
     const name = profile?.full_name || currentUser.email.split('@')[0];
     const el = document.getElementById('userName');
     if (el) el.textContent = name;
-
     const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
-    const avatarEls = [document.getElementById('userAvatar'), document.getElementById('mobileAvatar')];
-    avatarEls.forEach(el => {
+    [document.getElementById('userAvatar'), document.getElementById('mobileAvatar')].forEach(el => {
       if (!el) return;
-      if (profile?.avatar_url) {
-        el.innerHTML = `<img src="${profile.avatar_url}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
-      } else {
-        el.textContent = initials;
-      }
+      if (profile?.avatar_url) el.innerHTML = `<img src="${profile.avatar_url}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+      else el.textContent = initials;
     });
   }
 
   async function loadProgress() {
+    if (typeof getProgress !== 'function') return;
     const progress = await getProgress(currentUser.id);
     const p = progress.find(p => p.materia === 'Informática');
     const pct = p ? p.percentual : 0;
@@ -315,6 +654,39 @@
 
   function showVideoMsg() {
     alert('Nenhum vídeo adicionado ainda para esta matéria.');
+  }
+
+  function responder(questaoId, letraClicada, letraCorreta) {
+    if (respondidas[questaoId]) return;
+    respondidas[questaoId] = true;
+    const card = document.getElementById(questaoId);
+    const opcoes = card.querySelectorAll('.questao-opcao');
+    const letras = ['a','b','c','d','e'];
+    opcoes.forEach((op, i) => {
+      if (letras[i] === letraCorreta) op.classList.add('correta');
+      else if (letras[i] === letraClicada && letraClicada !== letraCorreta) op.classList.add('errada');
+      op.style.pointerEvents = 'none';
+    });
+    if (letraClicada === letraCorreta) acertos[questaoId] = true;
+    atualizarScore();
+  }
+
+  function verGabarito(questaoId, letraCorreta) {
+    if (respondidas[questaoId]) return;
+    respondidas[questaoId] = true;
+    const card = document.getElementById(questaoId);
+    const opcoes = card.querySelectorAll('.questao-opcao');
+    const letras = ['a','b','c','d','e'];
+    opcoes.forEach((op, i) => {
+      if (letras[i] === letraCorreta) op.classList.add('correta');
+      op.style.pointerEvents = 'none';
+    });
+    atualizarScore();
+  }
+
+  function atualizarScore() {
+    const certas = Object.keys(acertos).length;
+    document.getElementById('scoreDisplay').textContent = certas + '/' + TOTAL + ' acertos';
   }
 </script>
 </body>
