@@ -31,7 +31,6 @@
     color: var(--gold-light); font-size: 11px; font-weight: 700;
     padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px;
   }
-
   .user-btn {
     display: flex; align-items: center; gap: 8px;
     padding: 5px 12px 5px 6px; border-radius: 30px;
@@ -63,8 +62,7 @@
   /* ── EMPTY STATE ── */
   .empty-state {
     background: white; border: 2px dashed var(--gray-200);
-    border-radius: 16px; padding: 56px 32px;
-    text-align: center;
+    border-radius: 16px; padding: 56px 32px; text-align: center;
   }
   .empty-icon { font-size: 48px; margin-bottom: 16px; }
   .empty-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--navy); margin-bottom: 8px; }
@@ -100,8 +98,63 @@
     padding: 14px 20px; display: flex; align-items: center; justify-content: space-between;
   }
   .resumo-header-title { font-size: 14px; font-weight: 700; color: var(--navy); }
-  .resumo-body { padding: 20px; min-height: 200px; }
-  .resumo-empty { color: var(--gray-400); font-size: 14px; font-style: italic; }
+  .resumo-body { padding: 24px 28px; }
+
+  /* ── RESUMO CONTENT STYLES ── */
+  .resumo-topico {
+    margin-bottom: 28px; border-bottom: 1px solid var(--gray-100); padding-bottom: 24px;
+  }
+  .resumo-topico:last-child { border-bottom: none; margin-bottom: 0; }
+  .resumo-topico h2 {
+    font-size: 15px; font-weight: 800; color: var(--navy);
+    text-transform: uppercase; letter-spacing: 0.8px;
+    margin: 0 0 4px 0; display: flex; align-items: center; gap: 8px;
+  }
+  .resumo-topico h2 .tag-fonte {
+    font-size: 9px; font-weight: 700; background: rgba(200,149,26,0.12);
+    color: var(--gold); border: 1px solid rgba(200,149,26,0.3);
+    border-radius: 10px; padding: 1px 7px; letter-spacing: 0.3px; text-transform: uppercase;
+  }
+  .resumo-topico h3 {
+    font-size: 13px; font-weight: 700; color: var(--navy);
+    margin: 16px 0 6px 0; border-left: 3px solid var(--gold);
+    padding-left: 10px;
+  }
+  .resumo-topico p {
+    font-size: 13.5px; color: #374151; line-height: 1.75; margin: 0 0 8px 0;
+  }
+  .resumo-topico ul {
+    margin: 6px 0 10px 0; padding-left: 0; list-style: none;
+  }
+  .resumo-topico ul li {
+    font-size: 13px; color: #374151; line-height: 1.7;
+    padding: 3px 0 3px 18px; position: relative;
+  }
+  .resumo-topico ul li::before {
+    content: '▸'; position: absolute; left: 0;
+    color: var(--gold); font-size: 11px; top: 5px;
+  }
+  .macete-box {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border: 1px solid rgba(200,149,26,0.3);
+    border-left: 4px solid var(--gold);
+    border-radius: 10px; padding: 10px 14px; margin: 8px 0;
+  }
+  .macete-box strong { font-size: 11px; color: var(--gold); letter-spacing: 0.5px; text-transform: uppercase; display: block; margin-bottom: 3px; }
+  .macete-box p { font-size: 12.5px; color: #78350f; margin: 0; line-height: 1.6; }
+  .exemplo-box {
+    background: #f0fdf4; border: 1px solid #bbf7d0;
+    border-radius: 8px; padding: 8px 14px; margin: 6px 0;
+    font-size: 12.5px; color: #166534;
+  }
+  .exemplo-box strong { color: #15803d; }
+  .resumo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 10px 0; }
+  .resumo-card {
+    background: var(--gray-50); border: 1px solid var(--gray-200);
+    border-radius: 10px; padding: 12px 14px;
+  }
+  .resumo-card-title { font-size: 11px; font-weight: 800; color: var(--navy); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .resumo-card p { font-size: 12px; color: #374151; margin: 0; line-height: 1.6; }
 
   /* ── MATERIAIS GRID ── */
   .materiais-grid {
@@ -122,7 +175,55 @@
   .material-card-empty:hover { border-color: var(--gray-200); transform: none; box-shadow: none; }
 
   /* ── QUESTÕES ── */
-  .questoes-empty { background: white; border: 1px solid var(--gray-200); border-radius: 16px; padding: 40px; text-align: center; }
+  .questoes-header {
+    background: white; border: 1px solid var(--gray-200); border-radius: 14px;
+    padding: 18px 20px; margin-bottom: 20px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  .questoes-header-info h3 { font-size: 15px; font-weight: 800; color: var(--navy); margin: 0 0 3px 0; }
+  .questoes-header-info p { font-size: 12px; color: var(--gray-400); margin: 0; }
+  .questoes-score {
+    background: var(--gold-pale); border: 1px solid rgba(200,149,26,0.3);
+    border-radius: 10px; padding: 8px 16px; text-align: center;
+  }
+  .questoes-score-num { font-size: 22px; font-weight: 800; color: var(--gold); }
+  .questoes-score-label { font-size: 10px; color: var(--gray-400); font-weight: 600; }
+
+  .questao-card {
+    background: white; border: 1px solid var(--gray-200); border-radius: 14px;
+    padding: 20px; margin-bottom: 16px; transition: all 0.2s;
+  }
+  .questao-card.acertou { border-color: #86efac; background: #f0fdf4; }
+  .questao-card.errou { border-color: #fca5a5; background: #fff5f5; }
+  .questao-num {
+    font-size: 10px; font-weight: 800; color: var(--gold); text-transform: uppercase;
+    letter-spacing: 0.5px; margin-bottom: 8px;
+  }
+  .questao-enunciado { font-size: 14px; color: var(--navy); font-weight: 600; line-height: 1.6; margin-bottom: 14px; }
+  .questao-opcoes { display: flex; flex-direction: column; gap: 8px; }
+  .opcao-btn {
+    background: var(--gray-50); border: 1.5px solid var(--gray-200);
+    border-radius: 10px; padding: 10px 14px;
+    font-size: 13px; color: #374151; cursor: pointer;
+    text-align: left; transition: all 0.15s; font-family: inherit;
+  }
+  .opcao-btn:hover:not(:disabled) { border-color: var(--gold); background: #fffbeb; }
+  .opcao-btn.selecionada { border-color: var(--navy); background: rgba(15,30,60,0.05); }
+  .opcao-btn.correta { border-color: #16a34a; background: #dcfce7; color: #14532d; font-weight: 700; }
+  .opcao-btn.incorreta { border-color: #dc2626; background: #fee2e2; color: #7f1d1d; }
+  .opcao-btn:disabled { cursor: default; }
+  .questao-gabarito {
+    margin-top: 12px; padding: 10px 14px; border-radius: 8px;
+    font-size: 12.5px; font-weight: 600; display: none;
+  }
+  .questao-gabarito.acertou { background: #dcfce7; color: #15803d; display: block; }
+  .questao-gabarito.errou { background: #fee2e2; color: #dc2626; display: block; }
+  .btn-ver-gabarito {
+    margin-top: 12px; background: var(--navy); color: white;
+    border: none; border-radius: 8px; padding: 8px 18px;
+    font-size: 12px; font-weight: 700; cursor: pointer; display: none;
+  }
+  .questao-card .btn-ver-gabarito { display: inline-block; }
 
   /* ── PROGRESS BAR MATÉRIA ── */
   .materia-progress {
@@ -145,6 +246,7 @@
     .video-placeholder { height: 180px; }
     .materiais-grid { grid-template-columns: repeat(3, 1fr); }
     .topbar-badge { display: none; }
+    .resumo-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -153,7 +255,7 @@
 <!-- MOBILE TOPBAR -->
 <div class="mobile-topbar" style="background:var(--navy);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;">
   <a href="dashboard.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;font-weight:600;">← Dashboard</a>
-  <span style="font-family:'DM Serif Display',serif;color:white;font-size:16px;">📝 Portugues</span>
+  <span style="font-family:'DM Serif Display',serif;color:white;font-size:16px;">📝 Português</span>
   <a href="perfil.html" id="mobileAvatar" class="avatar avatar-sm" style="text-decoration:none;background:rgba(255,255,255,0.15);color:white;">👤</a>
 </div>
 
@@ -163,8 +265,8 @@
     <a href="dashboard.html" class="back-btn">← Dashboard</a>
     <div class="topbar-divider"></div>
     <span style="font-size:20px;">📝</span>
-    <div class="topbar-title">Portugues</div>
-    <div class="topbar-badge">Lingua Portuguesa</div>
+    <div class="topbar-title">Português</div>
+    <div class="topbar-badge">Língua Portuguesa</div>
   </div>
   <a href="perfil.html" class="user-btn" id="userBtn">
     <div class="avatar avatar-sm" id="userAvatar">👤</div>
@@ -180,7 +282,9 @@
   <div class="tab-btn" onclick="switchTab('resumo', this)">📝 Resumo</div>
 </div>
 
-<!-- PANEL: AULA -->
+<!-- ══════════════════════════════════════════
+     PANEL: AULA
+════════════════════════════════════════════ -->
 <div id="panel-aula" class="panel active">
   <div class="materia-progress">
     <div class="materia-progress-icon">📝</div>
@@ -194,7 +298,7 @@
   </div>
 
   <div class="video-placeholder" onclick="showVideoMsg()">
-    <div class="video-placeholder-tag">Portugues</div>
+    <div class="video-placeholder-tag">Língua Portuguesa</div>
     <div class="video-placeholder-icon">🎬</div>
     <div class="video-placeholder-text">Nenhuma aula adicionada ainda</div>
   </div>
@@ -202,11 +306,13 @@
   <div class="empty-state">
     <div class="empty-icon">📭</div>
     <div class="empty-title">Aulas em breve</div>
-    <div class="empty-desc">As videoaulas de <strong>Portugues</strong> serão adicionadas em breve. Fique de olho nas atualizações!</div>
+    <div class="empty-desc">As videoaulas de <strong>Língua Portuguesa</strong> serão adicionadas em breve. Fique de olho nas atualizações!</div>
   </div>
 </div>
 
-<!-- PANEL: MATERIAIS -->
+<!-- ══════════════════════════════════════════
+     PANEL: MATERIAIS
+════════════════════════════════════════════ -->
 <div id="panel-materiais" class="panel">
   <div class="materiais-grid">
     <div class="material-card material-card-empty">
@@ -244,34 +350,589 @@
   <div class="empty-state">
     <div class="empty-icon">📂</div>
     <div class="empty-title">Materiais em preparação</div>
-    <div class="empty-desc">Os materiais de <strong>Portugues</strong> estão sendo organizados. Apostilas, slides e mapas mentais serão disponibilizados em breve.</div>
+    <div class="empty-desc">Os materiais de <strong>Língua Portuguesa</strong> estão sendo organizados. Apostilas, slides e mapas mentais serão disponibilizados em breve.</div>
   </div>
 </div>
 
-<!-- PANEL: QUESTÕES -->
+<!-- ══════════════════════════════════════════
+     PANEL: QUESTÕES
+════════════════════════════════════════════ -->
 <div id="panel-questoes" class="panel">
-  <div class="empty-state">
-    <div class="empty-icon">✏️</div>
-    <div class="empty-title">Questões em breve</div>
-    <div class="empty-desc">O banco de questões de <strong>Portugues</strong> está sendo montado com questões de concursos anteriores comentadas.</div>
-    <a href="dashboard.html" class="btn btn-primary">← Voltar ao Dashboard</a>
+
+  <div class="questoes-header">
+    <div class="questoes-header-info">
+      <h3>✏️ Simulado — Língua Portuguesa</h3>
+      <p>15 questões · Concurso UFG — Auxiliar Administrativo</p>
+    </div>
+    <div class="questoes-score">
+      <div class="questoes-score-num" id="scoreNum">0/15</div>
+      <div class="questoes-score-label">ACERTOS</div>
+    </div>
   </div>
+
+  <!-- Q1 -->
+  <div class="questao-card" id="q1">
+    <div class="questao-num">Questão 01 · Acentuação</div>
+    <div class="questao-enunciado">Assinale a alternativa em que a palavra apresenta <strong>erro de acentuação</strong>:</div>
+    <div class="questao-opcoes">
+      <button class="opcao-btn" onclick="responder(1,'a','b')">a) lápis</button>
+      <button class="opcao-btn" onclick="responder(1,'b','b')">b) heróico</button>
+      <button class="opcao-btn" onclick="responder(1,'c','b')">c) fácil</button>
+      <button class="opcao-btn" onclick="responder(1,'d','b')">d) céu</button>
+      <button class="opcao-btn" onclick="responder(1,'e','b')">e) português</button>
+    </div>
+    <div class="questao-gabarito" id="gabarito-q1"></div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="questao-card" id="q2">
+    <div class="questao-num">Questão 02 · Sintaxe</div>
+    <div class="questao-enunciado">Qual é o sujeito da frase: <em>"Os alunos estudaram para a prova"</em>?</div>
+    <div class="questao-opcoes">
+      <button class="opcao-btn" onclick="responder(2,'a','a')">a) Os alunos</button>
+      <button class="opcao-btn" onclick="responder(2,'b','a')">b) Estudaram</button>
+      <button class="opcao-btn" onclick="responder(2,'c','a')">c) Para a prova</button>
+      <button class="opcao-btn" onclick="responder(2,'d','a')">d) Alunos estudaram</button>
+      <button class="opcao-btn" onclick="responder(2,'e','a')">e) Nenhuma das anteriores</button>
+    </div>
+    <div class="questao-gabarito" id="gabarito-q2"></div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="questao-card" id="q3">
+    <div class="questao-num">Questão 03 · Semântica</div>
+    <div class="questao-enunciado">Identifique o <strong>sinônimo</strong> da palavra <em>"eficiente"</em>:</div>
+    <div class="questao-opcoes">
+      <button class="opcao-btn" onclick="responder(3,'a','b')">a) Lento</button>
+      <button class="opcao-btn" onclick="responder(3,'b','b')">b) Competente</button>
+      <button class="opcao-btn" onclick="responder(3,'c','b')">c) Desorganizado</button>
+      <button class="opcao-btn" onclick="responder(3,'d','b')">d) Fraco</button>
+      <button class="opcao-btn" onclick="responder(3,'e','b')">e) Ineficaz</button>
+    </div>
+    <div class="questao-gabarito" id="gabarito-q3"></div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="questao-card" id="q4">
+    <div class="questao-num">Questão 04 · Morfologia</div>
+    <div class="questao-enunciado">Qual é a classe gramatical da palavra <em>"rapidamente"</em> na frase: <em>"Ele correu rapidamente"</em>?</div>
+    <div class="questao-opcoes">
+      <button class="opcao-btn" onclick="responder(4,'a','c')">a) Substantivo</button>
+      <button class="opcao-btn" onclick="responder(4,'b','c')">b) Adjetivo</button>
+      <button class="opcao-btn" onclick="responder(4,'c','c')">c) Advérbio</button>
+      <button class="opcao-btn" onclick="responder(4,'d','c')">d) Verbo</button>
+      <button class="opcao-btn" onclick="responder(4,'e','c')">e) Pronome</button>
+    </div>
+    <div class="questao-gabarito" id="gabarito-q4"></div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="questao-card" id="q5">
+    <div class="questao-num">Questão 05 · Conjunções</div>
+    <div class="questao-enunciado">Em <em>"Eu gosto de estudar, mas prefiro descansar"</em>, a conjunção <strong>"mas"</strong> indica:</div>
+    <div class="questao-opcoes">
+      <button class="opcao-btn" onclick="responder(5,'a','b')">a) Causa</button>
+      <button class="opcao-btn" onclick="responder(5,'b','b')">b) Contraste</button>
+      <button class="opcao-btn" onclick="responder(5,'c','b')">c) Consequência</button>
+      <button class="opcao-btn" onclick="responder(5,'d','b')">d) Condição</button>
+      <button class="opcao-btn" onclick="responder(5,'e','b')">e) Conclusão</button>
+    </div>
+    <div class="questao-gabarito" id="gabarito-q5"></div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="questao-card" id="q6">
+    <div class="questao-num">Questão 06 · Pontuação</div>
+    <div class="questao-enunciado">Assinale a frase com <strong>pontuação correta</strong>:</div>
+    <div class="questao-opcoes">
+      <button class="opcao-btn" onclick="responder(6,'a','c')">a) Hoje eu estudei, li, e escrevi.</button>
+      <button class="opcao-btn" onclick="responder(6,'b','c')">b) Hoje eu estudei; li; e escrevi.</button>
+      <button class="opcao-btn" onclick="responder(6,'c','c')">c) Hoje eu estudei, li e escrevi.</button>
+      <button class="opcao-btn" onclick="responder(6,'d','c')">d) Hoje eu estudei li e escrevi.</button>
+      <button class="opcao-btn" onclick="responder(6,'e','c')">e) Hoje, eu, estudei, li e escrevi.</button>
+    </div>
+    <div class="questao-gabarito" id="gabarito-q6"></div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="questao-card" id="q7">
+    <div class="questao-num">Questão 07 · Acentuação</div>
+    <div class="questao-enunciado">Qual a alternativa <strong>correta</strong> sobre acentuação de palavras <strong>oxítonas</strong>?</div>
+    <div class="questao-opcoes">
+      <button class="opcao-btn" onclick="responder(7,'a','b')">a) Todas as oxítonas terminadas em "a", "e", "o" têm acento.</button>
+      <button class="opcao-btn" onclick="responder(7,'b','b')">b) Oxítonas terminadas em "a", "e", "o" recebem acento se forem tônicas.</button>
+      <button class="opcao-btn" onclick="responder(7,'c','b')">c) Oxítonas não recebem acento.</button>
+      <button class="opcao-btn" onclick="responder(7,'d','b')">d) Todas as oxítonas têm acento.</button>
+      <button class="opcao-btn" onclick="responder(7,'e','b')">e) Apenas oxítonas terminadas em "i" e "u" têm acento.</button>
+    </div>
+    <div class="questao-gabarito" id="gabarito-q7"></div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="questao-card" id="q8">
+    <div class="questao-num">Questão 08 · Regência Verbal</div>
+    <div class="questao-enunciado">Assinale a frase com <strong>regência verbal correta</strong>:</div>
+    <div class="questao-opcoes">
+      <button class="opcao-btn" onclick="responder(8,'a','a')">a) Gosto de estudar.</button>
+      <button class="opcao-btn" onclick="responder(8,'b','a')">b) Gosto estudar.</button>
+      <button class="opcao-btn" onclick="responder(8,'c','a')">c) Gosto estudar de matemática.</button>
+      <button class="opcao-btn" onclick="responder(8,'d','a')">d) Gosto em estudar.</button>
+      <button class="opcao-btn" onclick="responder(8,'e','a')">e) Gosto estudar com.</button>
+    </div>
+    <div class="questao-gabarito" id="gabarito-q8"></div>
+  </div>
+
+  <!-- Q9 -->
+  <div class="questao-card" id="q9">
+    <div class="questao-num">Questão 09 · Morfologia</div>
+    <div class="questao-enunciado">O termo <em>"muito"</em> na frase <em>"Ele é muito inteligente"</em> é:</div>
+    <div class="questao-opcoes">
+      <button class="opcao-btn" onclick="responder(9,'a','b')">a) Substantivo</button>
+      <button class="opcao-btn" onclick="responder(9,'b','b')">b) Advérbio de intensidade</button>
+      <button class="opcao-btn" onclick="responder(9,'c','b')">c) Adjetivo</button>
+      <button class="opcao-btn" onclick="responder(9,'d','b')">d) Pronome</button>
+      <button class="opcao-btn" onclick="responder(9,'e','b')">e) Verbo</button>
+    </div>
+    <div class="questao-gabarito" id="gabarito-q9"></div>
+  </div>
+
+  <!-- Q10 -->
+  <div class="questao-card" id="q10">
+    <div class="questao-num">Questão 10 · Concordância</div>
+    <div class="questao-enunciado">Identifique a alternativa em que há <strong>erro de concordância</strong>:</div>
+    <div class="questao-opcoes">
+      <button class="opcao-btn" onclick="responder(10,'a','c')">a) Os alunos chegaram cedo.</button>
+      <button class="opcao-btn" onclick="responder(10,'b','c')">b) A professora e o aluno estavam presentes.</button>
+      <button class="opcao-btn" onclick="responder(10,'c','c')">c) As criança brincaram no pátio.</button>
+      <button class="opcao-btn" onclick="responder(10,'d','c')">d) Os livros foram entregues.</button>
+      <button class="opcao-btn" onclick="responder(10,'e','c')">e) Nenhuma das anteriores</button>
+    </div>
+    <div class="questao-gabarito" id="gabarito-q10"></div>
+  </div>
+
+  <!-- Q11 -->
+  <div class="questao-card" id="q11">
+    <div class="questao-num">Questão 11 · Sintaxe</div>
+    <div class="questao-enunciado">Assinale a frase que apresenta <strong>oração subordinada adjetiva</strong>:</div>
+    <div class="questao-opcoes">
+      <button class="opcao-btn" onclick="responder(11,'a','b')">a) O carro é novo.</button>
+      <button class="opcao-btn" onclick="responder(11,'b','b')">b) O aluno que estuda passa nas provas.</button>
+      <button class="opcao-btn" onclick="responder(11,'c','b')">c) Eu gosto de estudar.</button>
+      <button class="opcao-btn" onclick="responder(11,'d','b')">d) Vamos ao parque amanhã.</button>
+      <button class="opcao-btn" onclick="responder(11,'e','b')">e) Ela chegou cedo.</button>
+    </div>
+    <div class="questao-gabarito" id="gabarito-q11"></div>
+  </div>
+
+  <!-- Q12 -->
+  <div class="questao-card" id="q12">
+    <div class="questao-num">Questão 12 · Morfologia</div>
+    <div class="questao-enunciado">Qual a função do <em>"de"</em> em <em>"Gosto de chocolate"</em>?</div>
+    <div class="questao-opcoes">
+      <button class="opcao-btn" onclick="responder(12,'a','b')">a) Artigo</button>
+      <button class="opcao-btn" onclick="responder(12,'b','b')">b) Preposição</button>
+      <button class="opcao-btn" onclick="responder(12,'c','b')">c) Conjunção</button>
+      <button class="opcao-btn" onclick="responder(12,'d','b')">d) Pronome</button>
+      <button class="opcao-btn" onclick="responder(12,'e','b')">e) Adjetivo</button>
+    </div>
+    <div class="questao-gabarito" id="gabarito-q12"></div>
+  </div>
+
+  <!-- Q13 -->
+  <div class="questao-card" id="q13">
+    <div class="questao-num">Questão 13 · Conjunções</div>
+    <div class="questao-enunciado">Em <em>"Fui ao mercado e comprei frutas"</em>, o conectivo <strong>"e"</strong> indica:</div>
+    <div class="questao-opcoes">
+      <button class="opcao-btn" onclick="responder(13,'a','b')">a) Causa</button>
+      <button class="opcao-btn" onclick="responder(13,'b','b')">b) Adição</button>
+      <button class="opcao-btn" onclick="responder(13,'c','b')">c) Contraste</button>
+      <button class="opcao-btn" onclick="responder(13,'d','b')">d) Condição</button>
+      <button class="opcao-btn" onclick="responder(13,'e','b')">e) Conclusão</button>
+    </div>
+    <div class="questao-gabarito" id="gabarito-q13"></div>
+  </div>
+
+  <!-- Q14 -->
+  <div class="questao-card" id="q14">
+    <div class="questao-num">Questão 14 · Regência Nominal</div>
+    <div class="questao-enunciado">Qual a frase com <strong>regência nominal correta</strong>?</div>
+    <div class="questao-opcoes">
+      <button class="opcao-btn" onclick="responder(14,'a','a')">a) Interesse pelo estudo.</button>
+      <button class="opcao-btn" onclick="responder(14,'b','a')">b) Interesse com o estudo.</button>
+      <button class="opcao-btn" onclick="responder(14,'c','a')">c) Interesse no estudo.</button>
+      <button class="opcao-btn" onclick="responder(14,'d','a')">d) Interesse de estudo.</button>
+      <button class="opcao-btn" onclick="responder(14,'e','a')">e) Interesse em estudo.</button>
+    </div>
+    <div class="questao-gabarito" id="gabarito-q14"></div>
+  </div>
+
+  <!-- Q15 -->
+  <div class="questao-card" id="q15">
+    <div class="questao-num">Questão 15 · Semântica</div>
+    <div class="questao-enunciado">Assinale o <strong>antônimo</strong> de <em>"benevolente"</em>:</div>
+    <div class="questao-opcoes">
+      <button class="opcao-btn" onclick="responder(15,'a','b')">a) Bondoso</button>
+      <button class="opcao-btn" onclick="responder(15,'b','b')">b) Cruel</button>
+      <button class="opcao-btn" onclick="responder(15,'c','b')">c) Generoso</button>
+      <button class="opcao-btn" onclick="responder(15,'d','b')">d) Amável</button>
+      <button class="opcao-btn" onclick="responder(15,'e','b')">e) Gentil</button>
+    </div>
+    <div class="questao-gabarito" id="gabarito-q15"></div>
+  </div>
+
+  <div style="text-align:center;padding:20px 0;">
+    <button onclick="reiniciarSimulado()" style="background:var(--navy);color:white;border:none;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;">🔄 Reiniciar Simulado</button>
+  </div>
+
 </div>
 
-<!-- PANEL: RESUMO -->
+<!-- ══════════════════════════════════════════
+     PANEL: RESUMO
+════════════════════════════════════════════ -->
 <div id="panel-resumo" class="panel">
   <div class="resumo-editor">
     <div class="resumo-header">
-      <div class="resumo-header-title">📝 Resumo de Portugues</div>
+      <div class="resumo-header-title">📝 Resumo — Língua Portuguesa</div>
+      <span style="font-size:11px;color:var(--gray-400);font-weight:600;">Câmara de Goiânia · UFG</span>
     </div>
     <div class="resumo-body">
-      <div class="resumo-empty">O resumo desta matéria ainda não foi adicionado. Em breve estará disponível aqui.</div>
-    </div>
-  </div>
-</div>
+
+      <!-- 1. TEXTO -->
+      <div class="resumo-topico">
+        <h2>📄 Texto <span class="tag-fonte">Base</span></h2>
+        <p>Texto é uma unidade de sentido formada por palavras, frases e ideias organizadas, com o objetivo de comunicar algo a alguém em um determinado contexto. Para ser considerado texto precisa ter:</p>
+        <ul>
+          <li><strong>Coerência</strong> — informações que fazem sentido entre si</li>
+          <li><strong>Coesão</strong> — ligação entre palavras e frases por pronomes e conectivos</li>
+          <li><strong>Contexto</strong> — situação em que o texto é produzido (quem escreve, para quem, onde circula)</li>
+        </ul>
+      </div>
+
+      <!-- 2. GÊNEROS TEXTUAIS -->
+      <div class="resumo-topico">
+        <h2>📋 Gêneros e Tipos Textuais <span class="tag-fonte">Base</span></h2>
+        <div class="resumo-grid">
+          <div class="resumo-card">
+            <div class="resumo-card-title">📰 Informativo</div>
+            <p>Notícias, avisos, comunicados. Objetivo: informar fatos.</p>
+          </div>
+          <div class="resumo-card">
+            <div class="resumo-card-title">📖 Narrativo</div>
+            <p>Histórias, contos. Tem personagens, tempo, espaço e enredo.</p>
+          </div>
+          <div class="resumo-card">
+            <div class="resumo-card-title">💬 Argumentativo</div>
+            <p>Defende uma ideia. Tenta convencer com argumentos.</p>
+          </div>
+          <div class="resumo-card">
+            <div class="resumo-card-title">📜 Injuntivo</div>
+            <p>Instruções, manuais, receitas. Usa verbos no imperativo.</p>
+          </div>
+          <div class="resumo-card">
+            <div class="resumo-card-title">📝 Expositivo</div>
+            <p>Apenas informa e explica de forma objetiva.</p>
+          </div>
+          <div class="resumo-card">
+            <div class="resumo-card-title">🖼️ Descritivo</div>
+            <p>Descreve algo ou alguém. Usa muitos adjetivos e detalhes.</p>
+          </div>
+        </div>
+        <div class="macete-box">
+          <strong>💡 Macete</strong>
+          <p>Pergunte: "O texto quer <em>contar, instruir, informar ou convencer</em>?" — A resposta revela o tipo textual.</p>
+        </div>
+
+        <h3>Gêneros Específicos</h3>
+        <ul>
+          <li><strong>Poema</strong> — texto literário em versos. Expressa sentimentos com linguagem estética e sonora. Pode ter ou não rimas e estrutura fixa.</li>
+          <li><strong>Crônica</strong> — registra fatos do cotidiano com olhar literário. Publicada em jornais/revistas. Linguagem informal, reflexiva e bem-humorada.</li>
+          <li><strong>Lenda</strong> — história transmitida de geração em geração. Narrada no passado com tempo/espaço indefinidos. Traz personagens fantásticos.</li>
+          <li><strong>Conto</strong> — narração curta com enredo, personagens e conflito. Sequência: situação inicial → conflito → clímax → desfecho.</li>
+          <li><strong>Tira</strong> — gênero jornalístico com linguagem verbal e não verbal. Usa balões de fala, personagens fixos, humor e crítica social.</li>
+          <li><strong>Entrevista</strong> — sequência planejada de perguntas e respostas. Ferramenta do jornalismo. Entrevistador x entrevistado.</li>
+          <li><strong>Reportagem</strong> — semelhante à notícia, porém mais extensa e aprofundada. Exige pesquisa, fontes diversas e organização textual.</li>
+          <li><strong>Anúncio Publicitário</strong> — tem intenção de persuadir o consumidor. Pode usar linguagem verbal e não verbal. Tipos: comercial, governamental, institucional.</li>
+        </ul>
+      </div>
+
+      <!-- 3. INTERPRETAÇÃO DE TEXTO -->
+      <div class="resumo-topico">
+        <h2>🔍 Interpretação de Texto <span class="tag-fonte">UFG</span></h2>
+        <ul>
+          <li><strong>Ideia principal</strong> — responda em uma frase curta, ligada ao tema central do texto.</li>
+          <li><strong>Inferência</strong> — o que o texto implica, mas não diz explicitamente.</li>
+          <li><strong>Pressuposto</strong> — o que se supõe como verdade no texto.</li>
+          <li><strong>Polissemia</strong> — palavra com mais de um sentido.</li>
+          <li><strong>Ironia</strong> — dizer o contrário do que se quer mostrar.</li>
+          <li><strong>Ambiguidade</strong> — frase com mais de um sentido possível.</li>
+          <li><strong>Intertextualidade</strong> — diálogo entre dois ou mais textos com elementos comuns (tema ou forma).</li>
+        </ul>
+        <div class="macete-box">
+          <strong>💡 Macete</strong>
+          <p>Leia a <strong>primeira e a última frase</strong> do texto — geralmente contêm a ideia principal. Se houver "como" → quase sempre comparação.</p>
+        </div>
+
+        <h3>Sentido Denotativo e Conotativo</h3>
+        <ul>
+          <li><strong>Denotativo</strong> — sentido literal, objetivo da palavra.</li>
+          <li><strong>Conotativo</strong> — sentido figurado, subjetivo. Ex.: "plantar amigos" = ter amigos por perto.</li>
+        </ul>
+
+        <h3>Coesão e Coerência</h3>
+        <ul>
+          <li><strong>Coesão</strong> — liga palavras e frases (pronomes, conjunções, conectivos). Ex.: "Maria comprou pão. <em>Ela</em> foi à padaria." — <em>ela</em> = Maria.</li>
+          <li><strong>Coerência</strong> — sentido lógico geral do texto. O texto precisa fazer sentido e estar conectado.</li>
+        </ul>
+      </div>
+
+      <!-- 4. VARIAÇÃO LINGUÍSTICA -->
+      <div class="resumo-topico">
+        <h2>🌎 Variação Linguística <span class="tag-fonte">Câmara</span></h2>
+        <ul>
+          <li><strong>Regional (geográfica)</strong> — palavras diferentes por região. Ex.: mandioca / macaxeira; tangerina / bergamota.</li>
+          <li><strong>Social</strong> — diferenças por idade, sexo ou classe social. Ex.: gírias dos jovens vs. linguagem dos adultos.</li>
+          <li><strong>Situacional</strong> — varia conforme a situação (formal ou informal).</li>
+          <li><strong>Histórica</strong> — palavras antigas ou arcaicas.</li>
+          <li><strong>Norma culta / Variedade padrão</strong> — variedade linguística de maior prestígio em uma comunidade.</li>
+        </ul>
+        <div class="macete-box">
+          <strong>⚠️ Atenção</strong>
+          <p>Nenhuma variedade é "errada". Debochar do modo de falar de alguém é <strong>preconceito linguístico</strong>.</p>
+        </div>
+      </div>
+
+      <!-- 5. FONOLOGIA -->
+      <div class="resumo-topico">
+        <h2>🔊 Fonologia e Ortografia <span class="tag-fonte">UFG</span></h2>
+        <ul>
+          <li><strong>Fonema</strong> — menor unidade sonora da fala. Não é a letra, mas o som.</li>
+          <li><strong>Letra</strong> — símbolo gráfico que representa fonemas. Ex.: "x" pode ter sons /z/ (exame), /s/ (têxtil) ou /ks/ (sexo).</li>
+          <li><strong>Dígrafo</strong> — duas letras representando um só fonema. Ex.: ch, lh, nh, rr, ss, qu, gu.</li>
+        </ul>
+
+        <h3>Sílaba e Encontros Vocálicos</h3>
+        <ul>
+          <li><strong>Hiato</strong> — duas vogais em sílabas separadas. Ex.: sa-ú-de.</li>
+          <li><strong>Ditongo</strong> — vogal + semivogal na mesma sílaba. Crescente: semivog + vog | Decrescente: vog + semivog.</li>
+          <li><strong>Tritongo</strong> — semivog + vog + semivog na mesma sílaba. Ex.: sa-guão.</li>
+        </ul>
+      </div>
+
+      <!-- 6. ACENTUAÇÃO -->
+      <div class="resumo-topico">
+        <h2>´ Acentuação Gráfica <span class="tag-fonte">UFG</span></h2>
+        <div class="resumo-grid">
+          <div class="resumo-card">
+            <div class="resumo-card-title">Oxítonas</div>
+            <p>Última sílaba tônica. Acentuam-se terminadas em: <strong>-a, -e, -o, -em, -ens</strong>. Ex.: café, também, armazéns.</p>
+          </div>
+          <div class="resumo-card">
+            <div class="resumo-card-title">Paroxítonas</div>
+            <p>Penúltima sílaba tônica. Acentuam-se quando NÃO terminam em a/e/o/em/ens. Ex.: lápis, fácil, tórax.</p>
+          </div>
+          <div class="resumo-card">
+            <div class="resumo-card-title">Proparoxítonas</div>
+            <p>Antepenúltima sílaba tônica. <strong>Todas são acentuadas.</strong> Ex.: médico, técnico, árvore.</p>
+          </div>
+          <div class="resumo-card">
+            <div class="resumo-card-title">Regra do Hiato</div>
+            <p>Acentuam-se <strong>í</strong> e <strong>ú</strong> tônicos em hiato com vogal anterior, quando sozinhos na sílaba. Ex.: saída, saúde.</p>
+          </div>
+        </div>
+        <div class="macete-box">
+          <strong>💡 Macete dos Acentos</strong>
+          <p>Som aberto → acento agudo (´) · Som fechado → acento circunflexo (^) · Fusão de "a + a" → acento grave / crase (`)</p>
+        </div>
+      </div>
+
+      <!-- 7. CLASSES DE PALAVRAS -->
+      <div class="resumo-topico">
+        <h2>📚 Classes de Palavras <span class="tag-fonte">Base</span></h2>
+        <div class="resumo-grid">
+          <div class="resumo-card">
+            <div class="resumo-card-title">Substantivo</div>
+            <p>Nomeia seres, coisas e sentimentos. Próprio (letra maiúscula) / Comum / Concreto / Abstrato.</p>
+          </div>
+          <div class="resumo-card">
+            <div class="resumo-card-title">Adjetivo</div>
+            <p>Caracteriza o substantivo. Ex.: rápido, belo, alto.</p>
+          </div>
+          <div class="resumo-card">
+            <div class="resumo-card-title">Verbo</div>
+            <p>Indica ação, estado ou fenômeno. Flexiona em modo, tempo, pessoa e número.</p>
+          </div>
+          <div class="resumo-card">
+            <div class="resumo-card-title">Advérbio</div>
+            <p>Modifica verbo, adjetivo ou outro advérbio. Ex.: rapidamente, muito, ontem.</p>
+          </div>
+          <div class="resumo-card">
+            <div class="resumo-card-title">Pronome</div>
+            <p>Substitui ou acompanha substantivo. Ex.: ele, me, meu, este.</p>
+          </div>
+          <div class="resumo-card">
+            <div class="resumo-card-title">Artigo</div>
+            <p>Antecede substantivos. Definidos: o, a, os, as. Indefinidos: um, uma, uns, umas.</p>
+          </div>
+          <div class="resumo-card">
+            <div class="resumo-card-title">Conjunção</div>
+            <p>Liga orações ou termos. Ex.: e, mas, porque, embora.</p>
+          </div>
+          <div class="resumo-card">
+            <div class="resumo-card-title">Preposição</div>
+            <p>Liga palavras mostrando relação entre elas. Ex.: a, de, em, com, por, para.</p>
+          </div>
+          <div class="resumo-card">
+            <div class="resumo-card-title">Numeral</div>
+            <p>Indica quantidade, ordem, fração. Cardinal, ordinal, multiplicativo, fracionário.</p>
+          </div>
+          <div class="resumo-card">
+            <div class="resumo-card-title">Interjeição</div>
+            <p>Expressa emoção ou sentimento. Ex.: Oba!, Ufa!, Que legal! Locução interjetiva: "Puxa vida!"</p>
+          </div>
+        </div>
+        <div class="macete-box">
+          <strong>💡 Macete</strong>
+          <p>Se a palavra terminar em <strong>-mente</strong> → é advérbio. Ex.: rapidamente, claramente.</p>
+        </div>
+      </div>
+
+      <!-- 8. SINTAXE -->
+      <div class="resumo-topico">
+        <h2>🔗 Sintaxe — Análise da Oração <span class="tag-fonte">UFG</span></h2>
+        <h3>Termos Essenciais</h3>
+        <ul>
+          <li><strong>Sujeito</strong> — com quem o verbo concorda. Pode ser: simples (1 núcleo), composto (+1 núcleo), oculto/elíptico, indeterminado (3ª pessoa plural sem contexto) ou inexistente (verbos impessoais).</li>
+          <li><strong>Predicado</strong> — tudo que se diz do sujeito. Contém o verbo.</li>
+        </ul>
+        <div class="exemplo-box">
+          <strong>Ex.:</strong> O menino (sujeito) entregou o relatório ao professor (predicado).<br>
+          Objeto direto = relatório (sem preposição) | Objeto indireto = ao professor (com preposição)
+        </div>
+
+        <h3>Tipos de Verbos</h3>
+        <ul>
+          <li><strong>Transitivo Direto (VTD)</strong> — pede complemento sem preposição. Ex.: Ele comprou <em>flores</em>.</li>
+          <li><strong>Transitivo Indireto (VTI)</strong> — pede complemento com preposição. Ex.: Gosto <em>de música</em>.</li>
+          <li><strong>Transitivo Dir. e Indir. (VTDI)</strong> — pede os dois. Ex.: Enviou <em>ajuda</em> <em>às nações</em>.</li>
+          <li><strong>Intransitivo (VI)</strong> — não precisa de complemento. Ex.: A economia cresceu.</li>
+          <li><strong>De Ligação (VL)</strong> — liga sujeito ao predicativo. Ser, estar, parecer, ficar, continuar...</li>
+        </ul>
+
+        <h3>Vozes Verbais</h3>
+        <ul>
+          <li><strong>Ativa</strong> — sujeito pratica a ação. Ex.: O aluno preencheu o gabarito.</li>
+          <li><strong>Passiva analítica</strong> — sujeito sofre a ação (verbo ser + particípio). Ex.: O gabarito foi preenchido pelo aluno.</li>
+          <li><strong>Passiva sintética</strong> — usa o pronome "se". Ex.: Vende-se casa.</li>
+          <li><strong>Reflexiva</strong> — sujeito pratica e sofre a ação.</li>
+        </ul>
+      </div>
+
+      <!-- 9. COORDENAÇÃO E SUBORDINAÇÃO -->
+      <div class="resumo-topico">
+        <h2>🔀 Coordenação e Subordinação <span class="tag-fonte">UFG</span></h2>
+        <h3>Orações Coordenadas (independentes)</h3>
+        <ul>
+          <li><strong>Assindética</strong> — sem conjunção, separadas por vírgula. Ex.: Fui ao mercado, comprei frutas, voltei.</li>
+          <li><strong>Aditiva</strong> — e, nem, mas também. Ex.: Estudei <em>e</em> passei.</li>
+          <li><strong>Adversativa</strong> — mas, porém, todavia, contudo. Ex.: Queria sair, <em>mas</em> chovia.</li>
+          <li><strong>Alternativa</strong> — ou, ora...ora, quer...quer. Ex.: <em>Ou</em> estuda, <em>ou</em> não passa.</li>
+          <li><strong>Conclusiva</strong> — portanto, logo, então. Ex.: Estudou muito, <em>portanto</em> foi aprovado.</li>
+          <li><strong>Explicativa</strong> — porque, pois. Ex.: Não saia, <em>porque</em> está chovendo.</li>
+        </ul>
+        <h3>Orações Subordinadas (dependentes)</h3>
+        <p>Ligadas por conjunções subordinativas: que, porque, embora, quando, se, embora... A oração subordinada <em>não tem sentido sozinha</em>.</p>
+        <div class="exemplo-box">
+          <strong>Ex.:</strong> Comprei frutas <em>que estavam frescas</em>. → "que estavam frescas" = subordinada adjetiva restritiva.
+        </div>
+      </div>
+
+      <!-- 10. COLOCAÇÃO PRONOMINAL -->
+      <div class="resumo-topico">
+        <h2>🔤 Colocação Pronominal <span class="tag-fonte">UFG</span></h2>
+        <ul>
+          <li><strong>Próclise</strong> — pronome ANTES do verbo. Usada quando há advérbio, negação ou pronome relativo antes do verbo. Ex.: <em>Me</em> entregaram.</li>
+          <li><strong>Ênclise</strong> — pronome DEPOIS do verbo. Ex.: Entregar-<em>me</em>.</li>
+          <li><strong>Mesóclise</strong> — pronome NO MEIO do verbo (formal, futuro). Ex.: Entregar-<em>me</em>-á.</li>
+        </ul>
+        <div class="macete-box">
+          <strong>💡 Macete</strong>
+          <p>Se houver <strong>advérbio ou negação</strong> no início → próclise. Ex.: <em>Não</em> me entregaram.</p>
+        </div>
+      </div>
+
+      <!-- 11. FORMAÇÃO DE PALAVRAS -->
+      <div class="resumo-topico">
+        <h2>🔨 Formação de Palavras <span class="tag-fonte">UFG</span></h2>
+        <ul>
+          <li><strong>Derivação prefixal</strong> — prefixo no início. Ex.: in + feliz = infeliz.</li>
+          <li><strong>Derivação sufixal</strong> — sufixo no final. Ex.: casa + inha = casinha.</li>
+          <li><strong>Composição</strong> — fusão de palavras. Ex.: guarda-chuva, passatempo.</li>
+        </ul>
+        <div class="macete-box">
+          <strong>💡 Macete</strong>
+          <p>Prefixo = começo da palavra · Sufixo = final da palavra.</p>
+        </div>
+      </div>
+
+      <!-- 12. PONTUAÇÃO -->
+      <div class="resumo-topico">
+        <h2>, Pontuação <span class="tag-fonte">UFG</span></h2>
+        <ul>
+          <li><strong>Vírgula</strong> — separa elementos, antes de conjunções adversativas (mas, porém).</li>
+          <li><strong>Dois pontos</strong> — antecede explicação ou enumeração.</li>
+          <li><strong>Ponto e vírgula</strong> — separa elementos mais longos.</li>
+          <li><strong>Travessão</strong> — indica fala de personagem no discurso direto.</li>
+          <li><strong>Aspas</strong> — citação ou discurso direto.</li>
+        </ul>
+        <div class="macete-box">
+          <strong>💡 Macete</strong>
+          <p>Leia a frase em voz alta — a pontuação "marca a respiração" natural da leitura.</p>
+        </div>
+      </div>
+
+      <!-- 13. DISCURSO DIRETO E INDIRETO -->
+      <div class="resumo-topico">
+        <h2>💬 Discurso Direto e Indireto <span class="tag-fonte">Câmara</span></h2>
+        <ul>
+          <li><strong>Discurso direto</strong> — a fala é reproduzida textualmente, com travessão, dois pontos ou aspas. Usa verbos dicendi (disse, falou, perguntou).</li>
+          <li><strong>Discurso indireto</strong> — o narrador conta com suas próprias palavras o que outro disse. Usa "que" ou "se" + verbos dicendi.</li>
+        </ul>
+        <div class="exemplo-box">
+          <strong>Direto:</strong> — Agora não se fala mais nisso. Acabou.<br>
+          <strong>Indireto:</strong> Papai disse que não se falaria mais nisso.
+        </div>
+      </div>
+
+      <!-- 14. OPERADORES ARGUMENTATIVOS -->
+      <div class="resumo-topico">
+        <h2>🎯 Operadores Argumentativos <span class="tag-fonte">Câmara</span></h2>
+        <ul>
+          <li><strong>Soma</strong> — e, nem, também, além disso, não só... mas também.</li>
+          <li><strong>Conclusão</strong> — então, portanto, logo, consequentemente.</li>
+          <li><strong>Oposição</strong> — embora, apesar de, mas, porém, todavia.</li>
+          <li><strong>Alternativa</strong> — ou...ou, quer...quer, seja...seja.</li>
+          <li><strong>Esclarecimento</strong> — isto é, ou seja, em outras palavras.</li>
+          <li><strong>Argumento mais forte</strong> — até, inclusive, até mesmo.</li>
+        </ul>
+      </div>
+
+      <!-- 15. ANTÔNIMOS E SINÔNIMOS -->
+      <div class="resumo-topico">
+        <h2>↔️ Antônimos e Sinônimos <span class="tag-fonte">Câmara</span></h2>
+        <ul>
+          <li><strong>Sinônimos</strong> — palavras diferentes com significado semelhante. Ex.: erguer / levantar.</li>
+          <li><strong>Antônimos</strong> — palavras com significados opostos. Ex.: amor ↔ ódio; benevolente ↔ cruel.</li>
+        </ul>
+      </div>
+
+    </div><!-- /resumo-body -->
+  </div><!-- /resumo-editor -->
+</div><!-- /panel-resumo -->
 
 <script>
   let currentUser = null;
+  let acertos = 0;
+  let respondidas = {};
 
   window.addEventListener('DOMContentLoaded', async () => {
     currentUser = await requireAuth();
@@ -285,7 +946,6 @@
     const name = profile?.full_name || currentUser.email.split('@')[0];
     const el = document.getElementById('userName');
     if (el) el.textContent = name;
-
     const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
     const avatarEls = [document.getElementById('userAvatar'), document.getElementById('mobileAvatar')];
     avatarEls.forEach(el => {
@@ -315,6 +975,58 @@
 
   function showVideoMsg() {
     alert('Nenhum vídeo adicionado ainda para esta matéria.');
+  }
+
+  function responder(numQ, opcaoEscolhida, opcaoCorreta) {
+    if (respondidas[numQ]) return;
+    respondidas[numQ] = true;
+
+    const card = document.getElementById('q' + numQ);
+    const gabDiv = document.getElementById('gabarito-q' + numQ);
+    const botoes = card.querySelectorAll('.opcao-btn');
+
+    botoes.forEach(btn => {
+      btn.disabled = true;
+      const letra = btn.textContent.trim().charAt(0).toLowerCase();
+      if (letra === opcaoCorreta) {
+        btn.classList.add('correta');
+      } else if (letra === opcaoEscolhida && opcaoEscolhida !== opcaoCorreta) {
+        btn.classList.add('incorreta');
+      }
+    });
+
+    if (opcaoEscolhida === opcaoCorreta) {
+      acertos++;
+      card.classList.add('acertou');
+      gabDiv.className = 'questao-gabarito acertou';
+      gabDiv.textContent = '✅ Correto! Gabarito: alternativa ' + opcaoCorreta.toUpperCase() + '.';
+    } else {
+      card.classList.add('errou');
+      gabDiv.className = 'questao-gabarito errou';
+      gabDiv.textContent = '❌ Incorreto. Gabarito: alternativa ' + opcaoCorreta.toUpperCase() + '.';
+    }
+
+    document.getElementById('scoreNum').textContent = acertos + '/15';
+  }
+
+  function reiniciarSimulado() {
+    acertos = 0;
+    respondidas = {};
+    document.getElementById('scoreNum').textContent = '0/15';
+
+    for (let i = 1; i <= 15; i++) {
+      const card = document.getElementById('q' + i);
+      card.classList.remove('acertou', 'errou');
+      const gabDiv = document.getElementById('gabarito-q' + i);
+      gabDiv.className = 'questao-gabarito';
+      gabDiv.textContent = '';
+      const botoes = card.querySelectorAll('.opcao-btn');
+      botoes.forEach(btn => {
+        btn.disabled = false;
+        btn.classList.remove('correta', 'incorreta', 'selecionada');
+      });
+    }
+    document.getElementById('panel-questoes').scrollIntoView({ behavior: 'smooth' });
   }
 </script>
 </body>
