@@ -8,10 +8,11 @@
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   body { display: flex; flex-direction: column; min-height: 100vh; background: var(--bg); }
 
-  .topbar { background: var(--navy); padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; position: sticky; top: 0; z-index: 100; }
+  .topbar { background: var(--navy); padding: 0 32px; height: 56px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; position: sticky; top: 0; z-index: 100; }
   .topbar-left { display: flex; align-items: center; gap: 16px; }
   .back-btn { display: flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.6); text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.15s; }
   .back-btn:hover { color: white; }
@@ -22,41 +23,44 @@
   .user-btn:hover { background: rgba(255,255,255,0.18); }
   .user-name { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85); max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-  .tabs-nav { background: white; border-bottom: 1px solid var(--gray-200); display: flex; padding: 0 24px; overflow-x: auto; position: sticky; top: 56px; z-index: 99; }
+  .tabs-nav { background: white; border-bottom: 1px solid var(--gray-200); display: flex; padding: 0 32px; overflow-x: auto; position: sticky; top: 56px; z-index: 99; }
   .tab-btn { padding: 0 20px; height: 48px; display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--gray-400); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; }
   .tab-btn:hover { color: var(--navy); }
   .tab-btn.active { color: var(--navy); border-bottom-color: var(--gold); }
 
-  .panel { display: none; padding: 28px 24px; max-width: 900px; margin: 0 auto; width: 100%; }
+  .panel { display: none; padding: 28px 32px; max-width: 1200px; margin: 0 auto; width: 100%; }
   .panel.active { display: block; animation: fadeIn 0.25s ease; }
   @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
 
-  .materia-progress { background: white; border: 1px solid var(--gray-200); border-radius: 14px; padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 16px; }
-  .materia-progress-icon { font-size: 28px; flex-shrink: 0; }
+  /* PROGRESSO */
+  .materia-progress { background: white; border: 1px solid var(--gray-200); border-radius: 14px; padding: 18px 24px; margin-bottom: 24px; display: flex; align-items: center; gap: 16px; }
+  .materia-progress-icon { font-size: 30px; flex-shrink: 0; }
   .materia-progress-info { flex: 1; }
-  .materia-progress-label { font-size: 12px; font-weight: 600; color: var(--gray-400); margin-bottom: 6px; }
-  .materia-progress-pct { font-size: 20px; font-weight: 700; color: var(--navy); }
-  .progress-wrap { background: #e5e7eb; border-radius: 99px; height: 8px; flex: 1; overflow: hidden; }
-  .progress-fill { height: 100%; background: linear-gradient(90deg,#C8951A,#e6b022); border-radius: 99px; transition: width 0.6s ease; }
+  .materia-progress-label { font-size: 11px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px; }
+  .materia-progress-pct { font-size: 22px; font-weight: 800; color: var(--navy); }
+  .progress-details { display: flex; gap: 20px; margin-top: 6px; flex-wrap: wrap; }
+  .progress-detail-item { font-size: 11px; color: var(--gray-400); font-weight: 500; }
+  .progress-detail-item strong { color: var(--navy); }
 
+  /* VIDEO */
   .video-placeholder { background: linear-gradient(135deg,var(--navy) 0%,var(--navy-dark) 100%); border-radius: 16px; height: 240px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px; position: relative; overflow: hidden; cursor: pointer; }
   .video-placeholder::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 30% 50%,rgba(200,149,26,0.1) 0%,transparent 60%); }
   .video-placeholder-icon { font-size: 48px; z-index: 1; }
   .video-placeholder-text { color: rgba(255,255,255,0.6); font-size: 14px; z-index: 1; }
   .video-placeholder-tag { position:absolute; top:14px; left:14px; background:rgba(200,149,26,0.25); border:1px solid rgba(200,149,26,0.4); color:var(--gold-light); font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; }
 
-  /* seção de tópicos */
+  /* TÓPICOS */
   .topicos-section { background: white; border: 1px solid var(--gray-200); border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
-  .topicos-header { background: #f8f9fa; border-bottom: 1px solid var(--gray-200); padding: 14px 20px; display: flex; align-items: center; gap: 10px; }
+  .topicos-header { background: var(--gray-50); border-bottom: 1px solid var(--gray-200); padding: 14px 20px; display: flex; align-items: center; gap: 10px; }
   .topicos-header-title { font-size: 14px; font-weight: 700; color: var(--navy); }
-  .topico-item { display: flex; align-items: flex-start; gap: 12px; padding: 13px 20px; border-bottom: 1px solid #f3f4f6; transition: background 0.15s; }
+  .topico-item { display: flex; align-items: flex-start; gap: 12px; padding: 13px 20px; border-bottom: 1px solid var(--gray-100); transition: background 0.15s; }
   .topico-item:last-child { border-bottom: none; }
-  .topico-item:hover { background: #fafafa; }
-  .topico-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(200,149,26,0.1); color: #C8951A; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .topico-item:hover { background: var(--gray-50); }
+  .topico-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(200,149,26,0.1); color: var(--gold); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
   .topico-name { font-size: 14px; font-weight: 600; color: var(--navy); }
   .topico-sub { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
 
-  /* notícia card */
+  /* NOTÍCIA CARDS */
   .noticia-card { background: white; border: 1px solid var(--gray-200); border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; display: flex; gap: 16px; align-items: flex-start; transition: box-shadow 0.15s; }
   .noticia-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
   .noticia-emoji { font-size: 28px; flex-shrink: 0; }
@@ -64,82 +68,162 @@
   .tag-nacional { background: #dbeafe; color: #1e40af; }
   .tag-goias { background: #d1fae5; color: #065f46; }
   .tag-internacional { background: #ede9fe; color: #5b21b6; }
-  .tag-economia { background: #fef3c7; color: #92400e; }
   .noticia-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 4px; line-height: 1.4; }
   .noticia-desc { font-size: 13px; color: #4b5563; line-height: 1.6; }
 
-  /* materiais */
-  .materiais-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(140px,1fr)); gap: 12px; margin-bottom: 24px; }
+  /* MATERIAIS */
+  .materiais-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 24px; }
   .material-card { background: white; border: 1.5px solid var(--gray-200); border-radius: 12px; padding: 18px 12px 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s; text-align: center; }
-  .material-card:hover { border-color: #C8951A; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(200,149,26,0.1); }
+  .material-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(200,149,26,0.1); }
   .material-card-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
   .material-card-label { font-size: 12px; font-weight: 700; color: var(--navy); }
   .material-card-sub { font-size: 11px; color: var(--gray-400); }
   .material-card-empty { border-style: dashed; opacity: 0.5; cursor: default; }
   .material-card-empty:hover { border-color: var(--gray-200); transform: none; box-shadow: none; }
 
-  /* questões */
-  .questao-card { background: white; border: 1px solid var(--gray-200); border-radius: 14px; padding: 20px; margin-bottom: 14px; }
-  .questao-num { font-size: 11px; font-weight: 700; color: #C8951A; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-  .questao-enunciado { font-size: 14px; color: var(--navy); font-weight: 600; line-height: 1.6; margin-bottom: 14px; }
-  .questao-opcoes { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
-  .questao-opcao { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border-radius: 10px; border: 1.5px solid #e5e7eb; font-size: 13px; color: #374151; cursor: pointer; transition: all 0.15s; }
-  .questao-opcao:hover { border-color: #C8951A; background: #fffbf0; }
-  .questao-opcao.correta { border-color: #10b981; background: #f0fdf4; color: #065f46; font-weight: 600; }
-  .questao-opcao.errada { border-color: #ef4444; background: #fef2f2; color: #991b1b; }
-  .questao-letra { font-weight: 700; flex-shrink: 0; }
-  .gabarito-btn { background: #f8f9fa; border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600; color: #374151; cursor: pointer; transition: all 0.15s; }
-  .gabarito-btn:hover { border-color: #C8951A; color: #C8951A; }
-
-  /* resumo */
-  .resumo-section { background: white; border: 1px solid var(--gray-200); border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
-  .resumo-header { background: #f8f9fa; border-bottom: 1px solid var(--gray-200); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; }
-  .resumo-header-title { font-size: 14px; font-weight: 700; color: var(--navy); }
-  .resumo-body { padding: 24px; }
-  .resumo-body h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin: 22px 0 10px; padding-bottom: 6px; border-bottom: 2px solid rgba(200,149,26,0.2); }
-  .resumo-body h3:first-child { margin-top: 0; }
-  .resumo-body h4 { font-size: 13px; font-weight: 700; color: #374151; margin: 14px 0 6px; }
-  .resumo-body p { font-size: 14px; color: #374151; line-height: 1.7; margin-bottom: 10px; }
-  .resumo-body ul { padding-left: 20px; margin-bottom: 12px; }
-  .resumo-body ul li { font-size: 14px; color: #374151; line-height: 1.7; margin-bottom: 5px; }
-  .highlight-box { background: #fffbf0; border-left: 4px solid #C8951A; border-radius: 0 10px 10px 0; padding: 14px 16px; margin: 14px 0; }
-  .highlight-box p { margin: 0; font-size: 14px; color: #374151; }
-  .goias-box { background: #f0fdf4; border-left: 4px solid #10b981; border-radius: 0 10px 10px 0; padding: 14px 16px; margin: 14px 0; }
-  .goias-box p { margin: 0; font-size: 14px; color: #065f46; }
-  .mundo-box { background: #ede9fe; border-left: 4px solid #7c3aed; border-radius: 0 10px 10px 0; padding: 14px 16px; margin: 14px 0; }
-  .mundo-box p { margin: 0; font-size: 14px; color: #4c1d95; }
-
+  /* LINHA DO TEMPO */
   .linha-tempo { display: flex; flex-direction: column; gap: 0; margin: 14px 0; }
   .lt-item { display: flex; gap: 14px; }
   .lt-dot-wrap { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
-  .lt-dot { width: 12px; height: 12px; border-radius: 50%; background: #C8951A; flex-shrink: 0; margin-top: 4px; }
-  .lt-line { width: 2px; flex: 1; background: #e5e7eb; margin: 2px 0; min-height: 16px; }
+  .lt-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--gold); flex-shrink: 0; margin-top: 4px; }
+  .lt-line { width: 2px; flex: 1; background: var(--gray-200); margin: 2px 0; min-height: 16px; }
   .lt-content { padding-bottom: 16px; }
-  .lt-year { font-size: 11px; font-weight: 700; color: #C8951A; margin-bottom: 2px; }
+  .lt-year { font-size: 11px; font-weight: 700; color: var(--gold); margin-bottom: 2px; }
   .lt-text { font-size: 13px; color: #374151; line-height: 1.5; }
+
+  /* RESUMO */
+  .resumo-editor { background: white; border: 1px solid var(--gray-200); border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
+  .resumo-header { background: var(--gray-50); border-bottom: 1px solid var(--gray-200); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .resumo-header-title { font-size: 14px; font-weight: 700; color: var(--navy); }
+  .resumo-body { padding: 28px 32px; }
+  .resumo-topico { margin-bottom: 32px; border-bottom: 1px solid var(--gray-100); padding-bottom: 28px; }
+  .resumo-topico:last-child { border-bottom: none; margin-bottom: 0; }
+  .resumo-topico h2 { font-size: 14px; font-weight: 800; color: var(--navy); text-transform: uppercase; letter-spacing: 0.8px; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .tag-fonte { font-size: 9px; font-weight: 700; background: rgba(200,149,26,0.12); color: var(--gold); border: 1px solid rgba(200,149,26,0.3); border-radius: 10px; padding: 1px 7px; letter-spacing: 0.3px; text-transform: uppercase; }
+  .resumo-topico h3 { font-size: 11px; font-weight: 800; color: var(--navy); margin: 16px 0 6px 0; border-left: 3px solid var(--gold); padding-left: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .resumo-topico p { font-size: 14px; color: #374151; line-height: 1.8; margin: 0 0 8px 0; }
+  .resumo-topico ul { margin: 6px 0 10px 0; padding-left: 0; list-style: none; }
+  .resumo-topico ul li { font-size: 13.5px; color: #374151; line-height: 1.75; padding: 4px 0 4px 20px; position: relative; }
+  .resumo-topico ul li::before { content: '▸'; position: absolute; left: 0; color: var(--gold); font-size: 11px; top: 6px; }
+  .macete-box { background: linear-gradient(135deg,#fffbeb,#fef3c7); border: 1px solid rgba(200,149,26,0.3); border-left: 4px solid var(--gold); border-radius: 10px; padding: 12px 16px; margin: 10px 0; }
+  .macete-box strong { font-size: 10px; color: var(--gold); letter-spacing: 0.5px; text-transform: uppercase; display: block; margin-bottom: 4px; }
+  .macete-box p { font-size: 13px; color: #78350f; margin: 0; line-height: 1.6; }
+  .goias-box { background: #f0fdf4; border-left: 4px solid #10b981; border-radius: 0 10px 10px 0; padding: 12px 16px; margin: 12px 0; }
+  .goias-box p { margin: 0; font-size: 13px; color: #065f46; line-height: 1.6; }
+  .mundo-box { background: #ede9fe; border-left: 4px solid #7c3aed; border-radius: 0 10px 10px 0; padding: 12px 16px; margin: 12px 0; }
+  .mundo-box p { margin: 0; font-size: 13px; color: #4c1d95; line-height: 1.6; }
+  .resumo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin: 12px 0; }
+  .resumo-card { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 14px 16px; }
+  .resumo-card-title { font-size: 10px; font-weight: 800; color: var(--navy); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .resumo-card p { font-size: 12.5px; color: #374151; margin: 0; line-height: 1.6; }
+
+  /* MINI QUESTÕES */
+  .mini-questao { background: linear-gradient(135deg,#eff6ff,#dbeafe); border: 1px solid #93c5fd; border-left: 4px solid #3b82f6; border-radius: 12px; padding: 16px 18px; margin: 16px 0 0 0; }
+  .mini-questao-label { font-size: 10px; font-weight: 800; color: #1d4ed8; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .mini-questao-label::before { content: '🧠'; font-size: 13px; }
+  .mini-questao-pergunta { font-size: 13.5px; color: #1e3a5f; font-weight: 600; line-height: 1.6; margin-bottom: 12px; }
+  .mini-questao-opcoes { display: flex; flex-direction: column; gap: 6px; }
+  .mini-opcao { background: white; border: 1.5px solid #bfdbfe; border-radius: 8px; padding: 8px 12px; font-size: 13px; color: #374151; cursor: pointer; text-align: left; transition: all 0.15s; font-family: inherit; }
+  .mini-opcao:hover:not(:disabled) { border-color: #3b82f6; background: #eff6ff; }
+  .mini-opcao.correta { border-color: #16a34a; background: #dcfce7; color: #14532d; font-weight: 700; cursor: default; }
+  .mini-opcao.incorreta { border-color: #dc2626; background: #fee2e2; color: #7f1d1d; cursor: default; }
+  .mini-questao-feedback { margin-top: 10px; font-size: 12.5px; font-weight: 600; padding: 8px 12px; border-radius: 8px; display: none; }
+  .mini-questao-feedback.acertou { background: #dcfce7; color: #15803d; display: block; }
+  .mini-questao-feedback.errou { background: #fee2e2; color: #dc2626; display: block; }
+
+  /* SIMULADO */
+  .questoes-container { max-width: 760px; margin: 0 auto; }
+  .simulado-header { background: white; border: 1px solid var(--gray-200); border-radius: 14px; padding: 20px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .simulado-header-info h3 { font-size: 16px; font-weight: 800; color: var(--navy); margin: 0 0 3px 0; }
+  .simulado-header-info p { font-size: 12px; color: var(--gray-400); margin: 0; }
+  .simulado-score-chips { display: flex; gap: 10px; flex-wrap: wrap; }
+  .score-chip { display: flex; flex-direction: column; align-items: center; padding: 8px 16px; border-radius: 10px; min-width: 60px; }
+  .score-chip-val { font-size: 20px; font-weight: 800; line-height: 1; }
+  .score-chip-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+  .score-chip.acertos { background: #dcfce7; } .score-chip.acertos .score-chip-val { color: #16a34a; } .score-chip.acertos .score-chip-label { color: #15803d; }
+  .score-chip.erros { background: #fee2e2; } .score-chip.erros .score-chip-val { color: #dc2626; } .score-chip.erros .score-chip-label { color: #991b1b; }
+  .score-chip.total { background: var(--gold-pale); } .score-chip.total .score-chip-val { color: var(--gold); } .score-chip.total .score-chip-label { color: #92400e; }
+  .simulado-progress-bar { background: white; border: 1px solid var(--gray-200); border-radius: 12px; padding: 14px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 16px; }
+  .simulado-progress-info { font-size: 12px; font-weight: 700; color: var(--navy); white-space: nowrap; }
+
+  .questao-card-single { background: white; border: 1.5px solid var(--gray-200); border-radius: 18px; padding: 28px 32px; margin-bottom: 20px; animation: fadeIn 0.3s ease; box-shadow: 0 4px 20px rgba(26,58,92,0.06); }
+  .questao-card-single.acertou { border-color: #86efac; background: linear-gradient(135deg,#f0fdf4,white); }
+  .questao-card-single.errou { border-color: #fca5a5; background: linear-gradient(135deg,#fff5f5,white); }
+  .questao-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+  .questao-num-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--gold-pale); border: 1px solid rgba(200,149,26,0.3); color: var(--gold); font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .questao-tema-badge { font-size: 11px; font-weight: 600; color: var(--gray-400); background: var(--gray-100); padding: 4px 10px; border-radius: 20px; }
+  .questao-enunciado { font-size: 15px; color: var(--navy); font-weight: 600; line-height: 1.7; margin-bottom: 22px; }
+  .questao-opcoes { display: flex; flex-direction: column; gap: 10px; }
+  .opcao-btn { background: var(--gray-50); border: 1.5px solid var(--gray-200); border-radius: 12px; padding: 13px 18px; font-size: 14px; color: #374151; cursor: pointer; text-align: left; transition: all 0.15s; font-family: inherit; display: flex; align-items: flex-start; gap: 12px; }
+  .opcao-letra { width: 28px; height: 28px; border-radius: 50%; background: var(--gray-200); color: var(--navy); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; flex-shrink: 0; transition: all 0.15s; margin-top: 1px; }
+  .opcao-btn:hover:not(:disabled) { border-color: var(--gold); background: #fffbeb; }
+  .opcao-btn:hover:not(:disabled) .opcao-letra { background: var(--gold); color: white; }
+  .opcao-btn.correta { border-color: #16a34a; background: #dcfce7; color: #14532d; font-weight: 600; }
+  .opcao-btn.correta .opcao-letra { background: #16a34a; color: white; }
+  .opcao-btn.incorreta { border-color: #dc2626; background: #fee2e2; color: #7f1d1d; }
+  .opcao-btn.incorreta .opcao-letra { background: #dc2626; color: white; }
+  .opcao-btn:disabled { cursor: default; }
+  .questao-gabarito { margin-top: 16px; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; display: none; line-height: 1.6; }
+  .questao-gabarito.acertou { background: #dcfce7; color: #15803d; display: block; }
+  .questao-gabarito.errou { background: #fee2e2; color: #dc2626; display: block; }
+
+  .simulado-nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; gap: 12px; flex-wrap: wrap; }
+  .simulado-nav-btn { display: flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; font-family: inherit; }
+  .btn-proximo { background: var(--navy); color: white; }
+  .btn-proximo:hover { background: var(--navy-light); transform: translateY(-1px); }
+  .btn-proximo:disabled { background: var(--gray-200); color: var(--gray-400); cursor: default; transform: none; }
+  .btn-reiniciar { background: var(--gray-100); color: var(--gray-600); border: 1.5px solid var(--gray-200); }
+  .btn-reiniciar:hover { background: var(--gray-200); }
+
+  .resultado-final { background: white; border: 1px solid var(--gray-200); border-radius: 18px; padding: 40px 32px; text-align: center; margin-bottom: 24px; animation: fadeIn 0.4s ease; }
+  .resultado-emoji { font-size: 64px; margin-bottom: 12px; }
+  .resultado-titulo { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--navy); margin-bottom: 8px; }
+  .resultado-sub { font-size: 15px; color: var(--gray-400); margin-bottom: 28px; }
+  .resultado-stats { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 32px; }
+  .resultado-stat { text-align: center; padding: 16px 24px; border-radius: 14px; min-width: 100px; }
+  .resultado-stat-val { font-size: 32px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+  .resultado-stat-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .resultado-stat.verde { background: #dcfce7; } .resultado-stat.verde .resultado-stat-val { color: #16a34a; } .resultado-stat.verde .resultado-stat-label { color: #15803d; }
+  .resultado-stat.vermelho { background: #fee2e2; } .resultado-stat.vermelho .resultado-stat-val { color: #dc2626; } .resultado-stat.vermelho .resultado-stat-label { color: #991b1b; }
+  .resultado-stat.azul { background: var(--gold-pale); } .resultado-stat.azul .resultado-stat-val { color: var(--gold); } .resultado-stat.azul .resultado-stat-label { color: #92400e; }
+  .resultado-botoes { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-download { display: flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; font-family: inherit; }
+  .btn-pdf { background: #dc2626; color: white; } .btn-pdf:hover { background: #b91c1c; transform: translateY(-1px); }
+  .btn-excel { background: #16a34a; color: white; } .btn-excel:hover { background: #15803d; transform: translateY(-1px); }
+  .btn-novo { background: var(--navy); color: white; } .btn-novo:hover { background: var(--navy-light); transform: translateY(-1px); }
+  .erradas-lista { margin-top: 24px; text-align: left; }
+  .erradas-titulo { font-size: 14px; font-weight: 800; color: var(--navy); margin-bottom: 12px; }
+  .errada-item { background: #fff5f5; border: 1px solid #fca5a5; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; }
+  .errada-item-num { font-size: 10px; font-weight: 800; color: #dc2626; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .errada-item-enunciado { font-size: 13px; color: var(--navy); font-weight: 600; margin-bottom: 6px; line-height: 1.5; }
+  .errada-item-gabarito { font-size: 12px; color: #15803d; font-weight: 700; }
 
   .mobile-topbar { display: none; }
   @media (max-width: 768px) {
-    .mobile-topbar { display: flex !important; }
+    .mobile-topbar { display: flex; }
     .topbar { display: none; }
     .tabs-nav { top: 52px; padding: 0 12px; }
     .panel { padding: 16px; }
+    .resumo-body { padding: 16px; }
     .video-placeholder { height: 180px; }
     .materiais-grid { grid-template-columns: repeat(3,1fr); }
     .noticia-card { flex-direction: column; gap: 8px; }
+    .questao-card-single { padding: 20px 18px; }
+  }
+  @media (max-width: 480px) {
+    .resultado-botoes { flex-direction: column; align-items: stretch; }
+    .btn-download { justify-content: center; }
   }
 </style>
 </head>
 <body>
 
-<!-- MOBILE TOPBAR -->
-<div class="mobile-topbar" style="background:var(--navy);padding:12px 16px;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;display:none;">
+<div class="mobile-topbar" style="background:var(--navy);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;">
   <a href="dashboard.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;font-weight:600;">← Dashboard</a>
   <span style="font-family:'DM Serif Display',serif;color:white;font-size:16px;">🌎 Atualidades</span>
   <a href="perfil.html" id="mobileAvatar" class="avatar avatar-sm" style="text-decoration:none;background:rgba(255,255,255,0.15);color:white;">👤</a>
 </div>
 
-<!-- TOPBAR DESKTOP -->
 <div class="topbar">
   <div class="topbar-left">
     <a href="dashboard.html" class="back-btn">← Dashboard</a>
@@ -154,7 +238,6 @@
   </a>
 </div>
 
-<!-- TABS -->
 <div class="tabs-nav">
   <div class="tab-btn active" onclick="switchTab('aula',this)">🎬 Aula</div>
   <div class="tab-btn" onclick="switchTab('materiais',this)">📚 Materiais</div>
@@ -162,16 +245,19 @@
   <div class="tab-btn" onclick="switchTab('resumo',this)">📝 Resumo</div>
 </div>
 
-<!-- ══════════════════ AULA ══════════════════ -->
+<!-- PANEL: AULA -->
 <div id="panel-aula" class="panel active">
-
   <div class="materia-progress">
     <div class="materia-progress-icon">🌎</div>
     <div class="materia-progress-info">
-      <div class="materia-progress-label">SEU PROGRESSO NESTA MATÉRIA</div>
-      <div style="display:flex;align-items:center;gap:12px;margin-top:4px;">
-        <div class="progress-wrap" style="flex:1"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
+      <div class="materia-progress-label">Seu Progresso — Atualidades</div>
+      <div style="display:flex;align-items:center;gap:16px;margin-top:4px;flex-wrap:wrap;">
+        <div class="progress-wrap" style="flex:1;min-width:120px"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
         <div class="materia-progress-pct" id="progressPct">0%</div>
+      </div>
+      <div class="progress-details">
+        <span class="progress-detail-item">📖 Resumo: <strong id="pctResumo">0%</strong></span>
+        <span class="progress-detail-item">✏️ Questões: <strong id="pctQuestoes">0%</strong></span>
       </div>
     </div>
   </div>
@@ -182,140 +268,30 @@
     <div class="video-placeholder-text">Nenhuma aula adicionada ainda</div>
   </div>
 
-  <!-- O que cai nesta matéria -->
   <div class="topicos-section">
-    <div class="topicos-header">
-      <span style="font-size:18px;">📋</span>
-      <div class="topicos-header-title">Conteúdo Programático — Realidade Étnica, Social, Histórica, Geográfica, Cultural, Política e Econômica do Estado de Goiás e Município de Goiânia (5 questões)</div>
-    </div>
+    <div class="topicos-header"><span style="font-size:18px;">📋</span><div class="topicos-header-title">Conteúdo Programático — Realidade de Goiás e Goiânia + Atualidades (5 questões)</div></div>
     <div>
-      <div class="topico-item">
-        <div class="topico-num">1</div>
-        <div><div class="topico-name">História de Goiás e de Goiânia</div><div class="topico-sub">Bandeirantismo, mineração, Vila Boa, Pedro Ludovico, Marcha para o Oeste, fundação de Goiânia (1933)</div></div>
-      </div>
-      <div class="topico-item">
-        <div class="topico-num">2</div>
-        <div><div class="topico-name">Geografia de Goiás</div><div class="topico-sub">Localização, relevo, hidrografia, clima, bioma Cerrado, regiões goianas</div></div>
-      </div>
-      <div class="topico-item">
-        <div class="topico-num">3</div>
-        <div><div class="topico-name">Economia de Goiás e Goiânia</div><div class="topico-sub">Agronegócio (soja, milho, cana, pecuária), indústrias, farmacêutica, serviços, polo de moda e medicina</div></div>
-      </div>
-      <div class="topico-item">
-        <div class="topico-num">4</div>
-        <div><div class="topico-name">Etnias, Povos e Cultura</div><div class="topico-sub">Povos indígenas (Xavante, Kayapó, Karajá), cultura goiana, arte, religiosidade, festas tradicionais</div></div>
-      </div>
-      <div class="topico-item">
-        <div class="topico-num">5</div>
-        <div><div class="topico-name">Patrimônio Histórico e Cultural</div><div class="topico-sub">Cidade de Goiás (Patrimônio UNESCO 2001), Pirenópolis, Art Déco em Goiânia</div></div>
-      </div>
-      <div class="topico-item">
-        <div class="topico-num">6</div>
-        <div><div class="topico-name">Atualidades Nacionais 2024–2025</div><div class="topico-sub">Política, economia, meio ambiente, saúde, educação e temas sociais em evidência no Brasil</div></div>
-      </div>
-      <div class="topico-item">
-        <div class="topico-num">7</div>
-        <div><div class="topico-name">Atualidades Internacionais 2024–2025</div><div class="topico-sub">Geopolítica, conflitos, relações internacionais, eleições e acordos multilaterais</div></div>
-      </div>
+      <div class="topico-item"><div class="topico-num">1</div><div><div class="topico-name">História de Goiás e Goiânia</div><div class="topico-sub">Bandeirantismo, mineração, Vila Boa, Pedro Ludovico, fundação de Goiânia (1933)</div></div></div>
+      <div class="topico-item"><div class="topico-num">2</div><div><div class="topico-name">Geografia de Goiás</div><div class="topico-sub">Localização, relevo, hidrografia, clima, bioma Cerrado</div></div></div>
+      <div class="topico-item"><div class="topico-num">3</div><div><div class="topico-name">Economia de Goiás e Goiânia</div><div class="topico-sub">Agronegócio, farmacêutica, moda, mineração, PIB</div></div></div>
+      <div class="topico-item"><div class="topico-num">4</div><div><div class="topico-name">Etnias, Povos e Cultura</div><div class="topico-sub">Povos indígenas, cultura goiana, festas, patrimônio UNESCO</div></div></div>
+      <div class="topico-item"><div class="topico-num">5</div><div><div class="topico-name">Atualidades Nacionais 2024–2025</div><div class="topico-sub">Reforma tributária, enchentes RS, COP30, G20, PEC 6×1</div></div></div>
+      <div class="topico-item"><div class="topico-num">6</div><div><div class="topico-name">Atualidades Internacionais 2024–2025</div><div class="topico-sub">Guerra Rússia-Ucrânia, Israel-Gaza, Trump, BRICS, Mercosul-UE</div></div></div>
     </div>
   </div>
 
-  <!-- Temas quentes 2024-2025 -->
   <div style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:14px;">🔥 Temas em Alta — Mais cobrados em concursos 2024-2025</div>
 
-  <div class="noticia-card">
-    <div class="noticia-emoji">🌿</div>
-    <div>
-      <span class="noticia-tag tag-internacional">Internacional</span>
-      <div class="noticia-title">COP30 — Belém, Pará (2025)</div>
-      <div class="noticia-desc">A 30ª Conferência das Nações Unidas sobre Mudanças Climáticas foi realizada em Belém (PA) em novembro de 2025. Colocou o Brasil e a Amazônia no centro das discussões globais sobre mitigação climática, metas de emissões e direitos dos povos indígenas.</div>
-    </div>
-  </div>
-
-  <div class="noticia-card">
-    <div class="noticia-emoji">🗺️</div>
-    <div>
-      <span class="noticia-tag tag-internacional">Internacional</span>
-      <div class="noticia-title">Guerra Rússia-Ucrânia</div>
-      <div class="noticia-desc">Iniciada em fevereiro de 2022, quando a Rússia declarou uma "Operação Militar Especial" e invadiu o território ucraniano. O conflito se estende pelo terceiro ano, com impactos na geopolítica global, preço de combustíveis e segurança alimentar.</div>
-    </div>
-  </div>
-
-  <div class="noticia-card">
-    <div class="noticia-emoji">🕊️</div>
-    <div>
-      <span class="noticia-tag tag-internacional">Internacional</span>
-      <div class="noticia-title">Conflito Israel-Gaza (Oriente Médio)</div>
-      <div class="noticia-desc">Intensificado em outubro de 2023, o conflito gerou grave crise humanitária na Faixa de Gaza, com debate internacional sobre soberania, Direito Internacional Humanitário e mediação de organismos como a ONU.</div>
-    </div>
-  </div>
-
-  <div class="noticia-card">
-    <div class="noticia-emoji">🗳️</div>
-    <div>
-      <span class="noticia-tag tag-internacional">Internacional</span>
-      <div class="noticia-title">Reeleição de Donald Trump (EUA, 2024)</div>
-      <div class="noticia-desc">Trump venceu as eleições presidenciais americanas em novembro de 2024. A volta ao poder trouxe tensões comerciais com o Brasil e a China (via tarifas de importação), além de mudanças na política externa e ambiental dos EUA.</div>
-    </div>
-  </div>
-
-  <div class="noticia-card">
-    <div class="noticia-emoji">🌐</div>
-    <div>
-      <span class="noticia-tag tag-nacional">Nacional</span>
-      <div class="noticia-title">BRICS — Expansão do bloco</div>
-      <div class="noticia-desc">O bloco econômico formado por Brasil, Rússia, Índia, China e África do Sul passou por expansão em 2024 com a admissão de novos membros. O Brasil exerceu a presidência do G20 em 2024 com foco em combate à pobreza e mudanças climáticas.</div>
-    </div>
-  </div>
-
-  <div class="noticia-card">
-    <div class="noticia-emoji">⚖️</div>
-    <div>
-      <span class="noticia-tag tag-nacional">Nacional</span>
-      <div class="noticia-title">Reforma Tributária (EC 132/2023)</div>
-      <div class="noticia-desc">A maior reforma tributária desde 1988 foi aprovada, unificando impostos sobre consumo em dois novos tributos — CBS (federal) e IBS (estados e municípios) — e criando o Imposto Seletivo. Implementação gradual até 2033.</div>
-    </div>
-  </div>
-
-  <div class="noticia-card">
-    <div class="noticia-emoji">⏰</div>
-    <div>
-      <span class="noticia-tag tag-nacional">Nacional</span>
-      <div class="noticia-title">Debate sobre a jornada 6×1 — PEC Erika Hilton</div>
-      <div class="noticia-desc">A proposta de redução da jornada de trabalho de 44h para 36h semanais (4 dias úteis) ganhou força em 2024-2025, impulsionada pelo movimento VAT (Vida Além do Trabalho) e com 171 assinaturas de deputados para tramitação.</div>
-    </div>
-  </div>
-
-  <div class="noticia-card">
-    <div class="noticia-emoji">💧</div>
-    <div>
-      <span class="noticia-tag tag-nacional">Nacional</span>
-      <div class="noticia-title">Desastres Climáticos no Brasil — RS 2024</div>
-      <div class="noticia-desc">Em 2024, o Rio Grande do Sul foi atingido pelas maiores enchentes de sua história, com mais de 150 mortes e mais de 400 municípios afetados. O evento reforçou o debate sobre adaptação climática e gestão de riscos no Brasil.</div>
-    </div>
-  </div>
-
-  <div class="noticia-card">
-    <div class="noticia-emoji">🌾</div>
-    <div>
-      <span class="noticia-tag tag-goias">Goiás</span>
-      <div class="noticia-title">Goiás — Potência do Agronegócio</div>
-      <div class="noticia-desc">Goiás é um dos maiores produtores de soja, milho e cana-de-açúcar do Brasil. O estado detém 30,4% do PIB da região Centro-Oeste, ficando atrás apenas do Distrito Federal (36,4%). O agronegócio impulsiona a economia com mecanização e tecnologia.</div>
-    </div>
-  </div>
-
-  <div class="noticia-card">
-    <div class="noticia-emoji">🏙️</div>
-    <div>
-      <span class="noticia-tag tag-goias">Goiânia</span>
-      <div class="noticia-title">Concurso Câmara de Goiânia 2026</div>
-      <div class="noticia-desc">A Câmara Municipal de Goiânia publicou edital em novembro de 2025, com 62 vagas imediatas + 315 no cadastro de reserva, remuneração de até R$ 10.059,32. Provas objetivas: 15/03/2026. Organizador: Instituto Verbena/UFG.</div>
-    </div>
-  </div>
-
+  <div class="noticia-card"><div class="noticia-emoji">🌿</div><div><span class="noticia-tag tag-internacional">Internacional</span><div class="noticia-title">COP30 — Belém, Pará (2025)</div><div class="noticia-desc">A 30ª Conferência da ONU sobre Mudanças Climáticas foi realizada em Belém (PA) em novembro de 2025. Colocou o Brasil e a Amazônia no centro das discussões globais sobre mitigação climática, metas de emissões e direitos dos povos indígenas.</div></div></div>
+  <div class="noticia-card"><div class="noticia-emoji">🗺️</div><div><span class="noticia-tag tag-internacional">Internacional</span><div class="noticia-title">Guerra Rússia-Ucrânia</div><div class="noticia-desc">Iniciada em fevereiro de 2022, com a declaração russa de "Operação Militar Especial". O conflito segue em curso com impactos na geopolítica global, preço de combustíveis e segurança alimentar.</div></div></div>
+  <div class="noticia-card"><div class="noticia-emoji">🗳️</div><div><span class="noticia-tag tag-internacional">Internacional</span><div class="noticia-title">Reeleição de Donald Trump (EUA, 2024)</div><div class="noticia-desc">Trump venceu as eleições presidenciais em novembro de 2024. A volta ao poder trouxe tensões comerciais com Brasil e China via tarifas, além de mudanças na política ambiental americana.</div></div></div>
+  <div class="noticia-card"><div class="noticia-emoji">⚖️</div><div><span class="noticia-tag tag-nacional">Nacional</span><div class="noticia-title">Reforma Tributária (EC 132/2023)</div><div class="noticia-desc">A maior reforma tributária desde 1988 unificou impostos sobre consumo em CBS (federal) e IBS (estados/municípios), criando também o Imposto Seletivo. Implementação gradual até 2033.</div></div></div>
+  <div class="noticia-card"><div class="noticia-emoji">💧</div><div><span class="noticia-tag tag-nacional">Nacional</span><div class="noticia-title">Enchentes no Rio Grande do Sul (2024)</div><div class="noticia-desc">O RS foi atingido pelas maiores enchentes de sua história, com mais de 150 mortes e 400+ municípios afetados. O evento reforçou o debate sobre adaptação climática e gestão de riscos no Brasil.</div></div></div>
+  <div class="noticia-card"><div class="noticia-emoji">🌾</div><div><span class="noticia-tag tag-goias">Goiás</span><div class="noticia-title">Goiás — Potência do Agronegócio</div><div class="noticia-desc">Goiás é um dos maiores produtores de soja, milho e cana-de-açúcar do Brasil. O estado detém 30,4% do PIB da região Centro-Oeste e é referência em moda, medicina e farmacêutica.</div></div></div>
+  <div class="noticia-card"><div class="noticia-emoji">🏙️</div><div><span class="noticia-tag tag-goias">Goiânia</span><div class="noticia-title">Concurso Câmara de Goiânia 2026</div><div class="noticia-desc">Edital publicado em novembro de 2025, com 62 vagas imediatas + 315 no cadastro de reserva. Remuneração de até R$ 10.059,32. Provas: 15/03/2026. Organizador: Instituto Verbena/UFG.</div></div></div>
 </div>
 
-<!-- ══════════════════ MATERIAIS ══════════════════ -->
+<!-- PANEL: MATERIAIS -->
 <div id="panel-materiais" class="panel">
   <div class="materiais-grid">
     <div class="material-card material-card-empty"><div class="material-card-icon" style="background:#FEF3C7">📕</div><div class="material-card-label">Apostila</div><div class="material-card-sub">Em breve</div></div>
@@ -325,320 +301,408 @@
     <div class="material-card material-card-empty"><div class="material-card-icon" style="background:#FCE7F3">🃏</div><div class="material-card-label">Flashcards</div><div class="material-card-sub">Em breve</div></div>
     <div class="material-card material-card-empty"><div class="material-card-icon" style="background:#FEF3C7">📋</div><div class="material-card-label">Simulado</div><div class="material-card-sub">Em breve</div></div>
   </div>
-
-  <!-- Linha do tempo Goiás/Goiânia -->
   <div style="background:white;border:1px solid var(--gray-200);border-radius:16px;padding:24px;margin-bottom:16px;">
     <div style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:18px;">📅 Linha do Tempo — Goiás e Goiânia</div>
     <div class="linha-tempo">
-      <div class="lt-item">
-        <div class="lt-dot-wrap"><div class="lt-dot"></div><div class="lt-line"></div></div>
-        <div class="lt-content"><div class="lt-year">Séc. XVIII — 1727</div><div class="lt-text">Fundação da Vila Boa de Goiás (atual Cidade de Goiás). Ciclo do ouro e entrada dos bandeirantes — Anhanguera Filho considerado o "descobridor" de Goiás.</div></div>
-      </div>
-      <div class="lt-item">
-        <div class="lt-dot-wrap"><div class="lt-dot"></div><div class="lt-line"></div></div>
-        <div class="lt-content"><div class="lt-year">1930–1933</div><div class="lt-text">Revolução de 1930 leva Getúlio Vargas ao poder. Pedro Ludovico Teixeira é nomeado interventor de Goiás e planeja a nova capital — pedra fundamental em 24/10/1933.</div></div>
-      </div>
-      <div class="lt-item">
-        <div class="lt-dot-wrap"><div class="lt-dot"></div><div class="lt-line"></div></div>
-        <div class="lt-content"><div class="lt-year">1937</div><div class="lt-text">Goiânia torna-se oficialmente a capital do Estado de Goiás. Projeto urbanístico de Atílio Correia Lima — influência Art Déco (maior sítio Art Déco da América Latina).</div></div>
-      </div>
-      <div class="lt-item">
-        <div class="lt-dot-wrap"><div class="lt-dot"></div><div class="lt-line"></div></div>
-        <div class="lt-content"><div class="lt-year">1960</div><div class="lt-text">Inauguração de Brasília impulsiona a integração de Goiás ao cenário nacional, ampliando infraestrutura e atraindo investimentos.</div></div>
-      </div>
-      <div class="lt-item">
-        <div class="lt-dot-wrap"><div class="lt-dot"></div><div class="lt-line"></div></div>
-        <div class="lt-content"><div class="lt-year">1988</div><div class="lt-text">Criação do Estado do Tocantins — desmembrado de Goiás pela CF/88. Goiás perde parte norte de seu território.</div></div>
-      </div>
-      <div class="lt-item">
-        <div class="lt-dot-wrap"><div class="lt-dot"></div><div class="lt-line"></div></div>
-        <div class="lt-content"><div class="lt-year">2001</div><div class="lt-text">Cidade de Goiás (Goiás Velho) é reconhecida como Patrimônio Histórico e Cultural da Humanidade pela UNESCO.</div></div>
-      </div>
-      <div class="lt-item">
-        <div class="lt-dot-wrap"><div class="lt-dot"></div></div>
-        <div class="lt-content"><div class="lt-year">Hoje</div><div class="lt-text">Goiânia: 6ª maior cidade do Brasil em área urbana; Região Metropolitana com mais de 2,2 milhões de habitantes. Polo de medicina, moda, agronegócio e serviços no Centro-Oeste.</div></div>
-      </div>
+      <div class="lt-item"><div class="lt-dot-wrap"><div class="lt-dot"></div><div class="lt-line"></div></div><div class="lt-content"><div class="lt-year">1727</div><div class="lt-text">Fundação da Vila Boa de Goiás (atual Cidade de Goiás). Ciclo do ouro — Anhanguera Filho considerado o "descobridor" de Goiás.</div></div></div>
+      <div class="lt-item"><div class="lt-dot-wrap"><div class="lt-dot"></div><div class="lt-line"></div></div><div class="lt-content"><div class="lt-year">1930–1933</div><div class="lt-text">Pedro Ludovico Teixeira é nomeado interventor de Goiás e planeja a nova capital. Pedra fundamental lançada em 24/10/1933.</div></div></div>
+      <div class="lt-item"><div class="lt-dot-wrap"><div class="lt-dot"></div><div class="lt-line"></div></div><div class="lt-content"><div class="lt-year">1937</div><div class="lt-text">Goiânia torna-se oficialmente capital do Estado de Goiás. Projeto de Atílio Correia Lima — maior sítio Art Déco da América Latina.</div></div></div>
+      <div class="lt-item"><div class="lt-dot-wrap"><div class="lt-dot"></div><div class="lt-line"></div></div><div class="lt-content"><div class="lt-year">1988</div><div class="lt-text">Criação do Estado do Tocantins pela CF/88 — desmembrado de Goiás.</div></div></div>
+      <div class="lt-item"><div class="lt-dot-wrap"><div class="lt-dot"></div></div><div class="lt-content"><div class="lt-year">2001</div><div class="lt-text">Cidade de Goiás reconhecida como Patrimônio Histórico e Cultural da Humanidade pela UNESCO.</div></div></div>
     </div>
   </div>
-
-  <!-- Fontes para acompanhar -->
   <div style="background:white;border:1px solid var(--gray-200);border-radius:16px;padding:24px;">
     <div style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:12px;">📰 Como estudar Atualidades</div>
-    <p style="font-size:14px;color:#374151;line-height:1.7;margin:0;">Acompanhe semanalmente: <strong>G1, UOL Notícias, Agência Brasil, Portal Câmara de Goiânia</strong> e <strong>Secom Goiás</strong>. Organize por temas: Política · Economia · Meio Ambiente · Saúde · Internacional · Goiás. A prova costuma cobrar fatos dos <strong>12 meses anteriores</strong> à data da aplicação — foque em 2025 e início de 2026.</p>
+    <p style="font-size:14px;color:#374151;line-height:1.7;margin:0;">Acompanhe: <strong>G1, UOL Notícias, Agência Brasil, Portal Câmara de Goiânia</strong> e <strong>Secom Goiás</strong>. A prova costuma cobrar fatos dos <strong>12 meses anteriores</strong> — foque em 2025 e início de 2026.</p>
   </div>
 </div>
 
-<!-- ══════════════════ QUESTÕES ══════════════════ -->
+<!-- PANEL: QUESTÕES -->
 <div id="panel-questoes" class="panel">
-
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-    <div>
-      <div style="font-size:18px;font-weight:700;color:var(--navy);">Banco de Questões</div>
-      <div style="font-size:13px;color:var(--gray-400);margin-top:2px;">8 questões · Goiás · Atualidades nacionais e internacionais</div>
+  <div class="questoes-container">
+    <div class="simulado-header">
+      <div class="simulado-header-info">
+        <h3>✏️ Simulado — Atualidades, Goiás e Goiânia</h3>
+        <p>10 questões · Câmara de Goiânia 2026</p>
+      </div>
+      <div class="simulado-score-chips">
+        <div class="score-chip acertos"><div class="score-chip-val" id="chipAcertos">0</div><div class="score-chip-label">Acertos</div></div>
+        <div class="score-chip erros"><div class="score-chip-val" id="chipErros">0</div><div class="score-chip-label">Erros</div></div>
+        <div class="score-chip total"><div class="score-chip-val" id="chipTotal">0/10</div><div class="score-chip-label">Total</div></div>
+      </div>
     </div>
-    <div style="background:#f0fdf4;border:1px solid #a7f3d0;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:700;color:#065f46;" id="scoreDisplay">0/8 acertos</div>
-  </div>
-
-  <div class="questao-card" id="q1">
-    <div class="questao-num">Questão 1 · Fundação de Goiânia</div>
-    <div class="questao-enunciado">Goiânia foi fundada em 1933 como nova capital do Estado de Goiás. Quem foi o responsável político por sua construção e qual o contexto nacional em que isso ocorreu?</div>
-    <div class="questao-opcoes">
-      <div class="questao-opcao" onclick="responder('q1','a','b')"><span class="questao-letra">A)</span> Mauro Borges, durante a Ditadura Militar e o projeto de modernização do interior</div>
-      <div class="questao-opcao" onclick="responder('q1','b','b')"><span class="questao-letra">B)</span> Pedro Ludovico Teixeira, durante o governo de Getúlio Vargas e a política da "Marcha para o Oeste"</div>
-      <div class="questao-opcao" onclick="responder('q1','c','b')"><span class="questao-letra">C)</span> Juscelino Kubitschek, no mesmo contexto de construção de Brasília em 1958</div>
-      <div class="questao-opcao" onclick="responder('q1','d','b')"><span class="questao-letra">D)</span> Atílio Correia Lima, como parte do projeto urbanístico da República Velha</div>
+    <div class="simulado-progress-bar">
+      <div class="progress-wrap" style="flex:1"><div class="progress-fill" id="simuladoProgressBar" style="width:0%"></div></div>
+      <div class="simulado-progress-info">Questão <span id="qAtualNum">1</span> de 10</div>
     </div>
-    <button class="gabarito-btn" onclick="verGabarito('q1','b')">Ver gabarito</button>
-  </div>
-
-  <div class="questao-card" id="q2">
-    <div class="questao-num">Questão 2 · Patrimônio UNESCO em Goiás</div>
-    <div class="questao-enunciado">Em 2001, a UNESCO reconheceu como Patrimônio Histórico e Cultural da Humanidade o centro histórico de qual cidade goiana?</div>
-    <div class="questao-opcoes">
-      <div class="questao-opcao" onclick="responder('q2','a','b')"><span class="questao-letra">A)</span> Pirenópolis</div>
-      <div class="questao-opcao" onclick="responder('q2','b','b')"><span class="questao-letra">B)</span> Cidade de Goiás (Goiás Velho)</div>
-      <div class="questao-opcao" onclick="responder('q2','c','b')"><span class="questao-letra">C)</span> Goiânia</div>
-      <div class="questao-opcao" onclick="responder('q2','d','b')"><span class="questao-letra">D)</span> Anápolis</div>
+    <div id="questaoContainer"></div>
+    <div id="resultadoFinal" style="display:none">
+      <div class="resultado-final">
+        <div class="resultado-emoji" id="resultEmoji">🎉</div>
+        <div class="resultado-titulo" id="resultTitulo">Simulado Concluído!</div>
+        <div class="resultado-sub" id="resultSub">Confira seu desempenho</div>
+        <div class="resultado-stats">
+          <div class="resultado-stat verde"><div class="resultado-stat-val" id="resultAcertos">0</div><div class="resultado-stat-label">Acertos</div></div>
+          <div class="resultado-stat vermelho"><div class="resultado-stat-val" id="resultErros">0</div><div class="resultado-stat-label">Erros</div></div>
+          <div class="resultado-stat azul"><div class="resultado-stat-val" id="resultTaxa">0%</div><div class="resultado-stat-label">Taxa de Acerto</div></div>
+        </div>
+        <div class="resultado-botoes">
+          <button class="btn-download btn-pdf" onclick="downloadPDF()">📄 Baixar Erradas — PDF</button>
+          <button class="btn-download btn-excel" onclick="downloadExcel()">📊 Baixar Erradas — Excel</button>
+          <button class="btn-download btn-novo" onclick="reiniciarSimulado()">🔄 Refazer Simulado</button>
+        </div>
+      </div>
+      <div class="erradas-lista" id="erradasLista"></div>
     </div>
-    <button class="gabarito-btn" onclick="verGabarito('q2','b')">Ver gabarito</button>
   </div>
-
-  <div class="questao-card" id="q3">
-    <div class="questao-num">Questão 3 · Estado do Tocantins</div>
-    <div class="questao-enunciado">O Estado do Tocantins foi criado em 1988 a partir do desmembramento de qual estado?</div>
-    <div class="questao-opcoes">
-      <div class="questao-opcao" onclick="responder('q3','a','b')"><span class="questao-letra">A)</span> Mato Grosso</div>
-      <div class="questao-opcao" onclick="responder('q3','b','b')"><span class="questao-letra">B)</span> Goiás</div>
-      <div class="questao-opcao" onclick="responder('q3','c','b')"><span class="questao-letra">C)</span> Pará</div>
-      <div class="questao-opcao" onclick="responder('q3','d','b')"><span class="questao-letra">D)</span> Maranhão</div>
-    </div>
-    <button class="gabarito-btn" onclick="verGabarito('q3','b')">Ver gabarito</button>
-  </div>
-
-  <div class="questao-card" id="q4">
-    <div class="questao-num">Questão 4 · Economia de Goiás</div>
-    <div class="questao-enunciado">A economia de Goiás é marcada por forte base agropecuária. O estado destaca-se na produção de:</div>
-    <div class="questao-opcoes">
-      <div class="questao-opcao" onclick="responder('q4','a','a')"><span class="questao-letra">A)</span> Soja, milho, cana-de-açúcar e pecuária bovina</div>
-      <div class="questao-opcao" onclick="responder('q4','b','a')"><span class="questao-letra">B)</span> Cacau, borracha e exploração de petróleo</div>
-      <div class="questao-opcao" onclick="responder('q4','c','a')"><span class="questao-letra">C)</span> Café, algodão e produção de minério de ferro</div>
-      <div class="questao-opcao" onclick="responder('q4','d','a')"><span class="questao-letra">D)</span> Pesca, extrativismo vegetal e turismo de praia</div>
-    </div>
-    <button class="gabarito-btn" onclick="verGabarito('q4','a')">Ver gabarito</button>
-  </div>
-
-  <div class="questao-card" id="q5">
-    <div class="questao-num">Questão 5 · COP30 — 2025</div>
-    <div class="questao-enunciado">A COP30, conferência da ONU sobre mudanças climáticas realizada em novembro de 2025, ocorreu em qual cidade brasileira?</div>
-    <div class="questao-opcoes">
-      <div class="questao-opcao" onclick="responder('q5','a','b')"><span class="questao-letra">A)</span> Manaus (AM)</div>
-      <div class="questao-opcao" onclick="responder('q5','b','b')"><span class="questao-letra">B)</span> Belém (PA)</div>
-      <div class="questao-opcao" onclick="responder('q5','c','b')"><span class="questao-letra">C)</span> Rio de Janeiro (RJ)</div>
-      <div class="questao-opcao" onclick="responder('q5','d','b')"><span class="questao-letra">D)</span> Brasília (DF)</div>
-    </div>
-    <button class="gabarito-btn" onclick="verGabarito('q5','b')">Ver gabarito</button>
-  </div>
-
-  <div class="questao-card" id="q6">
-    <div class="questao-num">Questão 6 · Guerra Rússia-Ucrânia</div>
-    <div class="questao-enunciado">Em que ano a Rússia iniciou a invasão em larga escala da Ucrânia, declarando uma "Operação Militar Especial"?</div>
-    <div class="questao-opcoes">
-      <div class="questao-opcao" onclick="responder('q6','a','b')"><span class="questao-letra">A)</span> 2014</div>
-      <div class="questao-opcao" onclick="responder('q6','b','b')"><span class="questao-letra">B)</span> 2022</div>
-      <div class="questao-opcao" onclick="responder('q6','c','b')"><span class="questao-letra">C)</span> 2023</div>
-      <div class="questao-opcao" onclick="responder('q6','d','b')"><span class="questao-letra">D)</span> 2021</div>
-    </div>
-    <button class="gabarito-btn" onclick="verGabarito('q6','b')">Ver gabarito</button>
-  </div>
-
-  <div class="questao-card" id="q7">
-    <div class="questao-num">Questão 7 · Reforma Tributária — Brasil</div>
-    <div class="questao-enunciado">A Reforma Tributária aprovada no Brasil em 2023 (EC 132/2023) unificou vários impostos sobre o consumo. Quais os dois novos tributos criados para substituir os antigos?</div>
-    <div class="questao-opcoes">
-      <div class="questao-opcao" onclick="responder('q7','a','b')"><span class="questao-letra">A)</span> IRPF e CSLL</div>
-      <div class="questao-opcao" onclick="responder('q7','b','b')"><span class="questao-letra">B)</span> CBS (federal) e IBS (estados e municípios)</div>
-      <div class="questao-opcao" onclick="responder('q7','c','b')"><span class="questao-letra">C)</span> ICMS e ISS unificados em tributo único</div>
-      <div class="questao-opcao" onclick="responder('q7','d','b')"><span class="questao-letra">D)</span> IOF e COFINS reformulados</div>
-    </div>
-    <button class="gabarito-btn" onclick="verGabarito('q7','b')">Ver gabarito</button>
-  </div>
-
-  <div class="questao-card" id="q8">
-    <div class="questao-num">Questão 8 · Goiânia — Dados Gerais</div>
-    <div class="questao-enunciado">Sobre Goiânia, capital do Estado de Goiás, assinale a afirmativa CORRETA:</div>
-    <div class="questao-opcoes">
-      <div class="questao-opcao" onclick="responder('q8','a','c')"><span class="questao-letra">A)</span> É a maior cidade em área urbana do Brasil, superando São Paulo e Rio de Janeiro</div>
-      <div class="questao-opcao" onclick="responder('q8','b','c')"><span class="questao-letra">B)</span> Sua arquitetura foi influenciada pelo estilo Barroco, presente nos primeiros edifícios da cidade</div>
-      <div class="questao-opcao" onclick="responder('q8','c','c')"><span class="questao-letra">C)</span> É conhecida como o maior sítio Art Déco da América Latina e é o maior centro urbano do Centro-Oeste depois de Brasília</div>
-      <div class="questao-opcao" onclick="responder('q8','d','c')"><span class="questao-letra">D)</span> A Região Metropolitana de Goiânia possui mais de 5 milhões de habitantes, sendo a 3ª maior do país</div>
-    </div>
-    <button class="gabarito-btn" onclick="verGabarito('q8','c')">Ver gabarito</button>
-  </div>
-
 </div>
 
-<!-- ══════════════════ RESUMO ══════════════════ -->
+<!-- PANEL: RESUMO -->
 <div id="panel-resumo" class="panel">
-  <div class="resumo-section">
+  <div class="resumo-editor">
     <div class="resumo-header">
       <div class="resumo-header-title">📝 Resumo — Atualidades, Goiás e Goiânia</div>
       <span style="font-size:11px;color:var(--gray-400);font-weight:600;">Câmara de Goiânia · 5 questões</span>
     </div>
     <div class="resumo-body">
 
-      <h3>🏙️ 1. Goiânia — Fundação e Características</h3>
-      <p>Goiânia foi fundada em <strong>24 de outubro de 1933</strong>, quando Pedro Ludovico Teixeira lançou a pedra fundamental no local onde hoje fica o Palácio das Esmeraldas (Praça Cívica). O projeto urbanístico foi elaborado por <strong>Atílio Correia Lima</strong>.</p>
-      <ul>
-        <li><strong>Contexto:</strong> Revolução de 1930 / Governo Getúlio Vargas / Política da "Marcha para o Oeste".</li>
-        <li><strong>Motivo da mudança:</strong> Vila Boa de Goiás estava em região serrana, com pouca infraestrutura e difícil integração.</li>
-        <li><strong>Capital oficial:</strong> transferida em 1937.</li>
-        <li><strong>Arquitetura:</strong> influência <strong>Art Déco</strong> — Goiânia é considerada o maior sítio Art Déco da América Latina.</li>
-        <li><strong>Distância de Brasília:</strong> 209 km.</li>
-        <li><strong>Posição:</strong> 6ª maior cidade do Brasil em área urbana; 2ª maior do Centro-Oeste (atrás de Brasília).</li>
-        <li><strong>Região Metropolitana:</strong> mais de 2,2 milhões de habitantes — 10ª maior do país.</li>
-      </ul>
-      <div class="goias-box"><p>🌿 Hidrografia: Rio Meia Ponte é o principal curso d'água de Goiânia. A Barragem do Córrego João Leite garante o abastecimento da capital.</p></div>
+      <div class="resumo-topico">
+        <h2>🏙️ Goiânia — Fundação e Características <span class="tag-fonte">Goiânia</span></h2>
+        <p>Goiânia foi fundada em <strong>24 de outubro de 1933</strong> por Pedro Ludovico Teixeira. Projeto urbanístico de <strong>Atílio Correia Lima</strong>.</p>
+        <ul>
+          <li><strong>Contexto:</strong> Revolução de 1930 / Getúlio Vargas / "Marcha para o Oeste".</li>
+          <li><strong>Capital oficial:</strong> transferida em 1937.</li>
+          <li><strong>Arquitetura:</strong> maior sítio <strong>Art Déco da América Latina</strong>.</li>
+          <li><strong>Posição:</strong> 2ª maior cidade do Centro-Oeste (atrás de Brasília). 10ª maior RM do país.</li>
+          <li><strong>Rio principal:</strong> Meia Ponte.</li>
+        </ul>
+        <div class="goias-box"><p>🌿 Distância Goiânia–Brasília: 209 km. Região Metropolitana: mais de 2,2 milhões de habitantes.</p></div>
+        <div class="mini-questao" data-id="mq1" data-correta="b">
+          <div class="mini-questao-label">Fixação do conteúdo</div>
+          <div class="mini-questao-pergunta">Quem foi o responsável político pela fundação de Goiânia em 1933?</div>
+          <div class="mini-questao-opcoes">
+            <button class="mini-opcao" onclick="responderMini('mq1','a')"><b>a)</b> Juscelino Kubitschek</button>
+            <button class="mini-opcao" onclick="responderMini('mq1','b')"><b>b)</b> Pedro Ludovico Teixeira</button>
+            <button class="mini-opcao" onclick="responderMini('mq1','c')"><b>c)</b> Mauro Borges</button>
+          </div>
+          <div class="mini-questao-feedback" id="fb-mq1"></div>
+        </div>
+      </div>
 
-      <h3>📜 2. História de Goiás</h3>
-      <ul>
-        <li><strong>Povos originários:</strong> Xavantes, Kayapós, Karajás, Xerentes — habitavam o Cerrado antes da colonização.</li>
-        <li><strong>Colonização:</strong> bandeirantes paulistas, liderados pelo <strong>Anhanguera Filho</strong> (1726), buscavam ouro.</li>
-        <li><strong>Vila Boa de Goiás:</strong> fundada em 1727 — polo do ciclo do ouro e primeira capital.</li>
-        <li><strong>Decadência do ouro:</strong> Séc. XIX — economia passa para pecuária e agricultura de subsistência.</li>
-        <li><strong>Criação do Tocantins:</strong> em 1988, pela CF/88, a parte norte de Goiás foi desmembrada, formando o Estado do Tocantins.</li>
-      </ul>
+      <div class="resumo-topico">
+        <h2>📜 História de Goiás <span class="tag-fonte">Goiás</span></h2>
+        <ul>
+          <li><strong>Povos originários:</strong> Xavantes, Kayapós, Karajás, Xerentes.</li>
+          <li><strong>Colonização:</strong> bandeirantes paulistas — <strong>Anhanguera Filho</strong> (1726) em busca de ouro.</li>
+          <li><strong>Vila Boa de Goiás:</strong> fundada em 1727 — 1ª capital; patrimônio UNESCO em 2001.</li>
+          <li><strong>Tocantins:</strong> desmembrado de Goiás pela CF/88 em 1988.</li>
+          <li><strong>Pirenópolis:</strong> patrimônio histórico nacional; famosa pela Cavalhada.</li>
+        </ul>
+        <div class="mini-questao" data-id="mq2" data-correta="c">
+          <div class="mini-questao-label">Fixação do conteúdo</div>
+          <div class="mini-questao-pergunta">Em que ano a Cidade de Goiás foi reconhecida como Patrimônio da Humanidade pela UNESCO?</div>
+          <div class="mini-questao-opcoes">
+            <button class="mini-opcao" onclick="responderMini('mq2','a')"><b>a)</b> 1988</button>
+            <button class="mini-opcao" onclick="responderMini('mq2','b')"><b>b)</b> 1995</button>
+            <button class="mini-opcao" onclick="responderMini('mq2','c')"><b>c)</b> 2001</button>
+          </div>
+          <div class="mini-questao-feedback" id="fb-mq2"></div>
+        </div>
+      </div>
 
-      <h3>🗺️ 3. Geografia de Goiás</h3>
-      <ul>
-        <li><strong>Localização:</strong> região Centro-Oeste do Brasil — vizinho ao DF, MT, MS, MG, BA, TO e PA (após criação do Tocantins).</li>
-        <li><strong>Bioma:</strong> predominância do <strong>Cerrado</strong> — segundo maior bioma brasileiro, extremamente ameaçado pelo desmatamento.</li>
-        <li><strong>Relevo:</strong> predominantemente planaltos — Planalto Central e Planalto do Brasil Central.</li>
-        <li><strong>Clima:</strong> tropical estacional, com chuvas concentradas no verão (outubro-março) e seca intensa no inverno.</li>
-        <li><strong>Rios importantes:</strong> Araguaia, Tocantins, Paranaíba, Corumbá, Meia Ponte.</li>
-      </ul>
+      <div class="resumo-topico">
+        <h2>🗺️ Geografia e Economia de Goiás <span class="tag-fonte">Goiás</span></h2>
+        <div class="resumo-grid">
+          <div class="resumo-card"><div class="resumo-card-title">🌿 Bioma</div><p>Cerrado — 2° maior bioma do Brasil; extremamente ameaçado pelo desmatamento e agronegócio.</p></div>
+          <div class="resumo-card"><div class="resumo-card-title">💧 Rios</div><p>Araguaia, Tocantins, Paranaíba, Corumbá, Meia Ponte.</p></div>
+          <div class="resumo-card"><div class="resumo-card-title">🌾 Agronegócio</div><p>Um dos maiores produtores de soja, milho, cana-de-açúcar e pecuária bovina do país.</p></div>
+          <div class="resumo-card"><div class="resumo-card-title">💊 Farmacêutica</div><p>Anápolis e Goiânia são polos nacionais de laboratórios. PIB do estado: 30,4% do Centro-Oeste.</p></div>
+        </div>
+        <div class="mini-questao" data-id="mq3" data-correta="a">
+          <div class="mini-questao-label">Fixação do conteúdo</div>
+          <div class="mini-questao-pergunta">Qual é o bioma predominante em Goiás?</div>
+          <div class="mini-questao-opcoes">
+            <button class="mini-opcao" onclick="responderMini('mq3','a')"><b>a)</b> Cerrado</button>
+            <button class="mini-opcao" onclick="responderMini('mq3','b')"><b>b)</b> Amazônia</button>
+            <button class="mini-opcao" onclick="responderMini('mq3','c')"><b>c)</b> Pantanal</button>
+          </div>
+          <div class="mini-questao-feedback" id="fb-mq3"></div>
+        </div>
+      </div>
 
-      <h3>🌾 4. Economia de Goiás e Goiânia</h3>
-      <ul>
-        <li><strong>Agronegócio:</strong> Goiás é um dos maiores produtores de soja, milho, cana-de-açúcar, sorgo e girassol do país.</li>
-        <li><strong>Pecuária:</strong> grande rebanho bovino — expressiva indústria frigorífica.</li>
-        <li><strong>Mineração:</strong> níquel, cobre, ouro e nióbio.</li>
-        <li><strong>Indústria farmacêutica:</strong> Anápolis e Goiânia são polos nacionais de laboratórios e medicamentos.</li>
-        <li><strong>Moda:</strong> Goiânia é referência nacional no setor de moda.</li>
-        <li><strong>PIB:</strong> Goiás detém 30,4% do PIB do Centro-Oeste.</li>
-      </ul>
+      <div class="resumo-topico">
+        <h2>🌍 Atualidades Nacionais 2024–2025 <span class="tag-fonte">Brasil</span></h2>
+        <ul>
+          <li><strong>Reforma Tributária (EC 132/2023):</strong> CBS + IBS + Imposto Seletivo; transição até 2033.</li>
+          <li><strong>Enchentes no RS (2024):</strong> maiores da história gaúcha; +150 mortes; debate climático.</li>
+          <li><strong>COP30 em Belém (2025):</strong> Brasil sediou a conferência climática global; Amazônia em destaque.</li>
+          <li><strong>G20 — Presidência do Brasil (2024):</strong> foco em pobreza, fome e clima.</li>
+          <li><strong>PEC 6×1:</strong> proposta de redução da jornada de 44h para 36h semanais.</li>
+        </ul>
+        <div class="macete-box"><strong>💡 Dica de prova</strong><p>A prova costuma cobrar fatos dos 12 meses anteriores. Com a prova em março/2026, foque nos acontecimentos de 2025 e início de 2026.</p></div>
+        <div class="mini-questao" data-id="mq4" data-correta="b">
+          <div class="mini-questao-label">Fixação do conteúdo</div>
+          <div class="mini-questao-pergunta">A COP30, conferência climática da ONU realizada em 2025, ocorreu em qual cidade brasileira?</div>
+          <div class="mini-questao-opcoes">
+            <button class="mini-opcao" onclick="responderMini('mq4','a')"><b>a)</b> Manaus</button>
+            <button class="mini-opcao" onclick="responderMini('mq4','b')"><b>b)</b> Belém</button>
+            <button class="mini-opcao" onclick="responderMini('mq4','c')"><b>c)</b> Rio de Janeiro</button>
+          </div>
+          <div class="mini-questao-feedback" id="fb-mq4"></div>
+        </div>
+      </div>
 
-      <h3>🎭 5. Cultura de Goiás</h3>
-      <ul>
-        <li><strong>Festas:</strong> Festa do Peão de Boiadeiro (Barretos e interior goiano), Procissão do Fogaréu (Cidade de Goiás — Semana Santa).</li>
-        <li><strong>Música:</strong> Goiás é berço de grandes nomes do sertanejo — Marília Mendonça (natural de Cristianópolis-GO).</li>
-        <li><strong>Patrimônio UNESCO:</strong> Centro Histórico da Cidade de Goiás — reconhecido em 2001.</li>
-        <li><strong>Pirenópolis:</strong> patrimônio histórico nacional, famosa pela Cavalhada (festa medieval).</li>
-      </ul>
+      <div class="resumo-topico">
+        <h2>🌐 Atualidades Internacionais 2024–2025 <span class="tag-fonte">Mundo</span></h2>
+        <ul>
+          <li><strong>Guerra Rússia-Ucrânia:</strong> iniciada em fevereiro de 2022 — conflito segue em 2025.</li>
+          <li><strong>Conflito Israel-Gaza:</strong> intensificado em outubro de 2023; crise humanitária.</li>
+          <li><strong>Reeleição de Trump (EUA, 2024):</strong> tensões comerciais; mudanças na política ambiental.</li>
+          <li><strong>BRICS:</strong> expansão do bloco em 2024 com novos membros.</li>
+          <li><strong>Mercosul-UE:</strong> acordo de livre comércio em perspectiva de ratificação em 2025.</li>
+        </ul>
+        <div class="mundo-box"><p>🌐 Questões de Atualidades podem conectar temas globais (ex: mudanças climáticas) com o contexto local de Goiás (Cerrado, agronegócio, desmatamento).</p></div>
+        <div class="mini-questao" data-id="mq5" data-correta="c">
+          <div class="mini-questao-label">Fixação do conteúdo</div>
+          <div class="mini-questao-pergunta">Em que ano a Rússia iniciou a invasão em larga escala da Ucrânia?</div>
+          <div class="mini-questao-opcoes">
+            <button class="mini-opcao" onclick="responderMini('mq5','a')"><b>a)</b> 2021</button>
+            <button class="mini-opcao" onclick="responderMini('mq5','b')"><b>b)</b> 2023</button>
+            <button class="mini-opcao" onclick="responderMini('mq5','c')"><b>c)</b> 2022</button>
+          </div>
+          <div class="mini-questao-feedback" id="fb-mq5"></div>
+        </div>
+      </div>
 
-      <h3>🌍 6. Atualidades Nacionais — 2024–2025</h3>
-      <ul>
-        <li><strong>Reforma Tributária (EC 132/2023):</strong> unificação de impostos em CBS e IBS; criação do Imposto Seletivo; transição até 2033.</li>
-        <li><strong>Enchentes no RS (2024):</strong> maiores da história gaúcha; mais de 150 mortes; debate sobre mudanças climáticas e gestão de riscos.</li>
-        <li><strong>PEC 6×1:</strong> proposta de redução da jornada de 44h para 36h semanais (4 dias úteis); mais de 171 assinaturas em 2025.</li>
-        <li><strong>COP30 em Belém (2025):</strong> Brasil sediou a conferência climática global; Amazônia no centro das negociações.</li>
-        <li><strong>G20 — Presidência do Brasil (2024):</strong> foco em combate à pobreza, fome e mudanças climáticas.</li>
-      </ul>
-      <div class="highlight-box"><p>💡 <strong>Dica de prova:</strong> Para Atualidades, a banca costuma cobrar fatos dos 12 meses anteriores à data da prova. Com a prova prevista para março de 2026, foque nos acontecimentos de 2025 e início de 2026.</p></div>
-
-      <h3>🌐 7. Atualidades Internacionais — 2024–2025</h3>
-      <ul>
-        <li><strong>Guerra Rússia-Ucrânia:</strong> iniciada em fevereiro de 2022 — "Operação Militar Especial" declarada por Putin; conflito segue em 2025 impactando geopolítica e preço de commodities.</li>
-        <li><strong>Conflito Israel-Gaza:</strong> intensificado em outubro de 2023; grave crise humanitária; debate sobre Direito Internacional Humanitário.</li>
-        <li><strong>Reeleição de Trump (EUA, 2024):</strong> tensões comerciais com Brasil e China; mudanças na política ambiental americana.</li>
-        <li><strong>BRICS:</strong> expansão do bloco em 2024 com admissão de novos membros; discussões sobre nova moeda e desdolarização.</li>
-        <li><strong>Mercosul-UE:</strong> acordo de livre comércio negociado por décadas; perspectivas de ratificação em 2025.</li>
-      </ul>
-      <div class="mundo-box"><p>🌐 <strong>Atenção:</strong> questões de Atualidades para a Câmara de Goiânia podem conectar temas nacionais (ex: mudanças climáticas) com o contexto local de Goiás (ex: Cerrado, agronegócio, desmatamento).</p></div>
+      <!-- BOTÃO REINICIAR MINI-QUESTÕES -->
+      <div style="text-align:center;margin-top:40px;">
+        <button onclick="resetMiniQuestoes()" style="background:#f3f4f6;border:1px solid #e5e7eb;border-radius:8px;padding:10px 20px;font-size:14px;font-weight:600;color:#374151;cursor:pointer;" title="Reiniciar mini-questões">
+          🔄 Reiniciar Mini-Questões
+        </button>
+      </div>
 
     </div>
   </div>
 </div>
 
 <script>
-  let currentUser = null;
-  const acertos = {};
-  const respondidas = {};
-  const TOTAL = 8;
+  const MATERIA_KEY = 'Atualidades';
+  const STORAGE_KEY = 'goianiaconc_atualidades';
+  const TOTAL_QUESTOES = 10;
+  const TOTAL_MINI = 5;
 
-  window.addEventListener('DOMContentLoaded', async () => {
-    if (typeof requireAuth === 'function') {
-      currentUser = await requireAuth();
-      if (!currentUser) return;
-      loadUserInfo();
-      loadProgress();
-    }
-    const mb = document.querySelector('.mobile-topbar');
-    if (mb && window.innerWidth <= 768) mb.style.display = 'flex';
-  });
+  const questoes = [
+    { id:1, tema:'Fundação de Goiânia', enunciado:'Goiânia foi fundada em 1933 como nova capital de Goiás. Quem foi o responsável político e qual o contexto nacional?', opcoes:['Mauro Borges, durante a Ditadura Militar','Pedro Ludovico Teixeira, durante o governo Vargas e a "Marcha para o Oeste"','Juscelino Kubitschek, no mesmo contexto de Brasília em 1958','Atílio Correia Lima, como parte do projeto da República Velha'], correta:'b', gabarito:'Pedro Ludovico Teixeira foi nomeado interventor de Goiás por Getúlio Vargas após a Revolução de 1930 e planejou a nova capital. Atílio Correia Lima foi o urbanista responsável pelo projeto.' },
+    { id:2, tema:'Patrimônio UNESCO', enunciado:'Em 2001, a UNESCO reconheceu como Patrimônio da Humanidade o centro histórico de qual cidade goiana?', opcoes:['Pirenópolis','Cidade de Goiás (Goiás Velho)','Goiânia','Anápolis'], correta:'b', gabarito:'A Cidade de Goiás (Goiás Velho), antiga capital do estado, foi reconhecida pela UNESCO em 2001 por seu conjunto arquitetônico colonial e cultural.' },
+    { id:3, tema:'Tocantins', enunciado:'O Estado do Tocantins foi criado em 1988 a partir do desmembramento de qual estado?', opcoes:['Mato Grosso','Goiás','Pará','Maranhão'], correta:'b', gabarito:'A CF/88 criou o Estado do Tocantins desmembrando a parte norte de Goiás. Palmas é a capital do novo estado.' },
+    { id:4, tema:'Economia de Goiás', enunciado:'A economia de Goiás é marcada por forte base agropecuária. O estado se destaca na produção de:', opcoes:['Soja, milho, cana-de-açúcar e pecuária bovina','Cacau, borracha e petróleo','Café, algodão e minério de ferro','Pesca, extrativismo vegetal e turismo de praia'], correta:'a', gabarito:'Goiás é um dos maiores produtores nacionais de soja, milho, cana-de-açúcar, sorgo e possui expressivo rebanho bovino, sendo referência no agronegócio brasileiro.' },
+    { id:5, tema:'COP30', enunciado:'A COP30, conferência da ONU sobre mudanças climáticas realizada em novembro de 2025, ocorreu em:', opcoes:['Manaus (AM)','Belém (PA)','Rio de Janeiro (RJ)','Brasília (DF)'], correta:'b', gabarito:'A COP30 foi realizada em Belém do Pará, colocando a Amazônia e o Brasil no centro das discussões climáticas globais.' },
+    { id:6, tema:'Guerra Rússia-Ucrânia', enunciado:'Em que ano a Rússia iniciou a invasão em larga escala da Ucrânia, declarando "Operação Militar Especial"?', opcoes:['2014','2022','2023','2021'], correta:'b', gabarito:'A invasão em larga escala foi iniciada em fevereiro de 2022. A crise entre os dois países, entretanto, já existia desde a anexação da Crimeia em 2014.' },
+    { id:7, tema:'Reforma Tributária', enunciado:'A Reforma Tributária (EC 132/2023) unificou impostos sobre o consumo. Quais os dois novos tributos criados?', opcoes:['IRPF e CSLL','CBS (federal) e IBS (estados e municípios)','ICMS e ISS unificados','IOF e COFINS reformulados'], correta:'b', gabarito:'A Reforma Tributária criou a CBS (Contribuição sobre Bens e Serviços, federal) e o IBS (Imposto sobre Bens e Serviços, dos estados e municípios), além do Imposto Seletivo.' },
+    { id:8, tema:'Goiânia — Dados', enunciado:'Sobre Goiânia, capital de Goiás, assinale a afirmativa CORRETA:', opcoes:['É a maior cidade em área urbana do Brasil','Sua arquitetura foi influenciada pelo estilo Barroco','É conhecida como o maior sítio Art Déco da América Latina e o maior centro urbano do Centro-Oeste depois de Brasília','A RM de Goiânia tem mais de 5 milhões de habitantes, sendo a 3ª maior do país'], correta:'c', gabarito:'Goiânia é o maior sítio Art Déco da América Latina. É a 2ª maior cidade do Centro-Oeste (atrás de Brasília). A RM tem cerca de 2,2 milhões de habitantes (10ª maior do Brasil).' },
+    { id:9, tema:'Bioma Cerrado', enunciado:'O Cerrado, bioma predominante em Goiás, é:', opcoes:['O maior bioma do Brasil, com maior biodiversidade','O segundo maior bioma do Brasil, extremamente ameaçado pelo desmatamento','Um bioma exclusivo de Goiás, sem conexão com outros estados','Um bioma úmido com chuvas regulares durante todo o ano'], correta:'b', gabarito:'O Cerrado é o segundo maior bioma brasileiro (atrás da Amazônia) e um dos mais ameaçados. Abriga enorme biodiversidade e está sob forte pressão do agronegócio.' },
+    { id:10, tema:'BRICS', enunciado:'Sobre o bloco BRICS em 2024, é correto afirmar:', opcoes:['O bloco foi extinto em 2024 por divergências entre os membros','O bloco passou por expansão com admissão de novos membros em 2024','O Brasil saiu do bloco em 2024 por discordâncias políticas','O BRICS passou a ser liderado exclusivamente pelos EUA em 2024'], correta:'b', gabarito:'Em 2024, o BRICS expandiu com a admissão de novos membros, ampliando sua influência geopolítica e econômica. O Brasil exerceu a presidência do G20 em 2024.' },
+  ];
 
-  async function loadUserInfo() {
-    if (typeof getUserProfile !== 'function') return;
-    const profile = await getUserProfile(currentUser.id);
-    const name = profile?.full_name || currentUser.email.split('@')[0];
-    const el = document.getElementById('userName');
-    if (el) el.textContent = name;
-    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
-    [document.getElementById('userAvatar'), document.getElementById('mobileAvatar')].forEach(el => {
-      if (!el) return;
-      if (profile?.avatar_url) el.innerHTML = `<img src="${profile.avatar_url}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
-      else el.textContent = initials;
+  const letras = ['a','b','c','d'];
+  let currentUser=null, qAtual=0, acertos=0, erros=0, respondidas={}, miniRespondidas={};
+
+  function responderMini(id, escolhida) {
+    if (miniRespondidas[id] !== undefined) return;
+    const c = document.querySelector(`.mini-questao[data-id="${id}"]`);
+    const correta = c.getAttribute('data-correta');
+    const fb = document.getElementById('fb-'+id);
+    c.querySelectorAll('.mini-opcao').forEach(btn => {
+      btn.disabled = true;
+      const l = btn.querySelector('b').textContent.replace(')','').trim().toLowerCase();
+      if (l === correta) btn.classList.add('correta');
+      else if (l === escolhida && escolhida !== correta) btn.classList.add('incorreta');
     });
+    miniRespondidas[id] = escolhida === correta;
+    fb.className = 'mini-questao-feedback '+(escolhida===correta?'acertou':'errou');
+    fb.textContent = escolhida===correta ? '✅ Correto! Continue assim.' : '❌ Errado. Resposta: '+correta.toUpperCase()+'. Releia o tópico!';
+    salvarProgressoResumo();
   }
 
-  async function loadProgress() {
-    if (typeof getProgress !== 'function') return;
-    const progress = await getProgress(currentUser.id);
-    const p = progress.find(p => p.materia === 'Atualidades');
-    const pct = p ? p.percentual : 0;
-    document.getElementById('progressBar').style.width = pct + '%';
-    document.getElementById('progressPct').textContent = pct + '%';
+  async function salvarProgressoResumo() {
+    const acertasMini = Object.values(miniRespondidas).filter(v=>v).length;
+    const pctR = Math.round((acertasMini/TOTAL_MINI)*100);
+    document.getElementById('pctResumo').textContent = pctR+'%';
+    const stored = getStoredData(); stored.miniRespondidas=miniRespondidas; stored.pctResumo=pctR; saveStoredData(stored);
+    recalcularProgressoMateria(stored);
+    if (currentUser) await saveProgress(currentUser.id, MATERIA_KEY, calcularProgressoTotal(stored));
   }
 
-  function switchTab(tab, el) {
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
-    document.getElementById('panel-' + tab).classList.add('active');
+  function resetMiniQuestoes() {
+    if (!confirm('Deseja reiniciar todas as mini-questões do resumo?')) return;
+    miniRespondidas = {};
+    const stored = getStoredData(); stored.miniRespondidas={}; stored.pctResumo=0; saveStoredData(stored);
+    document.querySelectorAll('.mini-questao').forEach(c => {
+      c.querySelectorAll('.mini-opcao').forEach(btn => { btn.disabled=false; btn.classList.remove('correta','incorreta'); });
+      const fb = c.querySelector('.mini-questao-feedback');
+      if (fb) { fb.className='mini-questao-feedback'; fb.textContent=''; }
+    });
+    document.getElementById('pctResumo').textContent = '0%';
+    recalcularProgressoMateria(stored);
+    if (currentUser) saveProgress(currentUser.id, MATERIA_KEY, calcularProgressoTotal(stored));
+  }
+
+  function getStoredData() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'); } catch(e) { return {}; } }
+  function saveStoredData(d) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); } catch(e) {} }
+  function calcularProgressoTotal(s) { return Math.round(((s.pctResumo||0)*0.4)+((s.pctQuestoes||0)*0.6)); }
+  function recalcularProgressoMateria(s) {
+    const t = calcularProgressoTotal(s);
+    document.getElementById('progressBar').style.width = t+'%';
+    document.getElementById('progressPct').textContent = t+'%';
+    document.getElementById('pctQuestoes').textContent = (s.pctQuestoes||0)+'%';
+    document.getElementById('pctResumo').textContent = (s.pctResumo||0)+'%';
+  }
+
+  function renderCard(idx) {
+    const q = questoes[idx];
+    document.getElementById('simuladoProgressBar').style.width = Math.round((idx/TOTAL_QUESTOES)*100)+'%';
+    document.getElementById('qAtualNum').textContent = idx+1;
+    const jr = respondidas[idx];
+    const opcoesHtml = q.opcoes.map((op,i) => {
+      const l = letras[i]; let cls='opcao-btn';
+      if (jr) { if (l===q.correta) cls+=' correta'; else if (l===jr.escolhida&&jr.escolhida!==q.correta) cls+=' incorreta'; }
+      return `<button class="${cls}" onclick="responder(${idx},'${l}')" ${jr?'disabled':''}><div class="opcao-letra">${l.toUpperCase()}</div><span>${op}</span></button>`;
+    }).join('');
+    const gabHtml = jr ? `<div class="questao-gabarito ${jr.escolhida===q.correta?'acertou':'errou'}">${jr.escolhida===q.correta?'✅ Correto!':'❌ Incorreto. Gabarito: '+q.correta.toUpperCase()+'.'} ${q.gabarito}</div>` : '';
+    const ehUltima = idx===TOTAL_QUESTOES-1;
+    document.getElementById('questaoContainer').innerHTML = `
+      <div class="questao-card-single${jr?(jr.escolhida===q.correta?' acertou':' errou'):''}">
+        <div class="questao-meta"><div class="questao-num-badge">Questão ${String(idx+1).padStart(2,'0')}</div><div class="questao-tema-badge">${q.tema}</div></div>
+        <div class="questao-enunciado">${q.enunciado}</div>
+        <div class="questao-opcoes">${opcoesHtml}</div>${gabHtml}
+      </div>
+      <div class="simulado-nav">
+        <button class="simulado-nav-btn btn-reiniciar" onclick="reiniciarSimulado()">🔄 Reiniciar</button>
+        ${ehUltima&&jr?`<button class="simulado-nav-btn btn-proximo" onclick="mostrarResultado()">🏁 Ver Resultado →</button>`:`<button class="simulado-nav-btn btn-proximo" onclick="proximaQuestao()" ${!jr?'disabled':''}>Próxima →</button>`}
+      </div>`;
+  }
+
+  function responder(idx, escolhida) {
+    if (respondidas[idx]) return;
+    const q = questoes[idx];
+    if (escolhida===q.correta) { acertos++; document.getElementById('chipAcertos').textContent=acertos; }
+    else { erros++; document.getElementById('chipErros').textContent=erros; }
+    document.getElementById('chipTotal').textContent=(acertos+erros)+'/'+TOTAL_QUESTOES;
+    respondidas[idx]={escolhida,correta:q.correta,enunciado:q.enunciado,tema:q.tema,opcoes:q.opcoes};
+    const stored=getStoredData(); stored.respondidas=respondidas; stored.acertos=acertos; stored.erros=erros; saveStoredData(stored);
+    if (currentUser) saveAnswer(currentUser.id,'atu_q'+(idx+1),MATERIA_KEY,escolhida===q.correta);
+    renderCard(idx);
+  }
+
+  function proximaQuestao() { if (qAtual<TOTAL_QUESTOES-1) { qAtual++; renderCard(qAtual); document.getElementById('questaoContainer').scrollIntoView({behavior:'smooth',block:'start'}); } }
+
+  function mostrarResultado() {
+    const taxa=Math.round((acertos/TOTAL_QUESTOES)*100);
+    let emoji='😔',titulo='Continue Praticando!',sub='Revise os temas e tente novamente.';
+    if(taxa>=90){emoji='🏆';titulo='Excelente!';sub='Você domina Atualidades e Goiás!';}
+    else if(taxa>=70){emoji='🎉';titulo='Muito Bem!';sub='Revise os erros para chegar a 100%.';}
+    else if(taxa>=50){emoji='💪';titulo='Bom Progresso!';sub='Foque nos tópicos com mais dificuldade.';}
+    document.getElementById('resultEmoji').textContent=emoji;
+    document.getElementById('resultTitulo').textContent=titulo;
+    document.getElementById('resultSub').textContent=sub;
+    document.getElementById('resultAcertos').textContent=acertos;
+    document.getElementById('resultErros').textContent=erros;
+    document.getElementById('resultTaxa').textContent=taxa+'%';
+    const erradas=Object.entries(respondidas).filter(([,r])=>r.escolhida!==r.correta).map(([i,r])=>({idx:parseInt(i),...r}));
+    document.getElementById('erradasLista').innerHTML=erradas.length>0
+      ?`<div class="erradas-titulo">📋 Questões para revisar (${erradas.length})</div>`+erradas.map(q=>`<div class="errada-item"><div class="errada-item-num">Questão ${q.idx+1} · ${q.tema}</div><div class="errada-item-enunciado">${q.enunciado}</div><div class="errada-item-gabarito">✅ Resposta: ${q.correta.toUpperCase()}) ${questoes[q.idx].opcoes[letras.indexOf(q.correta)]}</div></div>`).join('')
+      :`<div style="text-align:center;padding:20px;font-weight:700;font-size:15px;">🎯 Parabéns! Você acertou todas!</div>`;
+    document.getElementById('questaoContainer').style.display='none';
+    document.getElementById('resultadoFinal').style.display='block';
+    const stored=getStoredData(); stored.pctQuestoes=taxa; saveStoredData(stored); recalcularProgressoMateria(stored);
+    if (currentUser) saveProgress(currentUser.id,MATERIA_KEY,calcularProgressoTotal(stored));
+  }
+
+  function getQuestoesErradasData() {
+    return Object.entries(respondidas).filter(([,r])=>r.escolhida!==r.correta).map(([idx,r])=>({
+      numero:parseInt(idx)+1,tema:r.tema,enunciado:r.enunciado,
+      escolhida:r.escolhida.toUpperCase()+') '+(r.opcoes[letras.indexOf(r.escolhida)]||''),
+      correta:r.correta.toUpperCase()+') '+questoes[parseInt(idx)].opcoes[letras.indexOf(r.correta)],
+      explicacao:questoes[parseInt(idx)].gabarito
+    }));
+  }
+
+  function downloadExcel() {
+    const d=getQuestoesErradasData();
+    if(!d.length){alert('Parabéns! Você não errou nenhuma questão!');return;}
+    const wb=XLSX.utils.book_new();
+    const ws=XLSX.utils.aoa_to_sheet([['GoiâniaConc — Questões Erradas — Atualidades'],[''],['Nº','Tema','Enunciado','Sua resposta','Resposta correta','Explicação'],...d.map(q=>[q.numero,q.tema,q.enunciado,q.escolhida,q.correta,q.explicacao])]);
+    ws['!cols']=[{wch:5},{wch:18},{wch:60},{wch:30},{wch:30},{wch:60}];
+    XLSX.utils.book_append_sheet(wb,ws,'Questões Erradas');
+    XLSX.writeFile(wb,'goianiaconc_atualidades_erradas.xlsx');
+  }
+
+  function downloadPDF() {
+    const d=getQuestoesErradasData();
+    if(!d.length){alert('Parabéns! Você não errou nenhuma questão!');return;}
+    const win=window.open('','_blank');
+    win.document.write(`<html><head><meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;max-width:800px;margin:40px auto;color:#1a2637}h1{color:#1a3a5c;border-bottom:3px solid #c8951a;padding-bottom:10px}.card{background:#fff5f5;border:1px solid #fca5a5;border-left:4px solid #dc2626;border-radius:8px;padding:14px;margin-bottom:16px}.num{font-size:11px;font-weight:bold;color:#dc2626;text-transform:uppercase;margin-bottom:6px}.enunciado{font-size:14px;font-weight:600;margin-bottom:10px}.errada{font-size:12px;color:#7f1d1d;margin-bottom:4px}.certa{font-size:12px;color:#15803d;font-weight:700;margin-bottom:8px}.exp{font-size:12px;color:#374151;background:#f9fafb;border-radius:6px;padding:8px}.info{font-size:13px;color:#6b7280;margin-bottom:24px}</style></head><body><h1>🌎 Questões para Revisar — Atualidades</h1><div class="info">GoiâniaConc · ${d.length} questão(ões) errada(s) · ${new Date().toLocaleDateString('pt-BR')}</div>${d.map(q=>`<div class="card"><div class="num">Questão ${q.numero} · ${q.tema}</div><div class="enunciado">${q.enunciado}</div><div class="errada">❌ Sua resposta: ${q.escolhida}</div><div class="certa">✅ Correta: ${q.correta}</div><div class="exp"><strong>💡</strong> ${q.explicacao}</div></div>`).join('')}</body></html>`);
+    win.document.close(); setTimeout(()=>win.print(),500);
+  }
+
+  function reiniciarSimulado() {
+    qAtual=0;acertos=0;erros=0;respondidas={};
+    document.getElementById('chipAcertos').textContent='0';
+    document.getElementById('chipErros').textContent='0';
+    document.getElementById('chipTotal').textContent='0/'+TOTAL_QUESTOES;
+    document.getElementById('simuladoProgressBar').style.width='0%';
+    document.getElementById('qAtualNum').textContent='1';
+    document.getElementById('questaoContainer').style.display='block';
+    document.getElementById('resultadoFinal').style.display='none';
+    const stored=getStoredData(); delete stored.respondidas; delete stored.acertos; delete stored.erros; saveStoredData(stored);
+    renderCard(0);
+  }
+
+  function switchTab(tab,el) {
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+    document.getElementById('panel-'+tab).classList.add('active');
     el.classList.add('active');
   }
 
   function showVideoMsg() { alert('Nenhum vídeo adicionado ainda para esta matéria.'); }
 
-  function responder(questaoId, letraClicada, letraCorreta) {
-    if (respondidas[questaoId]) return;
-    respondidas[questaoId] = true;
-    const card = document.getElementById(questaoId);
-    const opcoes = card.querySelectorAll('.questao-opcao');
-    const letras = ['a','b','c','d'];
-    opcoes.forEach((op, i) => {
-      if (letras[i] === letraCorreta) op.classList.add('correta');
-      else if (letras[i] === letraClicada && letraClicada !== letraCorreta) op.classList.add('errada');
-      op.style.pointerEvents = 'none';
+  window.addEventListener('DOMContentLoaded', async () => {
+    currentUser = await requireAuth();
+    if (!currentUser) return;
+    const profile = await getUserProfile(currentUser.id);
+    const name = profile?.full_name||currentUser.email.split('@')[0];
+    const el = document.getElementById('userName');
+    if (el) el.textContent = name;
+    const initials = name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+    [document.getElementById('userAvatar'),document.getElementById('mobileAvatar')].forEach(av=>{
+      if(!av)return;
+      if(profile?.avatar_url)av.innerHTML=`<img src="${profile.avatar_url}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+      else av.textContent=initials;
     });
-    if (letraClicada === letraCorreta) acertos[questaoId] = true;
-    atualizarScore();
-  }
-
-  function verGabarito(questaoId, letraCorreta) {
-    if (respondidas[questaoId]) return;
-    respondidas[questaoId] = true;
-    const card = document.getElementById(questaoId);
-    const opcoes = card.querySelectorAll('.questao-opcao');
-    const letras = ['a','b','c','d'];
-    opcoes.forEach((op, i) => {
-      if (letras[i] === letraCorreta) op.classList.add('correta');
-      op.style.pointerEvents = 'none';
-    });
-    atualizarScore();
-  }
-
-  function atualizarScore() {
-    document.getElementById('scoreDisplay').textContent = Object.keys(acertos).length + '/' + TOTAL + ' acertos';
-  }
+    const stored=getStoredData();
+    if(stored.miniRespondidas){
+      miniRespondidas=stored.miniRespondidas;
+      Object.entries(miniRespondidas).forEach(([id,acertou])=>{
+        const c=document.querySelector(`.mini-questao[data-id="${id}"]`);
+        if(!c)return;
+        const correta=c.getAttribute('data-correta');
+        const fb=document.getElementById('fb-'+id);
+        c.querySelectorAll('.mini-opcao').forEach(btn=>{btn.disabled=true;const l=btn.querySelector('b').textContent.replace(')','').trim().toLowerCase();if(l===correta)btn.classList.add('correta');});
+        if(fb){fb.className='mini-questao-feedback '+(acertou?'acertou':'errou');fb.textContent=acertou?'✅ Correto!':'❌ Errado. Releia o tópico!';}
+      });
+    }
+    recalcularProgressoMateria(stored);
+    if(stored.respondidas){
+      respondidas=stored.respondidas;acertos=stored.acertos||0;erros=stored.erros||0;
+      document.getElementById('chipAcertos').textContent=acertos;
+      document.getElementById('chipErros').textContent=erros;
+      document.getElementById('chipTotal').textContent=(acertos+erros)+'/'+TOTAL_QUESTOES;
+      let ultima=-1; for(let i=0;i<TOTAL_QUESTOES;i++)if(respondidas[i])ultima=i;
+      qAtual=Math.min(ultima+1,TOTAL_QUESTOES-1);
+    }
+    renderCard(qAtual);
+  });
 </script>
 </body>
 </html>
