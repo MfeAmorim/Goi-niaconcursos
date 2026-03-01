@@ -70,11 +70,26 @@ async function updateProfile(userId, updates) {
 // Upload de foto de perfil
 async function uploadAvatar(userId, file) {
   const ext = file.name.split('.').pop();
-  const path = `avatars/${userId}.${ext}`;
-  const { error: uploadError } = await sb.storage.from('avatars').upload(path, file, { upsert: true });
+  const path = `${userId}.${ext}`;
+  
+  // Remove foto antiga se existir
+  await sb.storage.from('avatars').remove([path]);
+  
+  // Faz upload
+  const { error: uploadError } = await sb.storage
+    .from('avatars')
+    .upload(path, file, { upsert: true, contentType: file.type });
+  
   if (uploadError) throw uploadError;
-  const { data } = sb.storage.from('avatars').getPublicUrl(path);
+  
+  // Pega URL pública
+  const { data } = sb.storage
+    .from('avatars')
+    .getPublicUrl(path);
+  
+  // Salva no perfil
   await updateProfile(userId, { avatar_url: data.publicUrl });
+  
   return data.publicUrl;
 }
 
