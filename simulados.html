@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GoiâniaConc — Simulados por Banca</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  body { display: flex; flex-direction: column; min-height: 100vh; background: var(--bg); }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: var(--navy); padding: 0 32px; height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0; position: sticky; top: 0; z-index: 100;
+  }
+  .topbar-left { display: flex; align-items: center; gap: 16px; }
+  .back-btn { display: flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.6); text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.15s; }
+  .back-btn:hover { color: white; }
+  .topbar-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.15); }
+  .topbar-title { font-family: 'DM Serif Display', serif; font-size: 17px; color: white; }
+  .topbar-badge { background: rgba(200,149,26,0.2); border: 1px solid rgba(200,149,26,0.4); color: var(--gold-light); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px; }
+  .user-btn { display: flex; align-items: center; gap: 8px; padding: 5px 12px 5px 6px; border-radius: 30px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); cursor: pointer; transition: all 0.15s; text-decoration: none; }
+  .user-btn:hover { background: rgba(255,255,255,0.18); }
+  .user-name { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85); max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* ── MAIN LAYOUT ── */
+  .main-content { flex: 1; padding: 28px 32px; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+
+  /* ── HERO ── */
+  .simulados-hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+    border-radius: 20px; padding: 32px 40px; margin-bottom: 28px;
+    position: relative; overflow: hidden;
+  }
+  .simulados-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 80% 50%, rgba(200,149,26,0.15) 0%, transparent 60%); }
+  .simulados-hero-content { position: relative; z-index: 1; }
+  .simulados-hero h1 { font-family: 'DM Serif Display', serif; font-size: 26px; color: white; margin: 0 0 8px 0; }
+  .simulados-hero p { font-size: 14px; color: rgba(255,255,255,0.65); margin: 0 0 20px 0; line-height: 1.6; }
+  .hero-stats { display: flex; gap: 24px; flex-wrap: wrap; }
+  .hero-stat { display: flex; flex-direction: column; }
+  .hero-stat-val { font-size: 22px; font-weight: 800; color: var(--gold-light); line-height: 1; }
+  .hero-stat-label { font-size: 11px; color: rgba(255,255,255,0.5); font-weight: 500; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── FILTROS ── */
+  .filtros-card {
+    background: white; border: 1px solid var(--gray-200); border-radius: 16px;
+    padding: 24px; margin-bottom: 24px;
+  }
+  .filtros-card h3 { font-size: 13px; font-weight: 800; color: var(--navy); text-transform: uppercase; letter-spacing: 0.6px; margin: 0 0 16px 0; }
+  .filtros-grid { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: end; }
+  .filtro-group { display: flex; flex-direction: column; gap: 6px; }
+  .filtro-label { font-size: 11px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.5px; }
+  .filtro-select {
+    border: 1.5px solid var(--gray-200); border-radius: 10px;
+    padding: 10px 14px; font-size: 13px; color: var(--navy);
+    background: var(--gray-50); font-family: inherit; cursor: pointer;
+    transition: border-color 0.15s; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center;
+    padding-right: 32px;
+  }
+  .filtro-select:focus { outline: none; border-color: var(--gold); }
+  .btn-iniciar {
+    background: var(--gold); color: white; border: none; border-radius: 10px;
+    padding: 11px 24px; font-size: 13px; font-weight: 700; cursor: pointer;
+    transition: all 0.15s; font-family: inherit; display: flex; align-items: center; gap: 8px;
+    white-space: nowrap;
+  }
+  .btn-iniciar:hover { background: var(--gold-dark); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(200,149,26,0.3); }
+  .btn-iniciar:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* ── QUESTÕES ── */
+  .questoes-wrapper { display: none; }
+  .questoes-wrapper.active { display: block; }
+
+  .simulado-header {
+    background: white; border: 1px solid var(--gray-200); border-radius: 14px;
+    padding: 20px 24px; margin-bottom: 20px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  .simulado-header-info h3 { font-size: 16px; font-weight: 800; color: var(--navy); margin: 0 0 3px 0; }
+  .simulado-header-info p { font-size: 12px; color: var(--gray-400); margin: 0; }
+  .simulado-score-chips { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .score-chip { display: flex; flex-direction: column; align-items: center; padding: 8px 16px; border-radius: 10px; min-width: 60px; }
+  .score-chip-val { font-size: 20px; font-weight: 800; line-height: 1; }
+  .score-chip-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+  .score-chip.acertos { background: #dcfce7; }
+  .score-chip.acertos .score-chip-val { color: #16a34a; }
+  .score-chip.acertos .score-chip-label { color: #15803d; }
+  .score-chip.erros { background: #fee2e2; }
+  .score-chip.erros .score-chip-val { color: #dc2626; }
+  .score-chip.erros .score-chip-label { color: #991b1b; }
+  .score-chip.total { background: var(--gold-pale); }
+  .score-chip.total .score-chip-val { color: var(--gold); }
+  .score-chip.total .score-chip-label { color: #92400e; }
+
+  .btn-encerrar {
+    background: var(--gray-100); color: var(--gray-400); border: 1.5px solid var(--gray-200);
+    border-radius: 10px; padding: 8px 16px; font-size: 12px; font-weight: 700;
+    cursor: pointer; font-family: inherit; transition: all 0.15s;
+  }
+  .btn-encerrar:hover { background: #fee2e2; color: #dc2626; border-color: #fca5a5; }
+
+  /* Barra de progresso */
+  .simulado-progress-bar {
+    background: white; border: 1px solid var(--gray-200); border-radius: 12px;
+    padding: 14px 20px; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .simulado-progress-info { font-size: 12px; font-weight: 700; color: var(--navy); white-space: nowrap; }
+  .simulado-progress-info span { color: var(--gray-400); font-weight: 500; }
+  .progress-bar-track { flex: 1; height: 8px; background: var(--gray-100); border-radius: 99px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold), #f59e0b); border-radius: 99px; transition: width 0.4s ease; }
+
+  /* Card de questão */
+  .questoes-container { max-width: 760px; margin: 0 auto; }
+  .questao-card-single {
+    background: white; border: 1.5px solid var(--gray-200); border-radius: 18px;
+    padding: 28px 32px; margin-bottom: 20px;
+    animation: fadeIn 0.3s ease;
+    box-shadow: 0 4px 20px rgba(26,58,92,0.06);
+  }
+  .questao-card-single.acertou { border-color: #86efac; background: linear-gradient(135deg, #f0fdf4, white); }
+  .questao-card-single.errou { border-color: #fca5a5; background: linear-gradient(135deg, #fff5f5, white); }
+
+  .questao-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+  .questao-num-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--gold-pale); border: 1px solid rgba(200,149,26,0.3);
+    color: var(--gold); font-size: 11px; font-weight: 800;
+    padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .questao-banca-badge {
+    font-size: 11px; font-weight: 600; color: #1d4ed8;
+    background: #eff6ff; border: 1px solid #bfdbfe; padding: 4px 10px; border-radius: 20px;
+  }
+  .questao-tema-badge {
+    font-size: 11px; font-weight: 600; color: var(--gray-400);
+    background: var(--gray-100); padding: 4px 10px; border-radius: 20px;
+  }
+
+  .questao-enunciado { font-size: 15px; color: var(--navy); font-weight: 600; line-height: 1.7; margin-bottom: 22px; }
+  .questao-opcoes { display: flex; flex-direction: column; gap: 10px; }
+
+  .opcao-btn {
+    background: var(--gray-50); border: 1.5px solid var(--gray-200);
+    border-radius: 12px; padding: 13px 18px;
+    font-size: 14px; color: #374151; cursor: pointer;
+    text-align: left; transition: all 0.15s; font-family: inherit;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .opcao-letra {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--gray-200); color: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800; flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .opcao-btn:hover:not(:disabled) { border-color: var(--gold); background: #fffbeb; }
+  .opcao-btn:hover:not(:disabled) .opcao-letra { background: var(--gold); color: white; }
+  .opcao-btn.selecionada { border-color: var(--navy); background: rgba(26,58,92,0.04); }
+  .opcao-btn.correta { border-color: #16a34a; background: #dcfce7; color: #14532d; font-weight: 600; }
+  .opcao-btn.correta .opcao-letra { background: #16a34a; color: white; }
+  .opcao-btn.incorreta { border-color: #dc2626; background: #fee2e2; color: #7f1d1d; }
+  .opcao-btn.incorreta .opcao-letra { background: #dc2626; color: white; }
+  .opcao-btn:disabled { cursor: default; }
+
+  .questao-feedback {
+    margin-top: 16px; padding: 12px 16px; border-radius: 10px;
+    font-size: 13px; font-weight: 600; display: none;
+  }
+  .questao-feedback.show { display: block; }
+  .questao-feedback.acertou { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+  .questao-feedback.errou { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
+
+  .questao-nav {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 16px;
+  }
+  .btn-nav {
+    background: var(--navy); color: white; border: none; border-radius: 10px;
+    padding: 10px 22px; font-size: 13px; font-weight: 700; cursor: pointer;
+    font-family: inherit; transition: all 0.15s; display: flex; align-items: center; gap: 8px;
+  }
+  .btn-nav:hover { background: var(--navy-dark); }
+  .btn-nav:disabled { opacity: 0.3; cursor: not-allowed; }
+  .btn-nav.secondary { background: var(--gray-100); color: var(--navy); }
+  .btn-nav.secondary:hover { background: var(--gray-200); }
+
+  /* ── RESULTADO FINAL ── */
+  .resultado-final {
+    background: white; border: 1px solid var(--gray-200); border-radius: 20px;
+    padding: 40px; text-align: center; max-width: 760px; margin: 0 auto;
+    animation: fadeIn 0.4s ease;
+  }
+  .resultado-emoji { font-size: 64px; margin-bottom: 16px; }
+  .resultado-titulo { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--navy); margin-bottom: 8px; }
+  .resultado-subtitulo { font-size: 15px; color: var(--gray-400); margin-bottom: 28px; }
+  .resultado-stats { display: flex; justify-content: center; gap: 20px; margin-bottom: 32px; flex-wrap: wrap; }
+  .resultado-stat { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 14px; padding: 20px 28px; min-width: 100px; }
+  .resultado-stat-val { font-size: 32px; font-weight: 800; color: var(--navy); line-height: 1; }
+  .resultado-stat-label { font-size: 11px; color: var(--gray-400); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+  .resultado-pct { font-size: 48px; font-weight: 800; color: var(--gold); margin: 8px 0 4px; }
+
+  .btn-download {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 20px; border-radius: 10px; border: 1.5px solid; font-size: 13px;
+    font-weight: 700; cursor: pointer; transition: all 0.15s; font-family: inherit;
+    margin: 6px;
+  }
+  .btn-pdf { background: #fff5f5; border-color: #fca5a5; color: #dc2626; }
+  .btn-pdf:hover { background: #fee2e2; }
+  .btn-excel { background: #f0fdf4; border-color: #86efac; color: #16a34a; }
+  .btn-excel:hover { background: #dcfce7; }
+  .btn-novo { background: var(--gold-pale); border-color: rgba(200,149,26,0.4); color: var(--gold); }
+  .btn-novo:hover { background: rgba(200,149,26,0.15); }
+  .btn-novo-filtro { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; }
+  .btn-novo-filtro:hover { background: #dbeafe; }
+
+  /* ── LOADING ── */
+  .loading-state {
+    background: white; border: 1px solid var(--gray-200); border-radius: 16px;
+    padding: 56px 32px; text-align: center; max-width: 760px; margin: 0 auto;
+  }
+  .loading-spinner { width: 40px; height: 40px; border: 3px solid var(--gray-200); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── BANCAS CARDS ── */
+  .bancas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 28px; }
+  .banca-card {
+    background: white; border: 1.5px solid var(--gray-200); border-radius: 14px;
+    padding: 20px 18px; cursor: pointer; transition: all 0.2s; text-align: center;
+  }
+  .banca-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(200,149,26,0.12); }
+  .banca-card.selected { border-color: var(--gold); background: var(--gold-pale); }
+  .banca-card-icon { font-size: 28px; margin-bottom: 8px; }
+  .banca-card-nome { font-size: 13px; font-weight: 800; color: var(--navy); margin-bottom: 4px; }
+  .banca-card-count { font-size: 11px; color: var(--gray-400); font-weight: 500; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .main-content { padding: 16px; }
+    .simulados-hero { padding: 24px 20px; }
+    .filtros-grid { grid-template-columns: 1fr; }
+    .questao-card-single { padding: 20px 18px; }
+    .btn-download { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<nav class="topbar">
+  <div class="topbar-left">
+    <a href="dashboard.html" class="back-btn">← Dashboard</a>
+    <div class="topbar-divider"></div>
+    <span class="topbar-title">GoiâniaConc</span>
+    <span class="topbar-badge">SIMULADOS</span>
+  </div>
+  <a href="perfil.html" class="user-btn" id="userBtn">
+    <div class="user-name" id="userNameDisplay">Carregando...</div>
+  </a>
+</nav>
+
+<div class="main-content">
+
+  <!-- HERO -->
+  <div class="simulados-hero">
+    <div class="simulados-hero-content">
+      <h1>📋 Simulados por Banca</h1>
+      <p>Questões reais de concursos anteriores. Escolha a banca e a matéria para iniciar.</p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="hero-stat-val" id="totalQuestoes">—</span>
+          <span class="hero-stat-label">Questões</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-val" id="totalBancas">—</span>
+          <span class="hero-stat-label">Bancas</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-val" id="totalMaterias">—</span>
+          <span class="hero-stat-label">Matérias</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="filtros-card" id="filtrosCard">
+    <h3>🎯 Configurar Simulado</h3>
+    <div class="filtros-grid">
+      <div class="filtro-group">
+        <label class="filtro-label">Banca</label>
+        <select class="filtro-select" id="filtroBanca">
+          <option value="">Todas as bancas</option>
+        </select>
+      </div>
+      <div class="filtro-group">
+        <label class="filtro-label">Matéria</label>
+        <select class="filtro-select" id="filtroMateria">
+          <option value="">Todas as matérias</option>
+        </select>
+      </div>
+      <button class="btn-iniciar" id="btnIniciar" onclick="iniciarSimulado()">
+        ▶ Iniciar Simulado
+      </button>
+    </div>
+    <div style="margin-top:12px; font-size:12px; color:var(--gray-400);" id="contadorFiltro">
+      Selecione os filtros para ver quantas questões serão carregadas.
+    </div>
+  </div>
+
+  <!-- ÁREA DO SIMULADO -->
+  <div class="questoes-wrapper" id="questoesWrapper">
+
+    <!-- HEADER DO SIMULADO -->
+    <div class="simulado-header">
+      <div class="simulado-header-info">
+        <h3 id="simuladoTitulo">Simulado</h3>
+        <p id="simuladoSubtitulo">Questões de concurso</p>
+      </div>
+      <div class="simulado-score-chips">
+        <div class="score-chip acertos">
+          <span class="score-chip-val" id="chipAcertos">0</span>
+          <span class="score-chip-label">Acertos</span>
+        </div>
+        <div class="score-chip erros">
+          <span class="score-chip-val" id="chipErros">0</span>
+          <span class="score-chip-label">Erros</span>
+        </div>
+        <div class="score-chip total">
+          <span class="score-chip-val" id="chipTotal">0</span>
+          <span class="score-chip-label">Total</span>
+        </div>
+        <button class="btn-encerrar" onclick="encerrarSimulado()">⏹ Encerrar</button>
+      </div>
+    </div>
+
+    <!-- BARRA DE PROGRESSO -->
+    <div class="simulado-progress-bar">
+      <div class="simulado-progress-info">
+        Questão <strong id="qAtualDisplay">1</strong> <span>de <span id="qTotalDisplay">—</span></span>
+      </div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progressBarFill" style="width:0%"></div>
+      </div>
+      <div class="simulado-progress-info" id="progressPct">0%</div>
+    </div>
+
+    <!-- QUESTÃO ATUAL -->
+    <div class="questoes-container" id="questoesContainer"></div>
+
+  </div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   ESTADO GLOBAL
+═══════════════════════════════════════ */
+let todasQuestoes = [];
+let questoesSimulado = [];
+let qAtual = 0;
+let respondidas = {}; // {idx: {escolhida, correta, banca, materia, enunciado, alternativas}}
+let simuladoAtivo = false;
+
+/* ═══════════════════════════════════════
+   CARREGAR QUESTÕES DO JSON
+═══════════════════════════════════════ */
+async function carregarQuestoes() {
+  try {
+    const resp = await fetch('questoes.json');
+    if (!resp.ok) throw new Error('Arquivo não encontrado');
+    todasQuestoes = await resp.json();
+
+    // Atualizar hero stats
+    const bancas = [...new Set(todasQuestoes.map(q => normalizarBanca(q.banca)))];
+    const materias = [...new Set(todasQuestoes.map(q => normalizarMateria(q.materia)))];
+
+    document.getElementById('totalQuestoes').textContent = todasQuestoes.length;
+    document.getElementById('totalBancas').textContent = bancas.length;
+    document.getElementById('totalMaterias').textContent = materias.length;
+
+    popularFiltros(bancas, materias);
+
+  } catch(e) {
+    console.error('Erro ao carregar questoes.json:', e);
+    document.getElementById('filtrosCard').innerHTML = `
+      <div style="text-align:center; padding:24px; color:#dc2626;">
+        <div style="font-size:32px; margin-bottom:8px;">⚠️</div>
+        <strong>Não foi possível carregar o arquivo questoes.json</strong>
+        <p style="font-size:13px; color:var(--gray-400); margin-top:8px;">Certifique-se que o arquivo está na mesma pasta que este HTML.</p>
+      </div>
+    `;
+  }
+}
+
+/* ═══════════════════════════════════════
+   NORMALIZAÇÃO DE BANCAS/MATÉRIAS
+═══════════════════════════════════════ */
+function normalizarBanca(banca) {
+  if (!banca) return 'Outras';
+  const b = banca.trim();
+  // Agrupar variações de UFG
+  if (b.includes('UFG') || b === 'CS-UFG') return 'UFG';
+  // Agrupar UniCesumar
+  if (b.toUpperCase().includes('UNICESUMAR') || b.toUpperCase().includes('UNICESUMAR')) return 'UniCesumar';
+  // Câmara de Goiânia
+  if (b.includes('Câmara') || b.includes('Camara')) return 'Câmara de Goiânia';
+  return b;
+}
+
+function normalizarMateria(materia) {
+  if (!materia) return 'Geral';
+  const m = materia.trim();
+  // Agrupar Raciocínio Lógico
+  if (m.toUpperCase().includes('RACIOCÍNIO') || m.toUpperCase().includes('RACIOCINIO') ||
+      m === 'Contrapositiva' || m === 'Implicação Lógica' || m === 'Conectivos Lógicos' ||
+      m === 'Contradição' || m === 'Contingência' || m === 'Negação' ||
+      m === 'Negação de Proposições' || m === 'Classificação de Proposições' ||
+      m === 'Tabela Verdade' || m === 'Forma Simbólica' || m === 'Avaliação de Proposições' ||
+      m === 'Valor Lógico' || m === 'Equivalência Lógica' || m === 'Tautologia' ||
+      m === 'Condicional' || m === 'Argumento Inválido' || m === 'Condições' ||
+      m === 'Proposições' || m === 'Proposições Compostas' || m === 'Equivalência' ||
+      m === 'Equivalências Lógicas' || m === 'Equivalência Condicional' ||
+      m === 'Argumentação Lógica' || m === 'Inversa' || m === 'Recíproca' ||
+      m === 'Raciocínio Lógico e Matemático') return 'Raciocínio Lógico';
+  // Língua Portuguesa
+  if (m === 'Língua Portuguesa' || m === 'Semântica' || m === 'Ortografia' ||
+      m === 'Regência Verbal' || m === 'Funções da Linguagem' || m === 'Figuras de Linguagem' ||
+      m === 'Concordância Nominal' || m === 'Interpretação de Texto' || m === 'Reescrita de Frases' ||
+      m === 'Coerência Textual' || m === 'Coesão Textual' || m === 'Classes de Palavras' ||
+      m === 'Pontuação' || m === 'Vozes Verbais' || m === 'Crase' || m === 'Tipos de Texto' ||
+      m === 'Acentuação Gráfica' || m === 'Concordância Verbal' || m === 'Sintaxe') return 'Língua Portuguesa';
+  // Legislação
+  if (m === 'Legislação' || m === 'Ética e Legislação') return 'Legislação';
+  // Conhecimentos Específicos
+  if (m === 'Conhecimentos Específicos' || m === 'Assistente em Administração' ||
+      m === 'Auxiliar Administrativo' || m === 'Administração' || m === 'Administração Pública' ||
+      m === 'Agente Administrativo – Câmara de Goiânia') return 'Conhecimentos Específicos';
+  // Goiás
+  if (m.includes('Goiás') || m.includes('Goiânia') || m === 'História e Geografia de Goiás e Goiânia') return 'História e Geografia de Goiás/Goiânia';
+  return m;
+}
+
+/* ═══════════════════════════════════════
+   POPULAR FILTROS
+═══════════════════════════════════════ */
+function popularFiltros(bancas, materias) {
+  const selBanca = document.getElementById('filtroBanca');
+  const selMateria = document.getElementById('filtroMateria');
+
+  bancas.sort().forEach(b => {
+    const opt = document.createElement('option');
+    opt.value = b; opt.textContent = b;
+    selBanca.appendChild(opt);
+  });
+
+  materias.sort().forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m; opt.textContent = m;
+    selMateria.appendChild(opt);
+  });
+
+  selBanca.addEventListener('change', atualizarContador);
+  selMateria.addEventListener('change', atualizarContador);
+  atualizarContador();
+}
+
+function atualizarContador() {
+  const banca = document.getElementById('filtroBanca').value;
+  const materia = document.getElementById('filtroMateria').value;
+  const filtradas = filtrarQuestoes(banca, materia);
+  const el = document.getElementById('contadorFiltro');
+  const btn = document.getElementById('btnIniciar');
+
+  if (filtradas.length === 0) {
+    el.textContent = '⚠️ Nenhuma questão encontrada para essa combinação.';
+    el.style.color = '#dc2626';
+    btn.disabled = true;
+  } else {
+    el.textContent = `✅ ${filtradas.length} questão(ões) disponível(eis) com esses filtros.`;
+    el.style.color = '#16a34a';
+    btn.disabled = false;
+  }
+}
+
+function filtrarQuestoes(banca, materia) {
+  return todasQuestoes.filter(q => {
+    const bMatch = !banca || normalizarBanca(q.banca) === banca;
+    const mMatch = !materia || normalizarMateria(q.materia) === materia;
+    return bMatch && mMatch;
+  });
+}
+
+/* ═══════════════════════════════════════
+   INICIAR SIMULADO
+═══════════════════════════════════════ */
+function iniciarSimulado() {
+  const banca = document.getElementById('filtroBanca').value;
+  const materia = document.getElementById('filtroMateria').value;
+
+  questoesSimulado = filtrarQuestoes(banca, materia);
+  if (questoesSimulado.length === 0) return;
+
+  // Embaralhar
+  questoesSimulado = [...questoesSimulado].sort(() => Math.random() - 0.5);
+
+  qAtual = 0;
+  respondidas = {};
+  simuladoAtivo = true;
+
+  // Títulos
+  const titulo = banca || 'Todas as Bancas';
+  const sub = materia ? `${materia} · ${questoesSimulado.length} questões` : `Todas as matérias · ${questoesSimulado.length} questões`;
+  document.getElementById('simuladoTitulo').textContent = titulo;
+  document.getElementById('simuladoSubtitulo').textContent = sub;
+  document.getElementById('qTotalDisplay').textContent = questoesSimulado.length;
+  document.getElementById('chipTotal').querySelector('.score-chip-val').textContent = questoesSimulado.length;
+
+  document.getElementById('filtrosCard').style.display = 'none';
+  document.getElementById('questoesWrapper').classList.add('active');
+
+  renderQuestao();
+}
+
+/* ═══════════════════════════════════════
+   RENDERIZAR QUESTÃO
+═══════════════════════════════════════ */
+function renderQuestao() {
+  const container = document.getElementById('questoesContainer');
+  const q = questoesSimulado[qAtual];
+  const respondida = respondidas[qAtual];
+  const total = questoesSimulado.length;
+
+  // Atualizar progresso
+  document.getElementById('qAtualDisplay').textContent = qAtual + 1;
+  const pct = Math.round((Object.keys(respondidas).length / total) * 100);
+  document.getElementById('progressBarFill').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = pct + '%';
+
+  // Atualizar chips
+  const acertos = Object.values(respondidas).filter(r => r.acertou).length;
+  const erros = Object.values(respondidas).filter(r => !r.acertou).length;
+  document.getElementById('chipAcertos').textContent = acertos;
+  document.getElementById('chipErros').textContent = erros;
+
+  // Verificar se acabou
+  if (qAtual >= total) {
+    mostrarResultado();
+    return;
+  }
+
+  // Alternativas
+  const letras = Object.keys(q.alternativas || {});
+
+  let opcoesBtns = letras.map(letra => {
+    let classe = 'opcao-btn';
+    if (respondida) {
+      if (letra.toUpperCase() === q.correta.toUpperCase()) classe += ' correta';
+      else if (letra.toUpperCase() === respondida.escolhida.toUpperCase()) classe += ' incorreta';
+    }
+    return `
+      <button class="${classe}" ${respondida ? 'disabled' : ''} onclick="responder('${letra}')">
+        <span class="opcao-letra">${letra}</span>
+        ${q.alternativas[letra]}
+      </button>
+    `;
+  }).join('');
+
+  let feedbackHtml = '';
+  if (respondida) {
+    if (respondida.acertou) {
+      feedbackHtml = `<div class="questao-feedback acertou show">✅ Correto! Resposta: ${q.correta.toUpperCase()}</div>`;
+    } else {
+      feedbackHtml = `<div class="questao-feedback errou show">❌ Errado. A resposta correta é a alternativa <strong>${q.correta.toUpperCase()}</strong>: ${q.alternativas[q.correta]}</div>`;
+    }
+  }
+
+  const cardClasse = respondida ? (respondida.acertou ? 'acertou' : 'errou') : '';
+
+  container.innerHTML = `
+    <div class="questao-card-single ${cardClasse}">
+      <div class="questao-meta">
+        <span class="questao-num-badge">Questão ${qAtual + 1} / ${total}</span>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="questao-banca-badge">${q.banca || ''}</span>
+          <span class="questao-tema-badge">${q.materia || ''}</span>
+        </div>
+      </div>
+      <div class="questao-enunciado">${q.enunciado}</div>
+      <div class="questao-opcoes">${opcoesBtns}</div>
+      ${feedbackHtml}
+      <div class="questao-nav">
+        <button class="btn-nav secondary" onclick="irPara(${qAtual - 1})" ${qAtual === 0 ? 'disabled' : ''}>← Anterior</button>
+        ${respondida
+          ? `<button class="btn-nav" onclick="irPara(${qAtual + 1})">${qAtual + 1 < total ? 'Próxima →' : '🏁 Ver Resultado'}</button>`
+          : `<button class="btn-nav" disabled style="opacity:0.3;">Próxima →</button>`
+        }
+      </div>
+    </div>
+  `;
+}
+
+function irPara(idx) {
+  if (idx < 0 || idx > questoesSimulado.length) return;
+  qAtual = idx;
+  renderQuestao();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ═══════════════════════════════════════
+   RESPONDER
+═══════════════════════════════════════ */
+function responder(letra) {
+  if (respondidas[qAtual]) return;
+  const q = questoesSimulado[qAtual];
+  const acertou = letra.toUpperCase() === q.correta.toUpperCase();
+
+  respondidas[qAtual] = {
+    escolhida: letra,
+    acertou,
+    banca: q.banca,
+    materia: q.materia,
+    enunciado: q.enunciado,
+    alternativas: q.alternativas,
+    correta: q.correta
+  };
+
+  renderQuestao();
+}
+
+/* ═══════════════════════════════════════
+   ENCERRAR / RESULTADO
+═══════════════════════════════════════ */
+function encerrarSimulado() {
+  if (!confirm('Deseja encerrar o simulado atual? O progresso será perdido.')) return;
+  resetarParaFiltros();
+}
+
+function resetarParaFiltros() {
+  simuladoAtivo = false;
+  questoesSimulado = [];
+  respondidas = {};
+  qAtual = 0;
+  document.getElementById('questoesWrapper').classList.remove('active');
+  document.getElementById('filtrosCard').style.display = '';
+  document.getElementById('questoesContainer').innerHTML = '';
+}
+
+function mostrarResultado() {
+  const total = questoesSimulado.length;
+  const respondTotal = Object.keys(respondidas).length;
+  const acertos = Object.values(respondidas).filter(r => r.acertou).length;
+  const erros = respondTotal - acertos;
+  const pct = respondTotal > 0 ? Math.round((acertos / respondTotal) * 100) : 0;
+
+  let emoji = '😔'; let msg = 'Continue praticando!';
+  if (pct >= 90) { emoji = '🏆'; msg = 'Excelente! Resultado incrível!'; }
+  else if (pct >= 75) { emoji = '🎉'; msg = 'Muito bem! Você está preparado!'; }
+  else if (pct >= 60) { emoji = '👍'; msg = 'Bom resultado! Continue revisando.'; }
+  else if (pct >= 50) { emoji = '📚'; msg = 'Metade certa! Revise os erros.'; }
+
+  // Atualizar barra de progresso 100%
+  document.getElementById('progressBarFill').style.width = '100%';
+  document.getElementById('progressPct').textContent = '100%';
+
+  document.getElementById('questoesContainer').innerHTML = `
+    <div class="resultado-final">
+      <div class="resultado-emoji">${emoji}</div>
+      <div class="resultado-titulo">${msg}</div>
+      <div class="resultado-subtitulo">Você respondeu ${respondTotal} de ${total} questões</div>
+      <div class="resultado-pct">${pct}%</div>
+      <div class="resultado-stats">
+        <div class="resultado-stat">
+          <div class="resultado-stat-val" style="color:#16a34a">${acertos}</div>
+          <div class="resultado-stat-label">Acertos</div>
+        </div>
+        <div class="resultado-stat">
+          <div class="resultado-stat-val" style="color:#dc2626">${erros}</div>
+          <div class="resultado-stat-label">Erros</div>
+        </div>
+        <div class="resultado-stat">
+          <div class="resultado-stat-val">${respondTotal}</div>
+          <div class="resultado-stat-label">Respondidas</div>
+        </div>
+      </div>
+      <div>
+        <button class="btn-download btn-pdf" onclick="downloadPDF()">📄 Baixar Erradas — PDF</button>
+        <button class="btn-download btn-excel" onclick="downloadExcel()">📊 Baixar Erradas — Excel</button>
+        <button class="btn-download btn-novo" onclick="reiniciarMesmoSimulado()">🔄 Refazer Simulado</button>
+        <button class="btn-download btn-novo-filtro" onclick="resetarParaFiltros()">🎯 Novo Simulado</button>
+      </div>
+    </div>
+  `;
+}
+
+/* ═══════════════════════════════════════
+   REINICIAR
+═══════════════════════════════════════ */
+function reiniciarMesmoSimulado() {
+  questoesSimulado = [...questoesSimulado].sort(() => Math.random() - 0.5);
+  qAtual = 0;
+  respondidas = {};
+  renderQuestao();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ═══════════════════════════════════════
+   DOWNLOADS
+═══════════════════════════════════════ */
+function getErradas() {
+  return Object.values(respondidas).filter(r => !r.acertou);
+}
+
+function downloadExcel() {
+  const erradas = getErradas();
+  if (erradas.length === 0) { alert('Parabéns! Você não errou nenhuma questão!'); return; }
+
+  const ws_data = [
+    ['GoiâniaConc — Questões Erradas — Simulado por Banca'],
+    [''],
+    ['Banca', 'Matéria', 'Enunciado', 'Sua resposta', 'Resposta correta'],
+    ...erradas.map(d => [
+      d.banca,
+      d.materia,
+      d.enunciado,
+      `${d.escolhida.toUpperCase()}: ${d.alternativas[d.escolhida] || d.escolhida}`,
+      `${d.correta.toUpperCase()}: ${d.alternativas[d.correta] || d.correta}`
+    ])
+  ];
+
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(ws_data);
+  ws['!cols'] = [{wch:20},{wch:25},{wch:70},{wch:40},{wch:40}];
+  XLSX.utils.book_append_sheet(wb, ws, 'Questões Erradas');
+  XLSX.writeFile(wb, 'goianiaconc_simulado_erradas.xlsx');
+}
+
+function downloadPDF() {
+  const erradas = getErradas();
+  if (erradas.length === 0) { alert('Parabéns! Você não errou nenhuma questão!'); return; }
+
+  const conteudo = `
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; color: #1a2637; }
+        h1 { color: #1a3a5c; border-bottom: 3px solid #c8951a; padding-bottom: 10px; }
+        .card { background: #fff5f5; border: 1px solid #fca5a5; border-left: 4px solid #dc2626; border-radius: 8px; padding: 14px; margin-bottom: 16px; }
+        .meta { font-size: 11px; font-weight: bold; color: #dc2626; text-transform: uppercase; margin-bottom: 6px; }
+        .enunciado { font-size: 14px; font-weight: 600; margin-bottom: 10px; line-height: 1.5; }
+        .resp-errada { font-size: 12px; color: #7f1d1d; margin-bottom: 4px; }
+        .resp-certa { font-size: 12px; color: #15803d; font-weight: 700; }
+        .header-info { font-size: 13px; color: #6b7280; margin-bottom: 24px; }
+        @media print { body { margin: 20px; } }
+      </style>
+    </head>
+    <body>
+      <h1>📝 Questões para Revisar — Simulado</h1>
+      <div class="header-info">GoiâniaConc · ${erradas.length} questão(ões) errada(s) · ${new Date().toLocaleDateString('pt-BR')}</div>
+      ${erradas.map((d, i) => `
+        <div class="card">
+          <div class="meta">Questão ${i+1} · ${d.banca} · ${d.materia}</div>
+          <div class="enunciado">${d.enunciado}</div>
+          <div class="resp-errada">❌ Sua resposta: ${d.escolhida.toUpperCase()} — ${d.alternativas[d.escolhida] || ''}</div>
+          <div class="resp-certa">✅ Resposta correta: ${d.correta.toUpperCase()} — ${d.alternativas[d.correta] || ''}</div>
+        </div>
+      `).join('')}
+    </body>
+    </html>
+  `;
+
+  const win = window.open('', '_blank');
+  win.document.write(conteudo);
+  win.document.close();
+  setTimeout(() => { win.print(); }, 500);
+}
+
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  carregarQuestoes();
+});
+</script>
+</body>
+</html>
