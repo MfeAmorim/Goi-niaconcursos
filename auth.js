@@ -69,43 +69,31 @@ async function updateProfile(userId, updates) {
 
 // Upload de foto de perfil
 async function uploadAvatar(userId, file) {
-  // Sempre salva como jpg independente da extensão original
-  const path = `${userId}.jpg`;
+  // Detecta extensão real do arquivo
+  const ext = file.type.includes('png') ? 'png' : 'jpg';
+  const path = `${userId}.${ext}`;
   
-  const { error: uploadError } = await sb.storage
+  // Remove arquivos antigos
+  await sb.storage.from('avatars').remove([
+    `${userId}.jpg`,
+    `${userId}.jpeg`, 
+    `${userId}.png`
+  ]);
+  
+  const { error } = await sb.storage
     .from('avatars')
     .upload(path, file, { 
       upsert: true, 
-      contentType: 'image/jpeg'
+      contentType: file.type
     });
   
-  if (uploadError) throw uploadError;
+  if (error) throw error;
   
-  const { data } = sb.storage
-    .from('avatars')
-    .getPublicUrl(path);
-  
-  const urlNoCache = data.publicUrl + '?t=' + Date.now();
+  const { data } = sb.storage.from('avatars').getPublicUrl(path);
+  const url = data.publicUrl + '?t=' + Date.now();
   
   await updateProfile(userId, { avatar_url: data.publicUrl });
-  
-  return urlNoCache;
-}
-
-// Protege páginas — redireciona para login se não estiver logado
-async function requireAuth() {
-  const user = await getUser();
-  if (!user) {
-    window.location.href = 'login.html';
-    return null;
-  }
-  return user;
-}
-
-// Redireciona para dashboard se já estiver logado
-async function redirectIfLoggedIn() {
-  const user = await getUser();
-  if (user) window.location.href = 'dashboard.html';
+  return url;
 }
 
 /* ── PROGRESSO ── */
