@@ -4,7 +4,7 @@
    ============================================================ */
 
 const SUPABASE_URL = 'https://ighoounlvlbgtbxdsriy.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_lBO6z7ONIQM6L4Zu1otLEg_Jf_1_CJC';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlnaG9vdW5sdmxiZ3RieGRzcml5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzMjI1NDQsImV4cCI6MjA4Nzg5ODU0NH0.fM6Fvuznlun75gMlObZG2JhBTiEwcd5sPS8mgE6t37E';
 
 // Inicializa o cliente Supabase
 const { createClient } = supabase;
