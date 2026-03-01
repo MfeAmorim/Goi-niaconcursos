@@ -274,14 +274,13 @@
 
   // Avatar
   if (userProfile?.avatar_url) {
-    document.getElementById('profileAvatar').innerHTML = 
-      `<img src="${userProfile.avatar_url}?t=${Date.now()}" 
-       style="width:100%;height:100%;border-radius:50%;object-fit:cover"
-       onerror="this.parentElement.textContent='👤'">`;
-  } else {
-    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
-    document.getElementById('profileAvatar').textContent = initials;
-  }
+  document.getElementById('profileAvatar').style.fontSize = '0';
+  document.getElementById('profileAvatar').innerHTML = 
+    `<img src="${userProfile.avatar_url}?t=${Date.now()}" 
+     style="width:110px;height:110px;border-radius:50%;object-fit:cover;display:block;position:absolute;top:0;left:0;"
+     onerror="this.parentElement.textContent='👤';this.parentElement.style.fontSize='38px'">`;
+  document.getElementById('profileAvatar').style.position = 'relative';
+}
 
   // Stats
   document.getElementById('statTaxa').textContent = (userStats?.taxa || 0) + '%';
