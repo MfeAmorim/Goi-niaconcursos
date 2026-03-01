@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GoiâniaConc — Entrar / Criar conta</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js" defer></script>
+<style>
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0a1f38 0%, #1a3a5c 100%);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+
+  .login-wrap {
+    width: 100%; max-width: 440px;
+    animation: fadeInUp 0.4s ease forwards;
+  }
+
+  .login-logo {
+    text-align: center; margin-bottom: 32px;
+  }
+  .login-logo a {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px; color: white; text-decoration: none;
+  }
+  .login-logo a span { color: var(--gold-light); }
+  .login-logo p { color: rgba(255,255,255,0.45); font-size: 13px; margin-top: 4px; }
+
+  .login-card {
+    background: white; border-radius: 20px;
+    padding: 36px; box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+  }
+
+  /* ── TABS ── */
+  .auth-tabs {
+    display: flex; background: var(--gray-100);
+    border-radius: 12px; padding: 4px; margin-bottom: 28px;
+  }
+  .auth-tab {
+    flex: 1; padding: 10px; text-align: center;
+    font-size: 13px; font-weight: 600; color: var(--gray-400);
+    cursor: pointer; border-radius: 10px; transition: all 0.2s;
+  }
+  .auth-tab.active { background: white; color: var(--navy); box-shadow: var(--shadow-sm); }
+
+  /* ── FORM ── */
+  .auth-form { display: none; }
+  .auth-form.active { display: block; }
+
+  .form-title { font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .form-subtitle { font-size: 13px; color: var(--gray-400); margin-bottom: 24px; }
+
+  /* ── AVATAR UPLOAD ── */
+  .avatar-upload {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .avatar-preview {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: var(--gold-pale); border: 3px solid var(--gray-200);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px; cursor: pointer; overflow: hidden;
+    transition: border-color 0.2s; position: relative;
+  }
+  .avatar-preview:hover { border-color: var(--gold); }
+  .avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
+  .avatar-preview .avatar-overlay {
+    position: absolute; inset: 0; background: rgba(0,0,0,0.4);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.2s; border-radius: 50%;
+    color: white; font-size: 18px;
+  }
+  .avatar-preview:hover .avatar-overlay { opacity: 1; }
+
+  .avatar-hint { font-size: 11px; color: var(--gray-400); }
+
+  /* ── DIVIDER ── */
+  .divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 20px 0; color: var(--gray-400); font-size: 12px;
+  }
+  .divider::before, .divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--gray-200);
+  }
+
+  /* ── FORGOT ── */
+  .forgot-link {
+    text-align: right; margin-top: -8px; margin-bottom: 16px;
+  }
+  .forgot-link a { font-size: 12px; color: var(--navy); text-decoration: none; font-weight: 600; }
+  .forgot-link a:hover { color: var(--gold); }
+
+  /* ── FOOTER CARD ── */
+  .login-footer {
+    text-align: center; margin-top: 16px;
+    font-size: 12px; color: rgba(255,255,255,0.4);
+  }
+  .login-footer a { color: var(--gold-light); text-decoration: none; }
+
+  /* ── LOADING OVERLAY ── */
+  .loading-overlay {
+    position: fixed; inset: 0;
+    background: rgba(10,31,56,0.85); backdrop-filter: blur(4px);
+    display: none; align-items: center; justify-content: center;
+    z-index: 999; flex-direction: column; gap: 16px;
+  }
+  .loading-overlay.visible { display: flex; }
+  .loading-text { color: white; font-size: 14px; font-weight: 500; }
+  .loading-spinner {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 3px solid rgba(255,255,255,0.2);
+    border-top-color: var(--gold-light);
+    animation: spin 0.8s linear infinite;
+  }
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Entrando...</div>
+</div>
+
+<div class="login-wrap">
+  <div class="login-logo">
+    <a href="landing.html">Goiânia<span>Conc</span></a>
+    <p>Câmara Municipal de Goiânia</p>
+  </div>
+
+  <div class="login-card">
+    <!-- TABS -->
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tab-login" onclick="switchTab('login')">Entrar</div>
+      <div class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Criar conta</div>
+    </div>
+
+    <!-- ALERT -->
+    <div class="alert alert-error" id="alertError">
+      <span>⚠️</span> <span id="alertMsg">Erro</span>
+    </div>
+    <div class="alert alert-success" id="alertSuccess">
+      <span>✅</span> <span id="alertSuccessMsg">Sucesso</span>
+    </div>
+
+    <!-- FORM LOGIN -->
+    <div class="auth-form active" id="form-login">
+      <div class="form-title">Bem-vindo de volta!</div>
+      <div class="form-subtitle">Entre com seu email e senha</div>
+
+      <div class="input-group">
+        <label>Email</label>
+        <div class="input-icon">
+          <span class="icon">✉️</span>
+          <input class="input" type="email" id="loginEmail" placeholder="seu@email.com">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Senha</label>
+        <div class="input-icon">
+          <span class="icon">🔒</span>
+          <input class="input" type="password" id="loginPassword" placeholder="••••••••">
+        </div>
+      </div>
+
+      <div class="forgot-link">
+        <a href="#" onclick="forgotPassword()">Esqueci minha senha</a>
+      </div>
+
+      <button class="btn btn-primary btn-full" onclick="handleLogin()" id="btnLogin">
+        Entrar na minha conta
+      </button>
+
+      <div class="divider">ou</div>
+
+      <button class="btn btn-outline btn-full" onclick="switchTab('signup')">
+        Criar nova conta
+      </button>
+    </div>
+
+    <!-- FORM CADASTRO -->
+    <div class="auth-form" id="form-signup">
+      <div class="form-title">Crie sua conta</div>
+      <div class="form-subtitle">Gratuito, sem cartão de crédito</div>
+
+      <!-- AVATAR -->
+      <div class="avatar-upload">
+        <div class="avatar-preview" onclick="document.getElementById('avatarInput').click()">
+          <span id="avatarEmoji">👤</span>
+          <img id="avatarImg" style="display:none" alt="avatar">
+          <div class="avatar-overlay">📷</div>
+        </div>
+        <div class="avatar-hint">Toque para adicionar foto (opcional)</div>
+        <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="previewAvatar(this)">
+      </div>
+
+      <div class="input-group">
+        <label>Nome completo</label>
+        <div class="input-icon">
+          <span class="icon">👤</span>
+          <input class="input" type="text" id="signupName" placeholder="Seu nome">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Email</label>
+        <div class="input-icon">
+          <span class="icon">✉️</span>
+          <input class="input" type="email" id="signupEmail" placeholder="seu@email.com">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Senha</label>
+        <div class="input-icon">
+          <span class="icon">🔒</span>
+          <input class="input" type="password" id="signupPassword" placeholder="Mínimo 6 caracteres">
+        </div>
+      </div>
+
+      <button class="btn btn-gold btn-full" onclick="handleSignup()" id="btnSignup">
+        🚀 Criar conta grátis
+      </button>
+
+      <div class="divider">ou</div>
+
+      <button class="btn btn-outline btn-full" onclick="switchTab('login')">
+        Já tenho conta — Entrar
+      </button>
+    </div>
+  </div>
+
+  <div class="login-footer">
+    <a href="landing.html">← Voltar para o início</a>
+  </div>
+</div>
+
+<script>
+  // Verifica modo da URL (?mode=signup ou ?mode=login)
+  window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('mode') === 'signup') switchTab('signup');
+    redirectIfLoggedIn();
+  });
+
+  function switchTab(tab) {
+    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    document.getElementById('form-' + tab).classList.add('active');
+    hideAlerts();
+  }
+
+  function showError(msg) {
+    document.getElementById('alertMsg').textContent = msg;
+    document.getElementById('alertError').classList.add('visible');
+    document.getElementById('alertSuccess').classList.remove('visible');
+  }
+
+  function showSuccess(msg) {
+    document.getElementById('alertSuccessMsg').textContent = msg;
+    document.getElementById('alertSuccess').classList.add('visible');
+    document.getElementById('alertError').classList.remove('visible');
+  }
+
+  function hideAlerts() {
+    document.getElementById('alertError').classList.remove('visible');
+    document.getElementById('alertSuccess').classList.remove('visible');
+  }
+
+  function setLoading(show, text = 'Aguarde...') {
+    const overlay = document.getElementById('loadingOverlay');
+    overlay.querySelector('.loading-text').textContent = text;
+    overlay.classList.toggle('visible', show);
+  }
+
+  function previewAvatar(input) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = document.getElementById('avatarImg');
+        img.src = e.target.result;
+        img.style.display = 'block';
+        document.getElementById('avatarEmoji').style.display = 'none';
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  async function handleLogin() {
+    hideAlerts();
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+
+    if (!email || !password) return showError('Preencha email e senha.');
+
+    setLoading(true, 'Entrando...');
+    try {
+      await signIn(email, password);
+      window.location.href = 'dashboard.html';
+    } catch (err) {
+      setLoading(false);
+      showError(err.message === 'Invalid login credentials'
+        ? 'Email ou senha incorretos.'
+        : err.message);
+    }
+  }
+
+  async function handleSignup() {
+    hideAlerts();
+    const name = document.getElementById('signupName').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const password = document.getElementById('signupPassword').value;
+
+    if (!name) return showError('Digite seu nome.');
+    if (!email) return showError('Digite seu email.');
+    if (password.length < 6) return showError('Senha deve ter no mínimo 6 caracteres.');
+
+    setLoading(true, 'Criando sua conta...');
+    try {
+      await signUp(name, email, password);
+      setLoading(false);
+      showSuccess('Conta criada! Verifique seu email para confirmar.');
+      setTimeout(() => window.location.href = 'dashboard.html', 2000);
+    } catch (err) {
+      setLoading(false);
+      showError(err.message.includes('already registered')
+        ? 'Este email já está cadastrado.'
+        : err.message);
+    }
+  }
+
+  async function forgotPassword() {
+    const email = document.getElementById('loginEmail').value.trim();
+    if (!email) return showError('Digite seu email primeiro.');
+    try {
+      await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + '/login.html' });
+      showSuccess('Email de recuperação enviado! Verifique sua caixa de entrada.');
+    } catch (err) {
+      showError(err.message);
+    }
+  }
+
+  // Enter key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const activeForm = document.querySelector('.auth-form.active');
+      if (activeForm.id === 'form-login') handleLogin();
+      else handleSignup();
+    }
+  });
+</script>
+</body>
+</html>

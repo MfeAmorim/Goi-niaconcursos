@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GoiâniaConc — Prepare-se para o Concurso</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  body { overflow-x: hidden; background: var(--navy-dark); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0a1f38 0%, #1a3a5c 50%, #0f2d4a 100%);
+    display: flex; flex-direction: column;
+    position: relative; overflow: hidden;
+  }
+
+  /* Partículas de fundo */
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 15% 50%, rgba(200,149,26,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 20%, rgba(0,137,123,0.06) 0%, transparent 40%);
+  }
+
+  .dots-grid {
+    position: absolute; inset: 0; opacity: 0.06;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  /* ── NAVBAR LANDING ── */
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 48px; position: relative; z-index: 10;
+  }
+
+  .nav-logo { font-family: 'DM Serif Display', serif; font-size: 26px; color: white; text-decoration: none; }
+  .nav-logo span { color: var(--gold-light); }
+
+  .nav-links { display: flex; align-items: center; gap: 12px; }
+
+  /* ── HERO CONTENT ── */
+  .hero-content {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 40px 24px;
+    position: relative; z-index: 10;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(200,149,26,0.15); border: 1px solid rgba(200,149,26,0.35);
+    color: var(--gold-light); padding: 8px 18px; border-radius: 30px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+    margin-bottom: 28px; animation: fadeInUp 0.6s ease forwards;
+  }
+
+  .hero-badge-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--gold-light); animation: pulse 1.5s infinite;
+  }
+
+  .hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    color: white; line-height: 1.15;
+    margin-bottom: 20px;
+    animation: fadeInUp 0.6s 0.1s ease both;
+  }
+
+  .hero-title .highlight {
+    color: var(--gold-light);
+    font-style: italic;
+  }
+
+  .hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    color: rgba(255,255,255,0.65);
+    max-width: 560px; line-height: 1.75;
+    margin-bottom: 40px;
+    animation: fadeInUp 0.6s 0.2s ease both;
+  }
+
+  .hero-cta {
+    display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
+    animation: fadeInUp 0.6s 0.3s ease both;
+  }
+
+  .btn-hero {
+    padding: 16px 36px; border-radius: 12px;
+    font-size: 15px; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 10px;
+    cursor: pointer; border: none; text-decoration: none;
+    transition: all 0.25s; font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn-hero-primary {
+    background: var(--gold); color: var(--navy);
+    box-shadow: 0 8px 28px rgba(200,149,26,0.35);
+  }
+  .btn-hero-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 12px 36px rgba(200,149,26,0.45); }
+
+  .btn-hero-secondary {
+    background: rgba(255,255,255,0.1); color: white;
+    border: 1.5px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px);
+  }
+  .btn-hero-secondary:hover { background: rgba(255,255,255,0.18); transform: translateY(-2px); }
+
+  /* ── STATS ── */
+  .hero-stats {
+    display: flex; gap: 40px; flex-wrap: wrap; justify-content: center;
+    margin-top: 56px; padding-top: 40px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    animation: fadeInUp 0.6s 0.4s ease both;
+  }
+
+  .stat-item { text-align: center; }
+  .stat-num { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--gold-light); }
+  .stat-desc { font-size: 12px; color: rgba(255,255,255,0.5); font-weight: 500; margin-top: 2px; }
+
+  /* ── FEATURES ── */
+  .features {
+    background: var(--white); padding: 80px 48px;
+  }
+
+  .features-title {
+    text-align: center; margin-bottom: 48px;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px; max-width: 1000px; margin: 0 auto;
+  }
+
+  .feature-card {
+    background: var(--gray-50); border: 1.5px solid var(--gray-200);
+    border-radius: 16px; padding: 28px 24px;
+    transition: all 0.25s; cursor: default;
+  }
+  .feature-card:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+
+  .feature-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; margin-bottom: 16px;
+    background: var(--gold-pale);
+  }
+
+  .feature-title { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  .feature-desc { font-size: 13px; color: var(--gray-600); line-height: 1.6; }
+
+  /* ── MATERIAS ── */
+  .materias { background: var(--bg); padding: 80px 48px; }
+
+  .materias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px; max-width: 900px; margin: 32px auto 0;
+  }
+
+  .materia-chip {
+    background: white; border: 1.5px solid var(--gray-200);
+    border-radius: 12px; padding: 14px 16px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; font-weight: 600; color: var(--navy);
+    transition: all 0.2s;
+  }
+  .materia-chip:hover { border-color: var(--gold); background: var(--gold-pale); }
+
+  /* ── CTA FINAL ── */
+  .cta-section {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+    padding: 80px 48px; text-align: center; position: relative; overflow: hidden;
+  }
+  .cta-section::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 50%, rgba(200,149,26,0.1) 0%, transparent 60%);
+  }
+  .cta-section h2 { color: white; margin-bottom: 16px; position: relative; }
+  .cta-section p { color: rgba(255,255,255,0.6); margin-bottom: 32px; position: relative; }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--navy-dark); padding: 28px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .footer-logo { font-family: 'DM Serif Display', serif; font-size: 18px; color: rgba(255,255,255,0.7); }
+  .footer-logo span { color: var(--gold-light); }
+  .footer-text { font-size: 12px; color: rgba(255,255,255,0.35); }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    .nav { padding: 18px 20px; }
+    .features, .materias, .cta-section { padding: 48px 20px; }
+    .footer { padding: 20px; flex-direction: column; text-align: center; }
+    .hero-stats { gap: 24px; margin-top: 36px; }
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="dots-grid"></div>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="landing.html" class="nav-logo">Goiânia<span>Conc</span></a>
+    <div class="nav-links">
+      <a href="login.html?mode=login" class="btn btn-ghost btn-sm" style="color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2)">Entrar</a>
+      <a href="login.html?mode=signup" class="btn btn-gold btn-sm">Criar conta</a>
+    </div>
+  </nav>
+
+  <!-- HERO CONTENT -->
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      Câmara Municipal de Goiânia
+    </div>
+
+    <h1 class="hero-title">
+      Sua aprovação começa<br>
+      com o <span class="highlight">método certo</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Estude de forma inteligente com questões comentadas, aulas em vídeo,
+      materiais organizados e acompanhamento do seu progresso em tempo real.
+    </p>
+
+    <div class="hero-cta">
+      <a href="login.html?mode=signup" class="btn-hero btn-hero-primary">
+        🚀 Começar agora — é grátis
+      </a>
+      <a href="login.html?mode=login" class="btn-hero btn-hero-secondary">
+        Já tenho conta →
+      </a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">7</div>
+        <div class="stat-desc">Matérias completas</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">500+</div>
+        <div class="stat-desc">Questões comentadas</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">100%</div>
+        <div class="stat-desc">Gratuito</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">📊</div>
+        <div class="stat-desc">Progresso salvo</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="features-title">
+    <h2>Tudo que você precisa para passar</h2>
+    <p class="mt-8" style="color:var(--gray-400)">Uma plataforma completa para sua preparação</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🎬</div>
+      <div class="feature-title">Aulas em Vídeo</div>
+      <div class="feature-desc">Videoaulas com controle de velocidade, capítulos e marcadores de progresso.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">✏️</div>
+      <div class="feature-title">Banco de Questões</div>
+      <div class="feature-desc">Questões de concursos anteriores com gabarito comentado e estatísticas de acerto.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <div class="feature-title">Progresso em Tempo Real</div>
+      <div class="feature-desc">Acompanhe sua evolução por matéria, taxa de acerto e tempo de estudo.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📥</div>
+      <div class="feature-title">Download PDF/Word</div>
+      <div class="feature-desc">Exporte seu relatório de desempenho e resumos de estudo para PDF ou Word.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🃏</div>
+      <div class="feature-title">Flashcards</div>
+      <div class="feature-desc">Revisão rápida com flashcards das principais matérias do edital.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📱</div>
+      <div class="feature-title">Funciona no Celular</div>
+      <div class="feature-desc">Interface responsiva — estude no computador, tablet ou smartphone.</div>
+    </div>
+  </div>
+</section>
+
+<!-- MATÉRIAS -->
+<section class="materias">
+  <div style="text-align:center">
+    <h2>Matérias do Edital</h2>
+    <p class="mt-8" style="color:var(--gray-400)">Conteúdo organizado por disciplina</p>
+  </div>
+  <div class="materias-grid">
+    <div class="materia-chip">📝 Português</div>
+    <div class="materia-chip">⚖️ Dir. Administrativo</div>
+    <div class="materia-chip">🏛️ Legislação Municipal</div>
+    <div class="materia-chip">🧮 Raciocínio Lógico</div>
+    <div class="materia-chip">💻 Informática</div>
+    <div class="materia-chip">🌎 Atualidades</div>
+    <div class="materia-chip">🎯 Conhec. Específicos</div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-section">
+  <h2>Pronto para começar?</h2>
+  <p>Crie sua conta gratuita e inicie seus estudos agora mesmo.</p>
+  <a href="login.html?mode=signup" class="btn btn-gold btn-lg" style="position:relative">
+    🚀 Criar conta gratuita
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-logo">Goiânia<span>Conc</span></div>
+  <div class="footer-text">© 2025 GoiâniaConc · Câmara Municipal de Goiânia</div>
+</footer>
+
+</body>
+</html>
