@@ -4,33 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GoiâniaConc — Dashboard</title>
-<link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+<link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js"></script>
 <style>
   body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; background: var(--bg); }
-
   .app-wrap { display: flex; flex: 1; overflow: hidden; }
 
   /* ── SIDEBAR ── */
-  .sidebar {
-    width: var(--sidebar-w); background: var(--navy);
-    display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0;
-  }
-
+  .sidebar { width: var(--sidebar-w); background: var(--navy); display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; }
   .sidebar-header { padding: 20px 20px 14px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-
   .logo { font-family: 'DM Serif Display', serif; font-size: 22px; color: white; text-decoration: none; }
   .logo span { color: var(--gold-light); }
-
-  .module-badge {
-    margin-top: 8px; background: rgba(255,255,255,0.1);
-    color: rgba(255,255,255,0.75); font-size: 10px; font-weight: 600;
-    letter-spacing: 0.8px; text-transform: uppercase;
-    padding: 4px 10px; border-radius: 20px; display: inline-block;
-    border: 1px solid rgba(255,255,255,0.15);
-  }
+  .module-badge { margin-top: 8px; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.75); font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; display: inline-block; border: 1px solid rgba(255,255,255,0.15); }
 
   .progress-section { padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); }
   .progress-label { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.6px; }
@@ -44,145 +31,65 @@
     border-radius: 10px; cursor: pointer; margin-bottom: 2px;
     transition: background 0.15s; font-size: 13px;
     color: rgba(255,255,255,0.6); font-weight: 500;
+    text-decoration: none;
   }
   .nav-item:hover { background: rgba(255,255,255,0.07); color: white; }
-  .nav-item.active { background: rgba(200,149,26,0.18); color: white; font-weight: 600; }
-  .nav-item.active .nav-icon { background: var(--gold); color: var(--navy); }
-
-  .nav-icon {
-    width: 28px; height: 28px; border-radius: 8px;
-    background: rgba(255,255,255,0.08); display: flex;
-    align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0;
-  }
-  .nav-check { color: var(--green); font-size: 12px; margin-left: auto; }
+  .nav-icon { width: 28px; height: 28px; border-radius: 8px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
 
   .sidebar-footer { padding: 12px 14px; border-top: 1px solid rgba(255,255,255,0.08); }
-  .week-chip {
-    display: flex; align-items: center; gap: 8px;
-    background: rgba(200,149,26,0.15); border: 1px solid rgba(200,149,26,0.3);
-    color: var(--gold-light); padding: 8px 12px; border-radius: 10px; font-size: 12px; font-weight: 600;
-  }
+  .week-chip { display: flex; align-items: center; gap: 8px; background: rgba(200,149,26,0.15); border: 1px solid rgba(200,149,26,0.3); color: var(--gold-light); padding: 8px 12px; border-radius: 10px; font-size: 12px; font-weight: 600; }
   .week-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold-light); animation: pulse 1.5s infinite; }
 
   /* ── MAIN ── */
   .main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
 
   /* ── TOPBAR ── */
-  .topbar {
-    background: white; border-bottom: 1px solid var(--gray-200);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 24px; height: 56px; flex-shrink: 0;
-  }
+  .topbar { background: white; border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 56px; flex-shrink: 0; }
 
-  .tabs-bar { display: flex; align-items: center; gap: 2px; height: 100%; }
-  .tab {
-    padding: 0 16px; height: 100%; display: flex; align-items: center;
-    font-size: 13px; font-weight: 600; color: var(--gray-400);
-    cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; white-space: nowrap;
-  }
-  .tab:hover { color: var(--navy); }
-  .tab.active { color: var(--navy); border-bottom-color: var(--gold); }
-
-  .topbar-right { display: flex; align-items: center; gap: 12px; }
-
-  .user-btn {
-    display: flex; align-items: center; gap: 8px;
-    padding: 6px 12px 6px 6px; border-radius: 30px;
-    background: var(--gray-100); border: 1.5px solid var(--gray-200);
-    cursor: pointer; transition: all 0.15s; text-decoration: none;
-  }
+  .user-btn { display: flex; align-items: center; gap: 8px; padding: 6px 12px 6px 6px; border-radius: 30px; background: var(--gray-100); border: 1.5px solid var(--gray-200); cursor: pointer; transition: all 0.15s; text-decoration: none; }
   .user-btn:hover { border-color: var(--gold); background: var(--gold-pale); }
   .user-name { font-size: 12px; font-weight: 600; color: var(--navy); max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-  /* ── PANELS ── */
-  .panel { display: none; padding: 24px; animation: fadeIn 0.25s ease; }
-  .panel.active { display: block; }
+  /* ── HOME PANEL ── */
+  .home-panel { padding: 28px 24px; animation: fadeIn 0.25s ease; }
 
-  /* ── VIDEO PANEL ── */
-  .video-card { background: white; border-radius: 16px; overflow: hidden; border: 1px solid var(--gray-200); margin-bottom: 20px; }
-
-  .video-thumb {
+  .welcome-card {
     background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
-    height: 220px; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; position: relative; cursor: pointer;
+    border-radius: 16px; padding: 28px; margin-bottom: 24px;
+    position: relative; overflow: hidden;
   }
-  .video-thumb::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 30% 40%, rgba(200,149,26,0.1) 0%, transparent 60%);
+  .welcome-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 80% 50%, rgba(200,149,26,0.12) 0%, transparent 60%); }
+  .welcome-title { font-family: 'DM Serif Display', serif; font-size: 22px; color: white; margin-bottom: 6px; position: relative; }
+  .welcome-sub { font-size: 13px; color: rgba(255,255,255,0.55); position: relative; margin-bottom: 20px; }
+  .welcome-stats { display: flex; gap: 24px; flex-wrap: wrap; position: relative; }
+  .welcome-stat { text-align: center; }
+  .welcome-stat-val { font-size: 22px; font-weight: 700; color: var(--gold-light); }
+  .welcome-stat-label { font-size: 11px; color: rgba(255,255,255,0.45); }
+
+  /* ── MATÉRIAS GRID ── */
+  .section-heading { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--navy); margin-bottom: 16px; }
+
+  .materias-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; margin-bottom: 32px; }
+
+  .materia-card {
+    background: white; border: 1.5px solid var(--gray-200);
+    border-radius: 14px; padding: 20px; cursor: pointer;
+    transition: all 0.2s; text-decoration: none; display: block;
   }
+  .materia-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(200,149,26,0.1); }
 
-  .play-btn {
-    width: 60px; height: 60px; border-radius: 50%;
-    background: rgba(255,255,255,0.12); backdrop-filter: blur(8px);
-    border: 2px solid rgba(255,255,255,0.25); display: flex;
-    align-items: center; justify-content: center; font-size: 20px;
-    color: white; cursor: pointer; transition: all 0.2s; z-index: 1;
-  }
-  .play-btn:hover { background: var(--gold); border-color: var(--gold); transform: scale(1.05); }
+  .materia-card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .materia-card-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .materia-card-name { font-size: 14px; font-weight: 700; color: var(--navy); line-height: 1.3; }
+  .materia-card-sub { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
 
-  .video-tag {
-    position: absolute; top: 12px; left: 12px;
-    background: var(--gold); color: var(--navy); font-size: 10px; font-weight: 700;
-    letter-spacing: 0.8px; text-transform: uppercase; padding: 3px 10px; border-radius: 20px;
-  }
-  .video-duration { position: absolute; bottom: 12px; right: 12px; background: rgba(0,0,0,0.5); color: white; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px; }
-  .video-play-label { padding: 8px 0 4px; color: rgba(255,255,255,0.6); font-size: 12px; z-index: 1; }
+  .materia-card-progress { }
+  .materia-card-progress-label { display: flex; justify-content: space-between; margin-bottom: 5px; }
+  .materia-card-progress-text { font-size: 11px; color: var(--gray-400); font-weight: 500; }
+  .materia-card-progress-pct { font-size: 11px; font-weight: 700; color: var(--navy); }
 
-  .video-info { padding: 16px 20px; }
-  .video-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--navy); margin-bottom: 10px; line-height: 1.3; }
-  .video-meta { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
-  .video-meta-item { font-size: 12px; color: var(--gray-400); font-weight: 500; }
-
-  .speed-controls { display: flex; gap: 5px; margin-left: auto; }
-  .speed-btn { padding: 3px 9px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1.5px solid var(--gray-200); background: white; color: var(--gray-600); transition: all 0.15s; }
-  .speed-btn:hover { border-color: var(--gold); color: var(--gold); }
-  .speed-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
-
-  .chapters-card { background: white; border: 1px solid var(--gray-200); border-radius: 14px; padding: 18px; }
-  .chapters-title { font-size: 11px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
-  .chapter-item { display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: 10px; cursor: pointer; transition: background 0.15s; margin-bottom: 2px; }
-  .chapter-item:hover { background: var(--gray-50); }
-  .chapter-item.current { background: var(--gold-pale); }
-  .chapter-time { font-size: 11px; font-weight: 700; color: var(--gold); min-width: 36px; }
-  .chapter-name { font-size: 13px; color: var(--gray-600); font-weight: 500; }
-  .chapter-item.current .chapter-name { color: var(--navy); font-weight: 600; }
-
-  /* ── MATERIALS ── */
-  .section-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--navy); margin-bottom: 14px; }
-  .materials-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-bottom: 24px; }
-  .material-card { background: white; border: 1.5px solid var(--gray-200); border-radius: 12px; padding: 16px 12px 12px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: all 0.2s; text-align: center; }
-  .material-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(200,149,26,0.1); }
-  .material-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-  .material-label { font-size: 12px; font-weight: 600; color: var(--gray-600); line-height: 1.3; }
-  .material-sub { font-size: 10px; color: var(--gray-400); }
-
-  /* ── QUIZ ── */
-  .quiz-header { background: white; border: 1px solid var(--gray-200); border-radius: 12px; padding: 14px 18px; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .quiz-num { font-size: 13px; color: var(--gray-400); font-weight: 500; margin-left: auto; }
-  .quiz-card { background: white; border: 1px solid var(--gray-200); border-radius: 16px; padding: 24px; }
-  .quiz-question-text { font-size: 14px; line-height: 1.85; color: var(--gray-800); margin-bottom: 24px; }
-  .highlight-term { background: var(--gold-pale); color: var(--navy); font-weight: 600; padding: 1px 5px; border-radius: 4px; border-bottom: 2px solid var(--gold); }
-  .options-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
-  .option-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; border: 2px solid var(--gray-200); border-radius: 10px; cursor: pointer; transition: all 0.2s; font-size: 13px; color: var(--gray-700); line-height: 1.5; }
-  .option-item:hover { border-color: var(--navy); background: var(--gray-50); }
-  .option-letter { width: 26px; height: 26px; border-radius: 7px; background: var(--gray-100); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: var(--navy); flex-shrink: 0; transition: all 0.2s; }
-  .option-item.correct { border-color: var(--green); background: #ECFDF5; }
-  .option-item.correct .option-letter { background: var(--green); color: white; }
-  .option-item.incorrect { border-color: var(--red); background: #FEF2F2; }
-  .option-item.incorrect .option-letter { background: var(--red); color: white; }
-  .option-pct { margin-left: auto; font-size: 11px; font-weight: 700; color: var(--green); white-space: nowrap; align-self: center; display: none; }
-  .option-item.correct .option-pct, .option-item.incorrect .option-pct { display: block; }
-  .option-item.incorrect .option-pct { color: var(--red); }
-  .quiz-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-
-  .feedback-box { margin-top: 18px; background: var(--gray-50); border: 1px solid var(--gray-200); border-left: 4px solid var(--gold); border-radius: 0 12px 12px 0; padding: 18px; display: none; animation: slideDown 0.3s ease; }
-  .feedback-box.visible { display: block; }
-  .feedback-title { font-weight: 700; color: var(--navy); font-size: 14px; margin-bottom: 10px; }
-  .feedback-text { font-size: 13px; line-height: 1.8; color: var(--gray-600); }
-
-  /* ── MOBILE TOPBAR ── */
-  .mobile-topbar { display: none; align-items: center; justify-content: space-between; background: var(--navy); padding: 12px 16px; flex-shrink: 0; }
-  .mobile-topbar-right { display: flex; align-items: center; gap: 10px; }
+  .materia-card-arrow { margin-left: auto; color: var(--gray-300); font-size: 18px; transition: transform 0.2s; }
+  .materia-card:hover .materia-card-arrow { transform: translateX(4px); color: var(--gold); }
 
   /* ── MOBILE ── */
   @media (max-width: 768px) {
@@ -192,15 +99,11 @@
     .sidebar { position: fixed; top: 0; left: 0; height: 100vh; z-index: 200; transform: translateX(-100%); transition: transform 0.3s ease; }
     .sidebar.open { transform: translateX(0); }
     .main { overflow: visible; }
-    .topbar { padding: 0 12px; overflow-x: auto; }
-    .tab { padding: 0 12px; font-size: 12px; }
-    .panel { padding: 14px; }
-    .video-thumb { height: 180px; }
-    .speed-controls { display: none; }
-    .materials-grid { grid-template-columns: repeat(3, 1fr); }
-    .quiz-card { padding: 16px; }
-    .quiz-actions { flex-direction: column; }
-    .quiz-actions .btn { width: 100%; justify-content: center; }
+    .topbar { padding: 0 12px; }
+    .home-panel { padding: 14px; }
+    .materias-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .materia-card { padding: 14px; }
+    .welcome-stats { gap: 16px; }
   }
 </style>
 </head>
@@ -211,7 +114,7 @@
 <!-- MOBILE TOPBAR -->
 <div class="mobile-topbar">
   <div class="mobile-logo">Goiânia<span>Conc</span></div>
-  <div class="mobile-topbar-right">
+  <div class="mobile-topbar-right" style="display:flex;align-items:center;gap:10px;">
     <a href="perfil.html" id="mobileAvatar" class="avatar avatar-sm" style="text-decoration:none">👤</a>
     <div class="hamburger" id="hamburger" onclick="toggleSidebar()">
       <span></span><span></span><span></span>
@@ -240,33 +143,33 @@
 
     <div class="nav-section">
       <div class="nav-section-title">Língua Portuguesa</div>
-      <div class="nav-item active" onclick="setActive(this,'panel-video')">
+      <a href="materia-portugues.html" class="nav-item">
         <div class="nav-icon">📝</div> Português / Redação
-      </div>
+      </a>
 
       <div class="nav-section-title" style="margin-top:10px">Direito & Legislação</div>
-      <div class="nav-item" onclick="setActive(this,'panel-video')">
+      <a href="materia-dir-administrativo.html" class="nav-item">
         <div class="nav-icon">⚖️</div> Direito Administrativo
-      </div>
-      <div class="nav-item" onclick="setActive(this,'panel-video')">
+      </a>
+      <a href="materia-legislacao.html" class="nav-item">
         <div class="nav-icon">🏛️</div> Legislação Municipal
-      </div>
+      </a>
 
       <div class="nav-section-title" style="margin-top:10px">Raciocínio & Tecnologia</div>
-      <div class="nav-item" onclick="setActive(this,'panel-quiz')">
+      <a href="materia-raciocinio.html" class="nav-item">
         <div class="nav-icon">🧮</div> Raciocínio Lógico
-      </div>
-      <div class="nav-item" onclick="setActive(this,'panel-video')">
+      </a>
+      <a href="materia-informatica.html" class="nav-item">
         <div class="nav-icon">💻</div> Informática
-      </div>
+      </a>
 
       <div class="nav-section-title" style="margin-top:10px">Outros</div>
-      <div class="nav-item" onclick="setActive(this,'panel-video')">
+      <a href="materia-atualidades.html" class="nav-item">
         <div class="nav-icon">🌎</div> Atualidades
-      </div>
-      <div class="nav-item" onclick="setActive(this,'panel-quiz')">
+      </a>
+      <a href="materia-conhecimentos.html" class="nav-item">
         <div class="nav-icon">🎯</div> Conhecimentos Específicos
-      </div>
+      </a>
     </div>
 
     <div class="sidebar-footer">
@@ -280,178 +183,229 @@
   <div class="main">
     <!-- TOPBAR -->
     <div class="topbar">
-      <div class="tabs-bar">
-        <div class="tab active" onclick="switchTab('panel-video',this)">🎬 Aula</div>
-        <div class="tab" onclick="switchTab('panel-materials',this)">📚 Materiais</div>
-        <div class="tab" onclick="switchTab('panel-quiz',this)">✏️ Questões</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:17px;color:var(--navy);">Dashboard</div>
+      <a href="perfil.html" class="user-btn" id="userBtn">
+        <div class="avatar avatar-sm" id="userAvatar">👤</div>
+        <span class="user-name" id="userName">Minha conta</span>
+      </a>
+    </div>
+
+    <!-- HOME -->
+    <div class="home-panel">
+
+      <!-- WELCOME -->
+      <div class="welcome-card">
+        <div class="welcome-title" id="welcomeTitle">Olá, bem-vindo! 👋</div>
+        <div class="welcome-sub">Câmara Municipal de Goiânia — Concurso Público</div>
+        <div class="welcome-stats">
+          <div class="welcome-stat">
+            <div class="welcome-stat-val" id="statTaxa">0%</div>
+            <div class="welcome-stat-label">Taxa de acerto</div>
+          </div>
+          <div class="welcome-stat">
+            <div class="welcome-stat-val" id="statTotal">0</div>
+            <div class="welcome-stat-label">Questões feitas</div>
+          </div>
+          <div class="welcome-stat">
+            <div class="welcome-stat-val" id="statProgress">0%</div>
+            <div class="welcome-stat-label">Progresso geral</div>
+          </div>
+        </div>
       </div>
-      <div class="topbar-right">
-        <a href="perfil.html" class="user-btn" id="userBtn">
-          <div class="avatar avatar-sm" id="userAvatar">👤</div>
-          <span class="user-name" id="userName">Minha conta</span>
+
+      <!-- MATÉRIAS -->
+      <div class="section-heading">📚 Escolha uma matéria para estudar</div>
+
+      <div class="materias-grid">
+        <a href="materia-portugues.html" class="materia-card">
+          <div class="materia-card-top">
+            <div class="materia-card-icon" style="background:#FEF3C7">📝</div>
+            <div>
+              <div class="materia-card-name">Português / Redação</div>
+              <div class="materia-card-sub">Língua Portuguesa</div>
+            </div>
+            <div class="materia-card-arrow">→</div>
+          </div>
+          <div class="materia-card-progress">
+            <div class="materia-card-progress-label">
+              <span class="materia-card-progress-text">Progresso</span>
+              <span class="materia-card-progress-pct" id="pct-portugues">0%</span>
+            </div>
+            <div class="progress-wrap"><div class="progress-fill" id="bar-portugues" style="width:0%"></div></div>
+          </div>
+        </a>
+
+        <a href="materia-dir-administrativo.html" class="materia-card">
+          <div class="materia-card-top">
+            <div class="materia-card-icon" style="background:#EDE9FE">⚖️</div>
+            <div>
+              <div class="materia-card-name">Direito Administrativo</div>
+              <div class="materia-card-sub">Direito & Legislação</div>
+            </div>
+            <div class="materia-card-arrow">→</div>
+          </div>
+          <div class="materia-card-progress">
+            <div class="materia-card-progress-label">
+              <span class="materia-card-progress-text">Progresso</span>
+              <span class="materia-card-progress-pct" id="pct-dir">0%</span>
+            </div>
+            <div class="progress-wrap"><div class="progress-fill" id="bar-dir" style="width:0%"></div></div>
+          </div>
+        </a>
+
+        <a href="materia-legislacao.html" class="materia-card">
+          <div class="materia-card-top">
+            <div class="materia-card-icon" style="background:#DBEAFE">🏛️</div>
+            <div>
+              <div class="materia-card-name">Legislação Municipal</div>
+              <div class="materia-card-sub">Direito & Legislação</div>
+            </div>
+            <div class="materia-card-arrow">→</div>
+          </div>
+          <div class="materia-card-progress">
+            <div class="materia-card-progress-label">
+              <span class="materia-card-progress-text">Progresso</span>
+              <span class="materia-card-progress-pct" id="pct-leg">0%</span>
+            </div>
+            <div class="progress-wrap"><div class="progress-fill" id="bar-leg" style="width:0%"></div></div>
+          </div>
+        </a>
+
+        <a href="materia-raciocinio.html" class="materia-card">
+          <div class="materia-card-top">
+            <div class="materia-card-icon" style="background:#D1FAE5">🧮</div>
+            <div>
+              <div class="materia-card-name">Raciocínio Lógico</div>
+              <div class="materia-card-sub">Raciocínio & Tecnologia</div>
+            </div>
+            <div class="materia-card-arrow">→</div>
+          </div>
+          <div class="materia-card-progress">
+            <div class="materia-card-progress-label">
+              <span class="materia-card-progress-text">Progresso</span>
+              <span class="materia-card-progress-pct" id="pct-rac">0%</span>
+            </div>
+            <div class="progress-wrap"><div class="progress-fill" id="bar-rac" style="width:0%"></div></div>
+          </div>
+        </a>
+
+        <a href="materia-informatica.html" class="materia-card">
+          <div class="materia-card-top">
+            <div class="materia-card-icon" style="background:#FCE7F3">💻</div>
+            <div>
+              <div class="materia-card-name">Informática</div>
+              <div class="materia-card-sub">Raciocínio & Tecnologia</div>
+            </div>
+            <div class="materia-card-arrow">→</div>
+          </div>
+          <div class="materia-card-progress">
+            <div class="materia-card-progress-label">
+              <span class="materia-card-progress-text">Progresso</span>
+              <span class="materia-card-progress-pct" id="pct-inf">0%</span>
+            </div>
+            <div class="progress-wrap"><div class="progress-fill" id="bar-inf" style="width:0%"></div></div>
+          </div>
+        </a>
+
+        <a href="materia-atualidades.html" class="materia-card">
+          <div class="materia-card-top">
+            <div class="materia-card-icon" style="background:#FEF3C7">🌎</div>
+            <div>
+              <div class="materia-card-name">Atualidades</div>
+              <div class="materia-card-sub">Conhecimentos Gerais</div>
+            </div>
+            <div class="materia-card-arrow">→</div>
+          </div>
+          <div class="materia-card-progress">
+            <div class="materia-card-progress-label">
+              <span class="materia-card-progress-text">Progresso</span>
+              <span class="materia-card-progress-pct" id="pct-atu">0%</span>
+            </div>
+            <div class="progress-wrap"><div class="progress-fill" id="bar-atu" style="width:0%"></div></div>
+          </div>
+        </a>
+
+        <a href="materia-conhecimentos.html" class="materia-card">
+          <div class="materia-card-top">
+            <div class="materia-card-icon" style="background:var(--gold-pale)">🎯</div>
+            <div>
+              <div class="materia-card-name">Conhecimentos Específicos</div>
+              <div class="materia-card-sub">Cargo específico</div>
+            </div>
+            <div class="materia-card-arrow">→</div>
+          </div>
+          <div class="materia-card-progress">
+            <div class="materia-card-progress-label">
+              <span class="materia-card-progress-text">Progresso</span>
+              <span class="materia-card-progress-pct" id="pct-con">0%</span>
+            </div>
+            <div class="progress-wrap"><div class="progress-fill" id="bar-con" style="width:0%"></div></div>
+          </div>
         </a>
       </div>
-    </div>
 
-    <!-- PANEL: AULA -->
-    <div id="panel-video" class="panel active">
-      <div class="video-card">
-        <div class="video-thumb" onclick="togglePlay(this)">
-          <div class="video-tag">Direito Administrativo</div>
-          <div class="play-btn" id="playBtn">▶</div>
-          <div class="video-play-label">Clique para reproduzir</div>
-          <div class="video-duration">52:18</div>
-        </div>
-        <div class="video-info">
-          <div class="video-title">Princípios do Direito Administrativo — LIMPE</div>
-          <div class="video-meta">
-            <span class="video-meta-item">👤 Prof. Carlos Henrique</span>
-            <span class="video-meta-item">📅 Módulo 2 · Fase 1</span>
-            <div class="speed-controls">
-              <button class="speed-btn" onclick="setSpeed(this)">0.75×</button>
-              <button class="speed-btn active" onclick="setSpeed(this)">1×</button>
-              <button class="speed-btn" onclick="setSpeed(this)">1.25×</button>
-              <button class="speed-btn" onclick="setSpeed(this)">1.5×</button>
-              <button class="speed-btn" onclick="setSpeed(this)">2×</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="chapters-card">
-        <div class="chapters-title">📌 Capítulos</div>
-        <div class="chapter-item"><span class="chapter-time">00:00</span><span class="chapter-name">Introdução ao Direito Administrativo</span></div>
-        <div class="chapter-item current"><span class="chapter-time">10:22</span><span class="chapter-name">Princípio da Legalidade — em andamento</span></div>
-        <div class="chapter-item"><span class="chapter-time">24:40</span><span class="chapter-name">Impessoalidade, Moralidade e Publicidade</span></div>
-        <div class="chapter-item"><span class="chapter-time">38:55</span><span class="chapter-name">Eficiência e questões comentadas</span></div>
-      </div>
-    </div>
-
-    <!-- PANEL: MATERIAIS -->
-    <div id="panel-materials" class="panel">
-      <div class="section-title">Material Didático</div>
-      <div class="materials-grid">
-        <div class="material-card"><div class="material-icon" style="background:#FEF3C7">📕</div><div class="material-label">Apostila</div><div class="material-sub">PDF · 380 págs</div></div>
-        <div class="material-card"><div class="material-icon" style="background:#EDE9FE">📝</div><div class="material-label">Resumos</div><div class="material-sub">Por matéria</div></div>
-        <div class="material-card"><div class="material-icon" style="background:#DBEAFE">🖼️</div><div class="material-label">Slides</div><div class="material-sub">Todas aulas</div></div>
-        <div class="material-card"><div class="material-icon" style="background:#D1FAE5">🧠</div><div class="material-label">Mapas Mentais</div><div class="material-sub">Alta res</div></div>
-        <div class="material-card"><div class="material-icon" style="background:#FCE7F3">🃏</div><div class="material-label">Flashcards</div><div class="material-sub">88 cartões</div></div>
-        <div class="material-card"><div class="material-icon" style="background:var(--gold-pale)">📋</div><div class="material-label">Legislação</div><div class="material-sub">Lei Orgânica</div></div>
-      </div>
-
-      <div class="section-title">Legislação Importante</div>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <div style="background:white;border:1px solid var(--gray-200);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--gray-200)'">
-          <span>🏛️</span>
-          <div><div style="font-size:13px;font-weight:600;color:var(--navy)">Lei Orgânica do Município de Goiânia</div><div style="font-size:11px;color:var(--gray-400)">Regimento interno da Câmara</div></div>
-          <span style="margin-left:auto;color:var(--gray-300)">→</span>
-        </div>
-        <div style="background:white;border:1px solid var(--gray-200);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--gray-200)'">
-          <span>⚖️</span>
-          <div><div style="font-size:13px;font-weight:600;color:var(--navy)">Lei nº 8.112/1990</div><div style="font-size:11px;color:var(--gray-400)">Regime Jurídico dos Servidores Públicos</div></div>
-          <span style="margin-left:auto;color:var(--gray-300)">→</span>
-        </div>
-        <div style="background:white;border:1px solid var(--gray-200);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--gray-200)'">
-          <span>📜</span>
-          <div><div style="font-size:13px;font-weight:600;color:var(--navy)">Constituição Federal — Art. 37 a 41</div><div style="font-size:11px;color:var(--gray-400)">Administração Pública</div></div>
-          <span style="margin-left:auto;color:var(--gray-300)">→</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- PANEL: QUESTÕES -->
-    <div id="panel-quiz" class="panel">
-      <div class="quiz-header">
-        <span class="badge badge-navy">CESPE — 2022</span>
-        <span class="badge badge-gold">Direito Administrativo</span>
-        <span class="badge badge-yellow">Média</span>
-        <span class="quiz-num">Questão 1 / 95</span>
-      </div>
-      <div class="quiz-card">
-        <div class="quiz-question-text">
-          Com relação aos <span class="highlight-term">princípios da Administração Pública</span> previstos na Constituição Federal de 1988, assinale a alternativa correta:
-        </div>
-        <div class="options-list" id="optionsList">
-          <div class="option-item" onclick="selectOption(this,false,'9%')"><div class="option-letter">A</div><div>O princípio da legalidade permite que o administrador público faça tudo que não for expressamente proibido por lei.</div><div class="option-pct">9%</div></div>
-          <div class="option-item" onclick="selectOption(this,false,'15%')"><div class="option-letter">B</div><div>O princípio da impessoalidade proíbe atos em benefício próprio, mas permite a promoção pessoal em obras públicas.</div><div class="option-pct">15%</div></div>
-          <div class="option-item" onclick="selectOption(this,true,'58%')"><div class="option-letter">C</div><div>O princípio da publicidade exige que os atos administrativos sejam divulgados oficialmente, salvo nos casos de sigilo previstos em lei.</div><div class="option-pct">58%</div></div>
-          <div class="option-item" onclick="selectOption(this,false,'11%')"><div class="option-letter">D</div><div>O princípio da moralidade é sinônimo do princípio da legalidade, pois ambos exigem a observância das normas jurídicas.</div><div class="option-pct">11%</div></div>
-          <div class="option-item" onclick="selectOption(this,false,'7%')"><div class="option-letter">E</div><div>O princípio da eficiência foi inserido na CF/88 pelo constituinte originário de 1988, sem necessidade de emenda constitucional.</div><div class="option-pct">7%</div></div>
-        </div>
-        <div class="quiz-actions">
-          <button class="btn btn-primary" onclick="showFeedback()">💡 Ver solução</button>
-          <button class="btn btn-outline" onclick="nextQuestion()">Próxima →</button>
-        </div>
-        <div class="feedback-box" id="feedbackBox">
-          <div class="feedback-title">✅ Gabarito: Alternativa C</div>
-          <div class="feedback-text">
-            <strong>Princípio da Publicidade</strong> (art. 37, CF/88): os atos da Administração devem ser divulgados, salvo sigilo previsto em lei.<br><br>
-            ⚠️ <strong>Por que as outras erram?</strong><br>
-            • <strong>A</strong> — Na Adm. Pública, o agente só pode fazer o que a lei <em>expressamente permite</em>.<br>
-            • <strong>B</strong> — A impessoalidade também veda promoção pessoal em obras (§1º do art. 37).<br>
-            • <strong>D</strong> — Moralidade ≠ Legalidade. Um ato pode ser legal, mas imoral.<br>
-            • <strong>E</strong> — Eficiência foi incluída pela <strong>EC nº 19/1998</strong>.
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </div>
 
 <script>
   let currentUser = null;
-  let questionNum = 1;
-  let answered = false;
 
   window.addEventListener('DOMContentLoaded', async () => {
     currentUser = await requireAuth();
     if (!currentUser) return;
     loadUserInfo();
+    loadStats();
   });
 
   async function loadUserInfo() {
     const profile = await getUserProfile(currentUser.id);
     const name = profile?.full_name || currentUser.email.split('@')[0];
+    const firstName = name.split(' ')[0];
+
     document.getElementById('userName').textContent = name;
+    document.getElementById('welcomeTitle').textContent = `Olá, ${firstName}! 👋`;
 
-    if (profile?.avatar_url) {
-      const avatarEls = [document.getElementById('userAvatar'), document.getElementById('mobileAvatar')];
-      avatarEls.forEach(el => {
-        if (el) { el.innerHTML = `<img src="${profile.avatar_url}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`; }
-      });
-    } else {
-      const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
-      [document.getElementById('userAvatar'), document.getElementById('mobileAvatar')].forEach(el => {
-        if (el) el.textContent = initials;
-      });
-    }
+    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
+    [document.getElementById('userAvatar'), document.getElementById('mobileAvatar')].forEach(el => {
+      if (!el) return;
+      if (profile?.avatar_url) {
+        el.innerHTML = `<img src="${profile.avatar_url}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+      } else {
+        el.textContent = initials;
+      }
+    });
+  }
 
-    // Progresso
+  async function loadStats() {
+    const stats = await getStats(currentUser.id);
+    document.getElementById('statTaxa').textContent = (stats?.taxa || 0) + '%';
+    document.getElementById('statTotal').textContent = stats?.total || 0;
+
     const progress = await getProgress(currentUser.id);
-    if (progress.length > 0) {
-      const avg = Math.round(progress.reduce((a, p) => a + p.percentual, 0) / progress.length);
-      document.getElementById('progressPct').textContent = avg + '%';
-      document.getElementById('progressBar').style.width = avg + '%';
-    }
-  }
+    const materias = [
+      { key: 'Português / Redação', barId: 'bar-portugues', pctId: 'pct-portugues' },
+      { key: 'Direito Administrativo', barId: 'bar-dir', pctId: 'pct-dir' },
+      { key: 'Legislação Municipal', barId: 'bar-leg', pctId: 'pct-leg' },
+      { key: 'Raciocínio Lógico', barId: 'bar-rac', pctId: 'pct-rac' },
+      { key: 'Informática', barId: 'bar-inf', pctId: 'pct-inf' },
+      { key: 'Atualidades', barId: 'bar-atu', pctId: 'pct-atu' },
+      { key: 'Conhecimentos Específicos', barId: 'bar-con', pctId: 'pct-con' },
+    ];
 
-  function switchTab(panelId, tabEl) {
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.getElementById(panelId).classList.add('active');
-    tabEl.classList.add('active');
-  }
+    let totalPct = 0;
+    materias.forEach(m => {
+      const p = progress.find(p => p.materia === m.key);
+      const pct = p ? p.percentual : 0;
+      totalPct += pct;
+      document.getElementById(m.barId).style.width = pct + '%';
+      document.getElementById(m.pctId).textContent = pct + '%';
+    });
 
-  function setActive(navEl, panelId) {
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    navEl.classList.add('active');
-    const map = { 'panel-video': 0, 'panel-materials': 1, 'panel-quiz': 2 };
-    const tabs = document.querySelectorAll('.tab');
-    tabs.forEach(t => t.classList.remove('active'));
-    if (map[panelId] !== undefined) tabs[map[panelId]].classList.add('active');
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    document.getElementById(panelId).classList.add('active');
-    if (window.innerWidth <= 768) closeSidebar();
+    const avg = Math.round(totalPct / materias.length);
+    document.getElementById('statProgress').textContent = avg + '%';
+    document.getElementById('progressBar') && (document.getElementById('progressBar').style.width = avg + '%');
+    document.getElementById('progressPct') && (document.getElementById('progressPct').textContent = avg + '%');
   }
 
   function toggleSidebar() {
@@ -464,41 +418,6 @@
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('overlay').classList.remove('visible');
     document.getElementById('hamburger').classList.remove('open');
-  }
-
-  function togglePlay(el) {
-    const btn = document.getElementById('playBtn');
-    const label = el.querySelector('.video-play-label');
-    if (btn.textContent === '▶') { btn.textContent = '⏸'; label.textContent = '▶ Reproduzindo...'; }
-    else { btn.textContent = '▶'; label.textContent = 'Clique para reproduzir'; }
-  }
-
-  function setSpeed(btn) {
-    document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  }
-
-  async function selectOption(el, isCorrect) {
-    if (answered) return;
-    answered = true;
-    document.querySelectorAll('.option-item').forEach(o => o.style.pointerEvents = 'none');
-    if (isCorrect) { el.classList.add('correct'); }
-    else { el.classList.add('incorrect'); document.querySelectorAll('.option-item')[2].classList.add('correct'); }
-    showFeedback();
-    // Salva no Supabase
-    if (currentUser) {
-      try { await saveAnswer(currentUser.id, 'dir-adm-1', 'Direito Administrativo', isCorrect); } catch(e) {}
-    }
-  }
-
-  function showFeedback() { document.getElementById('feedbackBox').classList.add('visible'); }
-
-  function nextQuestion() {
-    answered = false;
-    document.querySelectorAll('.option-item').forEach(o => { o.classList.remove('correct','incorrect'); o.style.pointerEvents = ''; });
-    document.getElementById('feedbackBox').classList.remove('visible');
-    questionNum++;
-    document.querySelector('.quiz-num').textContent = `Questão ${questionNum} / 95`;
   }
 </script>
 </body>
