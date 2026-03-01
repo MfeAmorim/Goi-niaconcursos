@@ -24,33 +24,14 @@
   .avatar-section { display: flex; align-items: flex-end; justify-content: space-between; margin-top: -54px; margin-bottom: 16px; }
   .avatar-wrap { position: relative; display: inline-block; }
 
-  /* ── AVATAR CORRIGIDO ── */
   #profileAvatar {
-    width: 110px;
-    height: 110px;
-    border-radius: 50%;
-    border: 4px solid white;
-    box-shadow: 0 6px 24px rgba(26,58,92,0.15);
-    background: var(--gold-pale);
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 38px;
-    font-weight: 700;
-    color: var(--navy);
-    position: relative;
+    width: 110px; height: 110px; border-radius: 50%;
+    border: 4px solid white; box-shadow: 0 6px 24px rgba(26,58,92,0.15);
+    background: var(--gold-pale); overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 38px; font-weight: 700; color: var(--navy); position: relative;
   }
-
-  #profileAvatar img {
-    position: absolute;
-    top: 0; left: 0;
-    width: 110px;
-    height: 110px;
-    object-fit: cover;
-    border-radius: 50%;
-    display: block;
-  }
+  #profileAvatar img { position: absolute; top: 0; left: 0; width: 110px; height: 110px; object-fit: cover; border-radius: 50%; display: block; }
 
   .camera-btn {
     position: absolute; bottom: 2px; right: 2px;
@@ -62,13 +43,12 @@
   }
   .camera-btn:hover { transform: scale(1.12); }
 
-  /* ── MENU FOTO ── */
+  /* ── PHOTO MENU ── */
   .photo-menu {
     display: none; position: fixed;
     background: white; border: 1px solid var(--gray-200);
     border-radius: 14px; box-shadow: 0 8px 32px rgba(26,58,92,0.18);
     padding: 8px; z-index: 9998; min-width: 190px;
-    animation: fadeIn 0.15s ease;
   }
   .photo-menu-item {
     display: flex; align-items: center; gap: 10px;
@@ -81,21 +61,105 @@
   .photo-menu-item.danger:hover { background: #FEF2F2; }
   .photo-menu-divider { height: 1px; background: var(--gray-100); margin: 4px 0; }
 
-  /* ── MODAL VER FOTO ── */
-  .view-modal {
+  /* ── CROP MODAL ── */
+  .crop-modal {
     display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.88); z-index: 9999;
-    align-items: center; justify-content: center;
-    cursor: pointer; flex-direction: column; gap: 16px;
+    background: rgba(0,0,0,0.9); z-index: 9999;
+    align-items: center; justify-content: center; padding: 16px;
   }
+  .crop-modal.visible { display: flex; }
+
+  .crop-box {
+    background: white; border-radius: 20px;
+    width: 100%; max-width: 500px;
+    animation: fadeInUp 0.3s ease;
+    overflow: hidden;
+  }
+
+  .crop-header {
+    background: var(--navy); padding: 18px 22px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .crop-header-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: white; }
+  .crop-close { background: rgba(255,255,255,0.1); border: none; color: white; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+  .crop-close:hover { background: rgba(255,255,255,0.2); }
+
+  .crop-body { padding: 20px; }
+
+  /* Área de crop */
+  .crop-area {
+    width: 100%; aspect-ratio: 1;
+    background: #1a1a2e; border-radius: 14px;
+    overflow: hidden; position: relative;
+    cursor: grab; user-select: none; margin-bottom: 16px;
+  }
+  .crop-area:active { cursor: grabbing; }
+
+  #cropCanvas { display: block; }
+
+  /* Preview circular */
+  .crop-preview-wrap {
+    display: flex; align-items: center; justify-content: center;
+    gap: 20px; margin-bottom: 18px;
+  }
+  .crop-preview-label { font-size: 11px; font-weight: 600; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.6px; text-align: center; margin-bottom: 6px; }
+  .crop-preview-circle {
+    width: 90px; height: 90px; border-radius: 50%;
+    overflow: hidden; border: 3px solid var(--gold);
+    box-shadow: 0 4px 16px rgba(200,149,26,0.2);
+  }
+  .crop-preview-circle img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .crop-preview-square {
+    width: 90px; height: 90px;
+    overflow: hidden; border: 3px solid var(--gray-200);
+    border-radius: 10px;
+  }
+  .crop-preview-square img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* Controles */
+  .crop-controls { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+
+  .crop-control-row { display: flex; align-items: center; gap: 12px; }
+  .crop-control-label { font-size: 12px; font-weight: 600; color: var(--gray-600); min-width: 60px; }
+  .crop-slider {
+    flex: 1; -webkit-appearance: none; height: 4px;
+    background: var(--gray-200); border-radius: 4px; outline: none; cursor: pointer;
+  }
+  .crop-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 18px; height: 18px;
+    border-radius: 50%; background: var(--gold); cursor: pointer;
+    box-shadow: 0 2px 6px rgba(200,149,26,0.4);
+  }
+  .crop-slider-val { font-size: 12px; font-weight: 700; color: var(--navy); min-width: 36px; text-align: right; }
+
+  .crop-rotate-btns { display: flex; gap: 8px; }
+  .crop-rotate-btn {
+    flex: 1; padding: 8px; border: 1.5px solid var(--gray-200);
+    border-radius: 8px; background: white; cursor: pointer;
+    font-size: 13px; font-weight: 600; color: var(--navy);
+    transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .crop-rotate-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  .crop-footer { display: flex; gap: 10px; padding: 0 20px 20px; }
+
+  /* ── VIEW PHOTO MODAL ── */
+  .view-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 9999; align-items: center; justify-content: center; cursor: pointer; flex-direction: column; gap: 16px; }
   .view-modal.visible { display: flex; }
   .view-modal img { width: 280px; height: 280px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: 0 0 60px rgba(0,0,0,0.5); }
   .view-modal-close { color: rgba(255,255,255,0.6); font-size: 13px; }
 
+  /* ── ERRO TAMANHO ── */
+  .size-error {
+    background: #FEF2F2; border: 1px solid #FECACA; border-radius: 12px;
+    padding: 14px 18px; font-size: 13px; color: #991B1B; font-weight: 600;
+    display: none; margin-bottom: 16px; align-items: center; gap: 10px;
+  }
+  .size-error.visible { display: flex; }
+
   .profile-name { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--navy); }
   .profile-email { font-size: 13px; color: var(--gray-400); margin-top: 2px; }
   .profile-since { font-size: 11px; color: var(--gray-400); margin-top: 6px; }
-
   .edit-section { border-top: 1px solid var(--gray-100); padding-top: 20px; margin-top: 8px; }
   .edit-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 16px; }
   .edit-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
@@ -126,6 +190,10 @@
   .danger-zone { background: #FEF2F2; border: 1px solid #FECACA; border-radius: 14px; padding: 18px 20px; }
   .danger-title { font-size: 13px; font-weight: 700; color: #991B1B; margin-bottom: 10px; }
 
+  .upload-loading { display: none; align-items: center; gap: 10px; padding: 12px 16px; background: var(--gold-pale); border-radius: 10px; font-size: 13px; font-weight: 600; color: var(--navy); margin-top: 10px; }
+  .upload-loading.visible { display: flex; }
+  .upload-spinner { width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(26,58,92,0.2); border-top-color: var(--navy); animation: spin 0.7s linear infinite; }
+
   @media (max-width: 768px) {
     .page-wrap { padding: 16px; }
     .stats-row { gap: 8px; }
@@ -133,6 +201,7 @@
     .edit-row { grid-template-columns: 1fr; }
     .download-options { grid-template-columns: 1fr; }
     .subject-name { min-width: 120px; font-size: 12px; }
+    .crop-preview-wrap { gap: 12px; }
   }
 </style>
 </head>
@@ -151,7 +220,71 @@
   <div class="photo-menu-item danger" onclick="removePhoto()">🗑️ Remover foto</div>
 </div>
 
-<!-- MODAL VER FOTO -->
+<!-- CROP MODAL -->
+<div class="crop-modal" id="cropModal">
+  <div class="crop-box">
+    <div class="crop-header">
+      <div class="crop-header-title">✂️ Ajustar foto</div>
+      <button class="crop-close" onclick="closeCropModal()">✕</button>
+    </div>
+    <div class="crop-body">
+
+      <!-- Erro tamanho -->
+      <div class="size-error" id="sizeError">
+        ⚠️ Arquivo muito grande! Máximo permitido: 3MB.
+      </div>
+
+      <!-- Canvas de crop -->
+      <div class="crop-area" id="cropArea">
+        <canvas id="cropCanvas"></canvas>
+      </div>
+
+      <!-- Preview -->
+      <div class="crop-preview-wrap">
+        <div>
+          <div class="crop-preview-label">Preview circular</div>
+          <div class="crop-preview-circle"><img id="previewCircle" src="" alt=""></div>
+        </div>
+        <div>
+          <div class="crop-preview-label">Preview quadrado</div>
+          <div class="crop-preview-square"><img id="previewSquare" src="" alt=""></div>
+        </div>
+      </div>
+
+      <!-- Controles -->
+      <div class="crop-controls">
+        <div class="crop-control-row">
+          <span class="crop-control-label">🔍 Zoom</span>
+          <input type="range" class="crop-slider" id="zoomSlider" min="100" max="300" value="100" oninput="updateCrop()">
+          <span class="crop-slider-val" id="zoomVal">100%</span>
+        </div>
+        <div class="crop-control-row">
+          <span class="crop-control-label">☀️ Brilho</span>
+          <input type="range" class="crop-slider" id="brightnessSlider" min="50" max="150" value="100" oninput="updateCrop()">
+          <span class="crop-slider-val" id="brightnessVal">100%</span>
+        </div>
+      </div>
+
+      <div class="crop-rotate-btns">
+        <button class="crop-rotate-btn" onclick="rotate(-90)">↺ Girar esquerda</button>
+        <button class="crop-rotate-btn" onclick="rotate(90)">↻ Girar direita</button>
+        <button class="crop-rotate-btn" onclick="triggerUpload()">🔄 Outra foto</button>
+      </div>
+
+      <div class="upload-loading" id="uploadLoading">
+        <div class="upload-spinner"></div>
+        Enviando foto...
+      </div>
+    </div>
+
+    <div class="crop-footer">
+      <button class="btn btn-outline" style="flex:1" onclick="closeCropModal()">Cancelar</button>
+      <button class="btn btn-gold" style="flex:2" onclick="confirmCrop()">✅ Salvar foto</button>
+    </div>
+  </div>
+</div>
+
+<!-- VIEW PHOTO MODAL -->
 <div class="view-modal" id="viewModal" onclick="this.classList.remove('visible')">
   <img id="viewModalImg" src="" alt="Foto de perfil">
   <div class="view-modal-close">Clique para fechar</div>
@@ -161,10 +294,10 @@
   <a href="dashboard.html" class="back-link">← Voltar ao Dashboard</a>
 
   <div class="alert alert-success" id="alertSuccess" style="margin-bottom:16px">
-    <span>✅</span> <span id="alertMsg">Perfil atualizado!</span>
+    <span>✅</span> <span id="alertMsg"></span>
   </div>
   <div class="alert alert-error" id="alertError" style="margin-bottom:16px">
-    <span>⚠️</span> <span id="alertErrMsg">Erro</span>
+    <span>⚠️</span> <span id="alertErrMsg"></span>
   </div>
 
   <div class="profile-card">
@@ -174,7 +307,7 @@
         <div class="avatar-wrap">
           <div id="profileAvatar">👤</div>
           <div class="camera-btn" id="cameraBtn" onclick="openPhotoMenu(event)">📷</div>
-          <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="handleAvatarUpload(this)">
+          <input type="file" id="avatarInput" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="handleFileSelect(this)">
         </div>
         <button class="btn btn-outline btn-sm" onclick="handleLogout()">Sair da conta</button>
       </div>
@@ -254,16 +387,25 @@
 </div>
 
 <script>
-  let currentUser = null;
-  let userProfile = null;
-  let userStats = null;
+  // ── ESTADO ──
+  let currentUser = null, userProfile = null, userStats = null;
+  let cropImage = new Image();
+  let cropRotation = 0;
+  let isDragging = false;
+  let dragStart = { x: 0, y: 0 };
+  let imgOffset = { x: 0, y: 0 };
+  let currentFile = null;
+
+  const MAX_SIZE = 3 * 1024 * 1024; // 3MB
 
   window.addEventListener('DOMContentLoaded', async () => {
     currentUser = await requireAuth();
     if (!currentUser) return;
     await loadProfile();
+    initCropDrag();
   });
 
+  // ── MENU FOTO ──
   document.addEventListener('click', (e) => {
     if (!e.target.closest('#photoMenu') && !e.target.closest('#cameraBtn')) {
       document.getElementById('photoMenu').style.display = 'none';
@@ -281,6 +423,7 @@
 
   function triggerUpload() {
     document.getElementById('photoMenu').style.display = 'none';
+    document.getElementById('avatarInput').value = '';
     document.getElementById('avatarInput').click();
   }
 
@@ -300,23 +443,237 @@
       const name = userProfile?.full_name || currentUser.email.split('@')[0];
       const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
       const el = document.getElementById('profileAvatar');
-      el.innerHTML = '';
-      el.textContent = initials;
+      el.innerHTML = ''; el.textContent = initials;
       showSuccess('Foto removida!');
     } catch(err) { showError('Erro ao remover foto.'); }
   }
 
+  // ── FILE SELECT ──
+  function handleFileSelect(input) {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+    currentFile = file;
+
+    // Valida tamanho
+    if (file.size > MAX_SIZE) {
+      document.getElementById('sizeError').classList.add('visible');
+      openCropModal();
+      return;
+    }
+
+    document.getElementById('sizeError').classList.remove('visible');
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      cropImage = new Image();
+      cropImage.onload = () => {
+        cropRotation = 0;
+        imgOffset = { x: 0, y: 0 };
+        document.getElementById('zoomSlider').value = 100;
+        document.getElementById('brightnessSlider').value = 100;
+        openCropModal();
+        setTimeout(updateCrop, 100);
+      };
+      cropImage.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function openCropModal() {
+    document.getElementById('cropModal').classList.add('visible');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCropModal() {
+    document.getElementById('cropModal').classList.remove('visible');
+    document.body.style.overflow = '';
+    document.getElementById('sizeError').classList.remove('visible');
+    document.getElementById('uploadLoading').classList.remove('visible');
+  }
+
+  // ── CROP ENGINE ──
+  function updateCrop() {
+    if (!cropImage.src) return;
+
+    const area = document.getElementById('cropArea');
+    const canvas = document.getElementById('cropCanvas');
+    const size = area.clientWidth || 400;
+    canvas.width = size;
+    canvas.height = size;
+
+    const ctx = canvas.getContext('2d');
+    const zoom = parseInt(document.getElementById('zoomSlider').value) / 100;
+    const brightness = parseInt(document.getElementById('brightnessSlider').value);
+
+    document.getElementById('zoomVal').textContent = Math.round(zoom * 100) + '%';
+    document.getElementById('brightnessVal').textContent = brightness + '%';
+
+    ctx.clearRect(0, 0, size, size);
+    ctx.save();
+
+    // Brilho
+    ctx.filter = `brightness(${brightness}%)`;
+
+    // Centro + rotação + zoom
+    ctx.translate(size / 2 + imgOffset.x, size / 2 + imgOffset.y);
+    ctx.rotate((cropRotation * Math.PI) / 180);
+
+    const isRotated = cropRotation % 180 !== 0;
+    const iw = isRotated ? cropImage.height : cropImage.width;
+    const ih = isRotated ? cropImage.width : cropImage.height;
+    const scale = (size / Math.max(iw, ih)) * zoom;
+    const w = cropImage.width * scale;
+    const h = cropImage.height * scale;
+
+    ctx.drawImage(cropImage, -w / 2, -h / 2, w, h);
+    ctx.restore();
+
+    // Grid de referência
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.lineWidth = 1;
+    for (let i = 1; i < 3; i++) {
+      ctx.beginPath(); ctx.moveTo(size * i / 3, 0); ctx.lineTo(size * i / 3, size); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, size * i / 3); ctx.lineTo(size, size * i / 3); ctx.stroke();
+    }
+
+    // Círculo guia
+    ctx.beginPath();
+    ctx.arc(size / 2, size / 2, size * 0.45, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(200,149,26,0.8)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    updatePreview(canvas, size);
+  }
+
+  function updatePreview(sourceCanvas, size) {
+    // Preview circular
+    const pc = document.createElement('canvas');
+    const r = 90;
+    pc.width = r; pc.height = r;
+    const pctx = pc.getContext('2d');
+    pctx.beginPath();
+    pctx.arc(r/2, r/2, r/2, 0, Math.PI * 2);
+    pctx.clip();
+    pctx.drawImage(sourceCanvas,
+      size/2 - size*0.45, size/2 - size*0.45,
+      size*0.9, size*0.9, 0, 0, r, r);
+
+    document.getElementById('previewCircle').src = pc.toDataURL();
+    document.getElementById('previewSquare').src = pc.toDataURL();
+  }
+
+  function rotate(deg) {
+    cropRotation = (cropRotation + deg + 360) % 360;
+    updateCrop();
+  }
+
+  // ── DRAG ──
+  function initCropDrag() {
+    const area = document.getElementById('cropArea');
+    area.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      dragStart = { x: e.clientX - imgOffset.x, y: e.clientY - imgOffset.y };
+    });
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      imgOffset = { x: e.clientX - dragStart.x, y: e.clientY - dragStart.y };
+      updateCrop();
+    });
+    document.addEventListener('mouseup', () => isDragging = false);
+
+    // Touch
+    area.addEventListener('touchstart', (e) => {
+      const t = e.touches[0];
+      isDragging = true;
+      dragStart = { x: t.clientX - imgOffset.x, y: t.clientY - imgOffset.y };
+    });
+    area.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      if (!isDragging) return;
+      const t = e.touches[0];
+      imgOffset = { x: t.clientX - dragStart.x, y: t.clientY - dragStart.y };
+      updateCrop();
+    }, { passive: false });
+    area.addEventListener('touchend', () => isDragging = false);
+  }
+
+  // ── CONFIRMAR CROP ──
+  async function confirmCrop() {
+    if (document.getElementById('sizeError').classList.contains('visible')) {
+      return showError('Selecione uma foto menor que 3MB.');
+    }
+
+    const canvas = document.getElementById('cropCanvas');
+    const size = canvas.width;
+
+    // Gera canvas final recortado em círculo/quadrado
+    const finalCanvas = document.createElement('canvas');
+    finalCanvas.width = 400;
+    finalCanvas.height = 400;
+    const fctx = finalCanvas.getContext('2d');
+
+    fctx.drawImage(canvas,
+      size/2 - size*0.45, size/2 - size*0.45,
+      size*0.9, size*0.9,
+      0, 0, 400, 400);
+
+    document.getElementById('uploadLoading').classList.add('visible');
+
+    finalCanvas.toBlob(async (blob) => {
+      if (!blob) { showError('Erro ao processar imagem.'); return; }
+
+      try {
+        const file = new File([blob], `avatar_${currentUser.id}.jpg`, { type: 'image/jpeg' });
+        const url = await uploadAvatarBlob(currentUser.id, blob);
+        setAvatar(url);
+        if (userProfile) userProfile.avatar_url = url;
+        closeCropModal();
+        showSuccess('Foto atualizada com sucesso! ✅');
+      } catch(err) {
+        document.getElementById('uploadLoading').classList.remove('visible');
+        showError('Erro ao enviar: ' + err.message);
+      }
+    }, 'image/jpeg', 0.92);
+  }
+
+  // Upload direto do blob
+  async function uploadAvatarBlob(userId, blob) {
+    const path = `${userId}.jpg`;
+
+    // Remove antigos
+    await sb.storage.from('avatars').remove([
+      `${userId}.jpg`, `${userId}.jpeg`, `${userId}.png`, `${userId}.webp`
+    ]);
+
+    const { error } = await sb.storage
+      .from('avatars')
+      .upload(path, blob, { upsert: true, contentType: 'image/jpeg' });
+
+    if (error) throw error;
+
+    const { data } = sb.storage.from('avatars').getPublicUrl(path);
+    await updateProfile(userId, { avatar_url: data.publicUrl });
+    return data.publicUrl;
+  }
+
+  // ── AVATAR ──
   function setAvatar(url) {
     const el = document.getElementById('profileAvatar');
     el.innerHTML = '';
-    el.textContent = '';
     const img = new Image();
-    img.onload = () => { el.innerHTML = ''; el.appendChild(img); };
+    img.onload = () => {
+      el.innerHTML = '';
+      img.style.cssText = 'position:absolute;top:0;left:0;width:110px;height:110px;object-fit:cover;border-radius:50%;display:block;';
+      el.appendChild(img);
+    };
     img.onerror = () => { el.textContent = '👤'; };
-    img.style.cssText = 'position:absolute;top:0;left:0;width:110px;height:110px;object-fit:cover;border-radius:50%;display:block;';
-    img.src = url.split('?')[0] + '?t=' + Date.now();
+    img.src = url + '?t=' + Date.now();
   }
 
+  // ── PROFILE ──
   async function loadProfile() {
     try { userProfile = await getUserProfile(currentUser.id); } catch(e) { userProfile = null; }
     try { userStats = await getStats(currentUser.id); } catch(e) { userStats = { total: 0, corretas: 0, taxa: 0 }; }
@@ -334,22 +691,12 @@
     if (userProfile?.avatar_url) {
       setAvatar(userProfile.avatar_url);
     } else {
-      const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+      const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
       document.getElementById('profileAvatar').textContent = initials;
     }
 
     document.getElementById('statTaxa').textContent = (userStats?.taxa || 0) + '%';
     document.getElementById('statTotal').textContent = userStats?.total || 0;
-  }
-
-  async function handleAvatarUpload(input) {
-    if (!input.files || !input.files[0]) return;
-    try {
-      const url = await uploadAvatar(currentUser.id, input.files[0]);
-      setAvatar(url);
-      if (userProfile) userProfile.avatar_url = url;
-      showSuccess('Foto atualizada com sucesso!');
-    } catch (err) { showError('Erro: ' + err.message); }
   }
 
   async function handleSaveProfile() {
@@ -380,6 +727,7 @@
     document.getElementById('alertSuccess').classList.remove('visible');
   }
 
+  // ── DOWNLOAD PDF ──
   async function downloadPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -389,24 +737,25 @@
     doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(22);
     doc.text('GoianiaConc', 20, 20);
     doc.setFontSize(11); doc.setFont('helvetica','normal');
-    doc.text('Camara Municipal de Goiania', 20, 30);
+    doc.text('Camara Municipal de Goiania — Relatorio de Desempenho', 20, 30);
     doc.setTextColor(26,58,92); doc.setFont('helvetica','bold'); doc.setFontSize(14);
     doc.text('Aluno: ' + name, 20, 55);
     doc.setFont('helvetica','normal'); doc.setFontSize(11); doc.setTextColor(100,100,100);
-    doc.text('Data: ' + date + ' | Email: ' + currentUser.email, 20, 65);
+    doc.text('Data: ' + date + '  |  Email: ' + currentUser.email, 20, 65);
     doc.setDrawColor(221,227,237); doc.line(20,75,190,75);
     doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(26,58,92);
-    doc.text('Desempenho', 20, 88);
+    doc.text('Resumo de Desempenho', 20, 88);
     doc.setFont('helvetica','normal'); doc.setFontSize(11); doc.setTextColor(74,85,104);
     doc.text('Taxa de Acerto: ' + (userStats?.taxa||0) + '%', 20, 100);
     doc.text('Questoes Respondidas: ' + (userStats?.total||0), 20, 110);
     doc.text('Questoes Corretas: ' + (userStats?.corretas||0), 20, 120);
     doc.setFillColor(26,58,92); doc.rect(0,280,210,17,'F');
     doc.setTextColor(255,255,255); doc.setFontSize(9);
-    doc.text('GoianiaConc © 2025', 20, 290);
+    doc.text('GoianiaConc © 2025 · Camara Municipal de Goiania', 20, 290);
     doc.save('relatorio-goianiaconc.pdf');
   }
 
+  // ── DOWNLOAD WORD ──
   function downloadWord() {
     const name = userProfile?.full_name || currentUser.email;
     const date = new Date().toLocaleDateString('pt-BR');
@@ -418,7 +767,7 @@
     <tr><td>Taxa de Acerto</td><td>${userStats?.taxa||0}%</td></tr>
     <tr><td>Questões Respondidas</td><td>${userStats?.total||0}</td></tr>
     <tr><td>Questões Corretas</td><td>${userStats?.corretas||0}</td></tr></table>
-    <p style="margin-top:40px;color:#8a9bb5;font-size:9pt">GoiâniaConc © 2025 · Câmara Municipal de Goiânia</p>
+    <p style="margin-top:40px;color:#8a9bb5;font-size:9pt">GoiâniaConc © 2025 · Câmara Municipal de Goiânia · ${date}</p>
     </body></html>`;
     const blob = new Blob([content], { type: 'application/msword' });
     const url = URL.createObjectURL(blob);
