@@ -51,7 +51,6 @@ async function updateProfile(userId, updates) {
 }
 
 async function uploadAvatar(userId, file) {
-  // Detecta extensão correta do arquivo
   let ext = 'jpg';
   if (file.type === 'image/png') ext = 'png';
   if (file.type === 'image/jpeg' || file.type === 'image/jpg') ext = 'jpg';
@@ -60,7 +59,6 @@ async function uploadAvatar(userId, file) {
 
   const path = `${userId}.${ext}`;
 
-  // Remove todos os formatos antigos
   await sb.storage.from('avatars').remove([
     `${userId}.jpg`,
     `${userId}.jpeg`,
@@ -76,12 +74,8 @@ async function uploadAvatar(userId, file) {
   if (error) throw error;
 
   const { data } = sb.storage.from('avatars').getPublicUrl(path);
-
-  // Salva URL limpa no banco (sem ?t=)
   const cleanUrl = data.publicUrl;
   await updateProfile(userId, { avatar_url: cleanUrl });
-
-  // Retorna URL com cache buster
   return cleanUrl;
 }
 
@@ -134,4 +128,23 @@ async function getStudyTime(userId) {
     const { data } = await sb.from('sessoes_estudo').select('duracao_min').eq('user_id', userId);
     return (data || []).reduce((acc, s) => acc + (s.duracao_min || 0), 0);
   } catch(e) { return 0; }
+}
+
+/* ─────────────────────────────────────────
+   Reset mini-questões do resumo
+   Limpa apenas o progresso das mini-questões
+   do localStorage do usuário atual,
+   sem apagar o progresso do simulado.
+───────────────────────────────────────── */
+function resetMiniQuestoes() {
+  const keys = Object.keys(localStorage).filter(k => k.startsWith('goianiaconc_'));
+  keys.forEach(key => {
+    try {
+      const data = JSON.parse(localStorage.getItem(key) || '{}');
+      delete data.miniRespondidas;
+      delete data.pctResumo;
+      localStorage.setItem(key, JSON.stringify(data));
+    } catch(e) {}
+  });
+  location.reload();
 }
