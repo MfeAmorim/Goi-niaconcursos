@@ -51,14 +51,38 @@ async function updateProfile(userId, updates) {
 }
 
 async function uploadAvatar(userId, file) {
-  const ext = file.type.includes('png') ? 'png' : 'jpg';
+  // Detecta extensão correta do arquivo
+  let ext = 'jpg';
+  if (file.type === 'image/png') ext = 'png';
+  if (file.type === 'image/jpeg' || file.type === 'image/jpg') ext = 'jpg';
+  if (file.type === 'image/gif') ext = 'gif';
+  if (file.type === 'image/webp') ext = 'webp';
+
   const path = `${userId}.${ext}`;
-  await sb.storage.from('avatars').remove([`${userId}.jpg`, `${userId}.jpeg`, `${userId}.png`]);
-  const { error } = await sb.storage.from('avatars').upload(path, file, { upsert: true, contentType: file.type });
+
+  // Remove todos os formatos antigos
+  await sb.storage.from('avatars').remove([
+    `${userId}.jpg`,
+    `${userId}.jpeg`,
+    `${userId}.png`,
+    `${userId}.gif`,
+    `${userId}.webp`
+  ]);
+
+  const { error } = await sb.storage
+    .from('avatars')
+    .upload(path, file, { upsert: true, contentType: file.type });
+
   if (error) throw error;
+
   const { data } = sb.storage.from('avatars').getPublicUrl(path);
-  await updateProfile(userId, { avatar_url: data.publicUrl });
-  return data.publicUrl + '?t=' + Date.now();
+
+  // Salva URL limpa no banco (sem ?t=)
+  const cleanUrl = data.publicUrl;
+  await updateProfile(userId, { avatar_url: cleanUrl });
+
+  // Retorna URL com cache buster
+  return cleanUrl;
 }
 
 async function requireAuth() {
