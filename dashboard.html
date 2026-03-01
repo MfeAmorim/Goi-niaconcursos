@@ -34,7 +34,10 @@
     text-decoration: none;
   }
   .nav-item:hover { background: rgba(255,255,255,0.07); color: white; }
+  .nav-item.simulados-link { background: rgba(200,149,26,0.12); border: 1px solid rgba(200,149,26,0.25); color: var(--gold-light); }
+  .nav-item.simulados-link:hover { background: rgba(200,149,26,0.22); color: white; }
   .nav-icon { width: 28px; height: 28px; border-radius: 8px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .nav-item.simulados-link .nav-icon { background: rgba(200,149,26,0.2); }
 
   .sidebar-footer { padding: 12px 14px; border-top: 1px solid rgba(255,255,255,0.08); }
   .week-chip { display: flex; align-items: center; gap: 8px; background: rgba(200,149,26,0.15); border: 1px solid rgba(200,149,26,0.3); color: var(--gold-light); padding: 8px 12px; border-radius: 10px; font-size: 12px; font-weight: 600; }
@@ -69,7 +72,7 @@
   /* ── MATÉRIAS GRID ── */
   .section-heading { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--navy); margin-bottom: 16px; }
 
-  .materias-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; margin-bottom: 32px; }
+  .materias-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; margin-bottom: 28px; }
 
   .materia-card {
     background: white; border: 1.5px solid var(--gray-200);
@@ -77,6 +80,13 @@
     transition: all 0.2s; text-decoration: none; display: block;
   }
   .materia-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(200,149,26,0.1); }
+
+  /* Card especial de simulados */
+  .materia-card.simulados-card {
+    border-color: rgba(200,149,26,0.3);
+    background: linear-gradient(135deg, #fffbeb, white);
+  }
+  .materia-card.simulados-card:hover { border-color: var(--gold); box-shadow: 0 8px 24px rgba(200,149,26,0.18); }
 
   .materia-card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
   .materia-card-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
@@ -90,6 +100,10 @@
 
   .materia-card-arrow { margin-left: auto; color: var(--gray-300); font-size: 18px; transition: transform 0.2s; }
   .materia-card:hover .materia-card-arrow { transform: translateX(4px); color: var(--gold); }
+
+  /* Simulados info chips */
+  .simulados-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .simulados-chip { background: var(--gold-pale); border: 1px solid rgba(200,149,26,0.3); color: var(--gold); font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 20px; }
 
   /* ── MOBILE ── */
   @media (max-width: 768px) {
@@ -169,6 +183,11 @@
       </a>
       <a href="materia-conhecimentos.html" class="nav-item">
         <div class="nav-icon">🎯</div> Conhecimentos Específicos
+      </a>
+
+      <div class="nav-section-title" style="margin-top:10px">Provas Anteriores</div>
+      <a href="simulados.html" class="nav-item simulados-link">
+        <div class="nav-icon">📋</div> Simulados por Banca
       </a>
     </div>
 
@@ -342,6 +361,25 @@
             <div class="progress-wrap"><div class="progress-fill" id="bar-con" style="width:0%"></div></div>
           </div>
         </a>
+
+        <!-- CARD SIMULADOS POR BANCA -->
+        <a href="simulados.html" class="materia-card simulados-card">
+          <div class="materia-card-top">
+            <div class="materia-card-icon" style="background:var(--gold-pale)">📋</div>
+            <div>
+              <div class="materia-card-name">Simulados por Banca</div>
+              <div class="materia-card-sub">Provas anteriores — 823 questões</div>
+            </div>
+            <div class="materia-card-arrow">→</div>
+          </div>
+          <div class="simulados-chips">
+            <span class="simulados-chip">UFG</span>
+            <span class="simulados-chip">UniCesumar</span>
+            <span class="simulados-chip">Câmara de Goiânia</span>
+            <span class="simulados-chip">+ outras</span>
+          </div>
+        </a>
+
       </div>
 
     </div>
