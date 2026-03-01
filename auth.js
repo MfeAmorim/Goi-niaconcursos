@@ -69,28 +69,27 @@ async function updateProfile(userId, updates) {
 
 // Upload de foto de perfil
 async function uploadAvatar(userId, file) {
-  const ext = file.name.split('.').pop();
-  const path = `${userId}.${ext}`;
+  // Sempre salva como jpg independente da extensão original
+  const path = `${userId}.jpg`;
   
-  // Remove foto antiga se existir
-  await sb.storage.from('avatars').remove([path]);
-  
-  // Faz upload
   const { error: uploadError } = await sb.storage
     .from('avatars')
-    .upload(path, file, { upsert: true, contentType: file.type });
+    .upload(path, file, { 
+      upsert: true, 
+      contentType: 'image/jpeg'
+    });
   
   if (uploadError) throw uploadError;
   
-  // Pega URL pública
   const { data } = sb.storage
     .from('avatars')
     .getPublicUrl(path);
   
-  // Salva no perfil
+  const urlNoCache = data.publicUrl + '?t=' + Date.now();
+  
   await updateProfile(userId, { avatar_url: data.publicUrl });
   
-  return data.publicUrl;
+  return urlNoCache;
 }
 
 // Protege páginas — redireciona para login se não estiver logado
