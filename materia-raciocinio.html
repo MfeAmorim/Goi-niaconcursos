@@ -6,6 +6,83 @@
 <title>GoiâniaConc — Raciocínio Lógico</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
 <link rel="stylesheet" href="style.css">
+<!-- PANEL: CALCULADORA DE JUROS COMPOSTOS -->
+<div id="panel-calculadora" class="panel">
+  <div style="max-width:760px;margin:0 auto;">
+
+    <div style="background:linear-gradient(135deg,var(--navy) 0%,var(--navy-dark) 100%);border-radius:16px;padding:24px 28px;margin-bottom:24px;position:relative;overflow:hidden;">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 80% 50%,rgba(200,149,26,0.12) 0%,transparent 60%);"></div>
+      <div style="position:relative;">
+        <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">Fórmula</div>
+        <div style="font-family:'Courier New',monospace;font-size:22px;font-weight:800;color:var(--gold-light);margin-bottom:4px;">M = C × (1 + i)ⁿ</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.45);">Montante = Capital × Fator de juros compostos</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
+      <div style="background:white;border:1.5px solid var(--gray-200);border-radius:12px;padding:16px 18px;">
+        <label style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:8px;">Capital inicial — C (R$)</label>
+        <input type="number" id="jc2-capital" value="1000" min="1" oninput="calcJuros2()"
+          style="width:100%;padding:10px 12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:16px;font-family:inherit;outline:none;font-weight:700;color:var(--navy);">
+      </div>
+      <div style="background:white;border:1.5px solid var(--gray-200);border-radius:12px;padding:16px 18px;">
+        <label style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:8px;">Taxa de juros — i (% por período)</label>
+        <input type="number" id="jc2-taxa" value="10" min="0.1" step="0.1" oninput="calcJuros2()"
+          style="width:100%;padding:10px 12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:16px;font-family:inherit;outline:none;font-weight:700;color:var(--navy);">
+      </div>
+      <div style="background:white;border:1.5px solid var(--gray-200);border-radius:12px;padding:16px 18px;">
+        <label style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:8px;">Número de períodos — n</label>
+        <input type="number" id="jc2-n" value="3" min="1" oninput="calcJuros2()"
+          style="width:100%;padding:10px 12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:16px;font-family:inherit;outline:none;font-weight:700;color:var(--navy);">
+      </div>
+      <div style="background:var(--gold-pale);border:1.5px solid rgba(200,149,26,0.3);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;justify-content:center;">
+        <div style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">Montante final (M)</div>
+        <div style="font-size:28px;font-weight:800;color:var(--navy);" id="jc2-montante">R$ 1.331,00</div>
+        <div style="font-size:12px;color:#92400e;margin-top:4px;">Juros: <strong id="jc2-juros">R$ 331,00</strong></div>
+      </div>
+    </div>
+
+    <div style="background:white;border:1.5px solid var(--gray-200);border-radius:14px;overflow:hidden;margin-bottom:20px;">
+      <div style="background:var(--gray-50);border-bottom:1px solid var(--gray-200);padding:12px 20px;">
+        <div style="font-size:13px;font-weight:800;color:var(--navy);">🧮 Resolução passo a passo</div>
+      </div>
+      <div style="padding:18px 20px;display:flex;flex-direction:column;gap:10px;">
+        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-left:4px solid #3b82f6;border-radius:8px;padding:10px 14px;font-size:13.5px;color:#1e3a5f;" id="jc2-p1"></div>
+        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-left:4px solid #3b82f6;border-radius:8px;padding:10px 14px;font-size:13.5px;color:#1e3a5f;" id="jc2-p2"></div>
+        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-left:4px solid #3b82f6;border-radius:8px;padding:10px 14px;font-size:13.5px;color:#1e3a5f;" id="jc2-p3"></div>
+        <div style="background:#dcfce7;border:1px solid #86efac;border-left:4px solid #16a34a;border-radius:8px;padding:10px 14px;font-size:14px;font-weight:700;color:#14532d;" id="jc2-res"></div>
+      </div>
+    </div>
+
+    <div style="background:white;border:1.5px solid var(--gray-200);border-radius:14px;overflow:hidden;margin-bottom:20px;">
+      <div style="background:var(--gray-50);border-bottom:1px solid var(--gray-200);padding:12px 20px;">
+        <div style="font-size:13px;font-weight:800;color:var(--navy);">📊 Comparativo: Compostos vs. Simples</div>
+      </div>
+      <div style="overflow-x:auto;max-height:300px;overflow-y:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead>
+            <tr style="background:var(--navy);position:sticky;top:0;">
+              <th style="padding:9px 14px;text-align:left;color:rgba(255,255,255,0.75);font-weight:600;font-size:11px;">Período</th>
+              <th style="padding:9px 14px;text-align:right;color:rgba(255,255,255,0.75);font-weight:600;font-size:11px;">Saldo Início</th>
+              <th style="padding:9px 14px;text-align:right;color:rgba(255,255,255,0.75);font-weight:600;font-size:11px;">Juros (compostos)</th>
+              <th style="padding:9px 14px;text-align:right;color:rgba(255,255,255,0.75);font-weight:600;font-size:11px;">Saldo Final</th>
+              <th style="padding:9px 14px;text-align:right;color:rgba(255,255,255,0.75);font-weight:600;font-size:11px;">Simples (acumulado)</th>
+            </tr>
+          </thead>
+          <tbody id="jc2-tabela"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="background:#fffbeb;border:1px solid rgba(200,149,26,0.3);border-left:4px solid var(--gold);border-radius:12px;padding:14px 18px;">
+      <div style="font-size:10px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">💡 Dica para prova</div>
+      <p style="font-size:13px;color:#78350f;margin:0;line-height:1.6;">A prova quase sempre fornece a tabela de potências ou o valor do fator (1+i)ⁿ já calculado. <strong>Leia o enunciado com atenção</strong> — quando aparecer "dados: (1,10)³ = 1,331", basta multiplicar pelo capital. A pegadinha mais comum é confundir juros compostos com simples: nos compostos, os juros de um período <strong>entram no capital</strong> do período seguinte.</p>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -221,6 +298,7 @@
   <div class="tab-btn" onclick="switchTab('materiais', this)">📚 Materiais</div>
   <div class="tab-btn" onclick="switchTab('questoes', this)">✏️ Questões</div>
   <div class="tab-btn" onclick="switchTab('resumo', this)">📝 Resumo</div>
+  <div class="tab-btn" onclick="switchTab('calculadora', this)">📈 Juros Compostos</div>
 </div>
 
 <!-- PANEL: AULA -->
@@ -253,6 +331,7 @@
       <div class="topico-item"><div class="topico-num">4</div><div style="flex:1"><div class="topico-name">Razões e Proporções</div><div class="topico-sub">Grandezas direta e inversamente proporcionais</div></div></div>
       <div class="topico-item"><div class="topico-num">5</div><div style="flex:1"><div class="topico-name">Estatística Básica</div><div class="topico-sub">Média aritmética, mediana, moda</div></div></div>
       <div class="topico-item"><div class="topico-num">6</div><div style="flex:1"><div class="topico-name">Problemas Contextualizados</div><div class="topico-sub">Tempo, distância e velocidade</div></div></div>
+      <div class="topico-item"><div class="topico-num">7</div><div style="flex:1"><div class="topico-name">Juros Compostos</div><div class="topico-sub">Fórmula M = C×(1+i)ⁿ, montante, capital, taxa e período</div></div></div>
     </div>
   </div>
 </div>
@@ -470,6 +549,111 @@
         </div>
       </div>
 
+      <!-- ══ JUROS COMPOSTOS ══ -->
+      <div class="resumo-topico">
+        <h2>📈 Juros Compostos <span class="tag-fonte">UFG</span></h2>
+        <p>Nos juros compostos, os juros de cada período são incorporados ao capital e passam a render juros também — o famoso "juros sobre juros". É o modelo usado em investimentos, financiamentos e empréstimos.</p>
+
+        <h3>Fórmula Principal</h3>
+        <div class="formula-box">M = C × (1 + i)ⁿ</div>
+        <div class="resumo-grid">
+          <div class="resumo-card"><div class="resumo-card-title">M — Montante</div><p>Valor total ao final do período (capital + juros acumulados).</p></div>
+          <div class="resumo-card"><div class="resumo-card-title">C — Capital</div><p>Valor inicial aplicado (principal).</p></div>
+          <div class="resumo-card"><div class="resumo-card-title">i — Taxa</div><p>Taxa de juros por período. Sempre em decimal: 8% = 0,08.</p></div>
+          <div class="resumo-card"><div class="resumo-card-title">n — Período</div><p>Número de períodos (anos, meses, dias — deve ser compatível com a taxa).</p></div>
+        </div>
+
+        <h3>Juros Simples vs. Compostos</h3>
+        <ul>
+          <li><strong>Juros Simples:</strong> M = C × (1 + i × n) — juros sempre sobre o capital inicial, crescimento linear.</li>
+          <li><strong>Juros Compostos:</strong> M = C × (1 + i)ⁿ — juros sobre o saldo acumulado, crescimento exponencial.</li>
+        </ul>
+        <div class="exemplo-box"><strong>Ex.:</strong> R$ 1.000 a 10% ao ano por 3 anos.<br>
+          Simples: M = 1000 × (1 + 0,10 × 3) = 1000 × 1,30 = <strong>R$ 1.300,00</strong><br>
+          Compostos: M = 1000 × (1,10)³ = 1000 × 1,331 = <strong>R$ 1.331,00</strong>
+        </div>
+
+        <h3>Como Calcular Passo a Passo</h3>
+        <ul>
+          <li><strong>Passo 1</strong> — Converta a taxa para decimal: 8% → 0,08.</li>
+          <li><strong>Passo 2</strong> — Calcule o fator: (1 + i)ⁿ. Ex.: (1,08)² = 1,1664.</li>
+          <li><strong>Passo 3</strong> — Multiplique pelo capital: C × fator.</li>
+          <li><strong>Passo 4</strong> — Os juros totais são: J = M − C.</li>
+        </ul>
+
+        <div class="macete-box"><strong>💡 Potências mais cobradas em prova</strong><p>
+          (1,10)² = 1,21 &nbsp;|&nbsp; (1,10)³ = 1,331 &nbsp;|&nbsp;
+          (1,20)² = 1,44 &nbsp;|&nbsp; (1,05)² = 1,1025 &nbsp;|&nbsp;
+          (1,08)² = 1,1664<br>
+          A prova quase sempre fornece a tabela — leia o enunciado com atenção!
+        </p></div>
+
+        <h3>Calculadora Interativa</h3>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:20px 24px;margin:12px 0;">
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+            <div>
+              <label style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:5px;">Capital inicial (R$)</label>
+              <input type="number" id="jc-capital" value="1000" min="1" oninput="calcJuros()"
+                style="width:100%;padding:9px 12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:14px;font-family:inherit;outline:none;">
+            </div>
+            <div>
+              <label style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:5px;">Taxa (% ao período)</label>
+              <input type="number" id="jc-taxa" value="10" min="0.1" step="0.1" oninput="calcJuros()"
+                style="width:100%;padding:9px 12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:14px;font-family:inherit;outline:none;">
+            </div>
+            <div>
+              <label style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:5px;">Número de períodos (n)</label>
+              <input type="number" id="jc-n" value="3" min="1" oninput="calcJuros()"
+                style="width:100%;padding:9px 12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:14px;font-family:inherit;outline:none;">
+            </div>
+            <div style="display:flex;flex-direction:column;justify-content:flex-end;">
+              <div style="background:var(--navy);border-radius:10px;padding:12px 16px;text-align:center;">
+                <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;">Montante Final</div>
+                <div style="font-size:22px;font-weight:800;color:var(--gold-light);" id="jc-montante">R$ 1.331,00</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:white;border:1px solid #e5e7eb;border-radius:10px;padding:14px 16px;margin-bottom:12px;">
+            <div style="font-size:11px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Como a conta é feita</div>
+            <div id="jc-passo1" style="font-size:13.5px;color:#374151;margin-bottom:6px;line-height:1.7;"></div>
+            <div id="jc-passo2" style="font-size:13.5px;color:#374151;margin-bottom:6px;line-height:1.7;"></div>
+            <div id="jc-passo3" style="font-size:13.5px;color:#374151;margin-bottom:6px;line-height:1.7;"></div>
+            <div style="border-top:1px solid #e5e7eb;margin:8px 0;"></div>
+            <div id="jc-resultado" style="font-size:14px;font-weight:700;color:#15803d;"></div>
+          </div>
+
+          <div style="background:white;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;">
+            <div style="background:#f9fafb;border-bottom:1px solid #e5e7eb;padding:10px 14px;font-size:11px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.5px;">Evolução período a período</div>
+            <div style="overflow-x:auto;max-height:220px;overflow-y:auto;">
+              <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+                <thead>
+                  <tr style="background:var(--navy);">
+                    <th style="padding:8px 12px;text-align:left;color:rgba(255,255,255,0.75);font-weight:600;font-size:11px;">Período</th>
+                    <th style="padding:8px 12px;text-align:right;color:rgba(255,255,255,0.75);font-weight:600;font-size:11px;">Saldo Início</th>
+                    <th style="padding:8px 12px;text-align:right;color:rgba(255,255,255,0.75);font-weight:600;font-size:11px;">Juros</th>
+                    <th style="padding:8px 12px;text-align:right;color:rgba(255,255,255,0.75);font-weight:600;font-size:11px;">Saldo Final</th>
+                  </tr>
+                </thead>
+                <tbody id="jc-tabela"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="mini-questao" data-id="mq7" data-correta="b">
+          <div class="mini-questao-label">Fixação do conteúdo</div>
+          <div class="mini-questao-pergunta">R$ 2.000,00 aplicados a juros compostos de 10% ao ano por 2 anos resulta em: [use (1,10)² = 1,21]</div>
+          <div class="mini-questao-opcoes">
+            <button class="mini-opcao" onclick="responderMini('mq7','a')"><b>a)</b> R$ 2.400,00</button>
+            <button class="mini-opcao" onclick="responderMini('mq7','b')"><b>b)</b> R$ 2.420,00</button>
+            <button class="mini-opcao" onclick="responderMini('mq7','c')"><b>c)</b> R$ 2.440,00</button>
+          </div>
+          <div class="mini-questao-feedback" id="fb-mq7"></div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -649,6 +833,85 @@
 
   function showVideoMsg() { alert('Nenhum vídeo adicionado ainda para esta matéria.'); }
 
+  function resetMiniQuestoes() {
+    miniRespondidas = {};
+    document.querySelectorAll('.mini-questao').forEach(c => {
+      const id = c.getAttribute('data-id');
+      c.querySelectorAll('.mini-opcao').forEach(btn => { btn.disabled=false; btn.classList.remove('correta','incorreta'); });
+      const fb = document.getElementById('fb-'+id);
+      if (fb) { fb.className='mini-questao-feedback'; fb.textContent=''; }
+    });
+    const stored = getStoredData(); stored.miniRespondidas={}; stored.pctResumo=0; saveStoredData(stored);
+    recalcularProgressoMateria(stored);
+  }
+
+  function calcJuros2() {
+    const C = parseFloat(document.getElementById('jc2-capital')?.value) || 0;
+    const i = parseFloat(document.getElementById('jc2-taxa')?.value) || 0;
+    const n = parseInt(document.getElementById('jc2-n')?.value) || 0;
+    if (!C || !i || !n) return;
+    const iDec = i / 100;
+    const fator = Math.pow(1 + iDec, n);
+    const M = C * fator;
+    const J = M - C;
+    const fmt = v => 'R$ ' + v.toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+    document.getElementById('jc2-montante').textContent = fmt(M);
+    document.getElementById('jc2-juros').textContent = fmt(J);
+    document.getElementById('jc2-p1').innerHTML = `<strong>Passo 1</strong> — Substituir os valores: M = ${fmt(C)} × (1 + ${i}%)^${n}`;
+    document.getElementById('jc2-p2').innerHTML = `<strong>Passo 2</strong> — Calcular o fator: (1 + ${iDec})^${n} = ${fator.toFixed(6).replace(/0+$/,'').replace(/\.$/,'')}`;
+    document.getElementById('jc2-p3').innerHTML = `<strong>Passo 3</strong> — Multiplicar: ${fmt(C)} × ${fator.toFixed(4)} = ${fmt(M)}`;
+    document.getElementById('jc2-res').textContent = `Montante Final: ${fmt(M)}  |  Juros Totais: ${fmt(J)}  |  Crescimento: ${((M/C)).toFixed(2)}x`;
+    let rows = '', saldo = C;
+    for (let yr = 1; yr <= n; yr++) {
+      const inicio = saldo;
+      const jComp = inicio * iDec;
+      saldo = inicio + jComp;
+      const jSimples = C * iDec * yr;
+      const mSimples = C + jSimples;
+      const diff = saldo > mSimples;
+      const bg = yr === n ? 'background:#f0fdf4;font-weight:700;' : (yr%2===0?'background:#f9fafb;':'');
+      rows += `<tr style="${bg}">
+        <td style="padding:8px 14px;color:#374151;">${yr}</td>
+        <td style="padding:8px 14px;text-align:right;color:#6b7280;">${fmt(inicio)}</td>
+        <td style="padding:8px 14px;text-align:right;color:#1d4ed8;">${fmt(jComp)}</td>
+        <td style="padding:8px 14px;text-align:right;color:#15803d;font-weight:${yr===n?'800':'600'};">${fmt(saldo)}</td>
+        <td style="padding:8px 14px;text-align:right;color:#6b7280;">${fmt(mSimples)}</td>
+      </tr>`;
+    }
+    document.getElementById('jc2-tabela').innerHTML = rows;
+  }
+
+  function calcJuros() {
+    const C = parseFloat(document.getElementById('jc-capital')?.value) || 0;
+    const i = parseFloat(document.getElementById('jc-taxa')?.value) || 0;
+    const n = parseInt(document.getElementById('jc-n')?.value) || 0;
+    if (!C || !i || !n) return;
+    const iDec = i / 100;
+    const fator = Math.pow(1 + iDec, n);
+    const M = C * fator;
+    const J = M - C;
+    const fmt = v => 'R$ ' + v.toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+    document.getElementById('jc-montante').textContent = fmt(M);
+    document.getElementById('jc-passo1').innerHTML = `<strong>Passo 1 — substituir os valores:</strong> M = ${fmt(C)} × (1 + ${i}%)^${n}`;
+    document.getElementById('jc-passo2').innerHTML = `<strong>Passo 2 — calcular o fator:</strong> (1 + ${iDec.toFixed(4).replace(/0+$/,'')})^${n} = <strong>${fator.toFixed(6).replace(/0+$/,'').replace(/\.$/,'')}</strong>`;
+    document.getElementById('jc-passo3').innerHTML = `<strong>Passo 3 — multiplicar:</strong> ${fmt(C)} × ${fator.toFixed(4)} = <strong>${fmt(M)}</strong>`;
+    document.getElementById('jc-resultado').textContent = `Montante: ${fmt(M)}  |  Juros totais: ${fmt(J)}`;
+    let rows = '', saldo = C;
+    for (let yr = 1; yr <= n; yr++) {
+      const inicio = saldo;
+      const jAno = inicio * iDec;
+      saldo = inicio + jAno;
+      const bg = yr === n ? 'background:#f0fdf4;font-weight:700;' : (yr%2===0?'background:#f9fafb;':'');
+      rows += `<tr style="${bg}">
+        <td style="padding:7px 12px;color:#374151;">${yr}</td>
+        <td style="padding:7px 12px;text-align:right;color:#6b7280;">${fmt(inicio)}</td>
+        <td style="padding:7px 12px;text-align:right;color:#1d4ed8;">${fmt(jAno)}</td>
+        <td style="padding:7px 12px;text-align:right;color:#15803d;">${fmt(saldo)}</td>
+      </tr>`;
+    }
+    document.getElementById('jc-tabela').innerHTML = rows;
+  }
+
   window.addEventListener('DOMContentLoaded', async () => {
     currentUser = await requireAuth();
     if (!currentUser) return;
@@ -684,6 +947,8 @@
       qAtual=Math.min(ultima+1,TOTAL_QUESTOES-1);
     }
     renderCard(qAtual);
+    calcJuros();
+    calcJuros2();
   });
 </script>
 </body>
