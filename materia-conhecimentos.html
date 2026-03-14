@@ -329,18 +329,18 @@
   <div class="simulado-header">
     <div class="simulado-header-info">
       <h3>✏️ Simulado — Conhecimentos Específicos</h3>
-      <p>8 questões · Câmara de Goiânia · Agente Administrativo</p>
+      <p>100 questões mais cobradas · Câmara de Goiânia · Agente Administrativo</p>
     </div>
     <div class="simulado-score-chips">
       <div class="score-chip acertos"><div class="score-chip-val" id="chipAcertos">0</div><div class="score-chip-label">Acertos</div></div>
       <div class="score-chip erros"><div class="score-chip-val" id="chipErros">0</div><div class="score-chip-label">Erros</div></div>
-      <div class="score-chip total"><div class="score-chip-val" id="chipTotal">0/8</div><div class="score-chip-label">Total</div></div>
+      <div class="score-chip total"><div class="score-chip-val" id="chipTotal">0/100</div><div class="score-chip-label">Total</div></div>
     </div>
   </div>
 
   <div class="simulado-progress-bar">
     <div class="progress-wrap" style="flex:1"><div class="progress-fill" id="simuladoProgressBar" style="width:0%"></div></div>
-    <div class="simulado-progress-info">Questão <span id="qAtualNum">1</span> de 8</div>
+    <div class="simulado-progress-info">Questão <span id="qAtualNum">1</span> de <span id="qTotalNum">100</span></div>
   </div>
 
   <div id="questaoContainer"></div>
@@ -603,7 +603,7 @@
   const MATERIA_KEY = 'Conhecimentos Específicos';
   const STORAGE_KEY = 'goianiaconc_conhecimentos';
   let TOTAL_QUESTOES = 136;
-  const TOTAL = 8;
+  let TOTAL = 100;
   const TOTAL_MINI = 9;
 
   let currentUser = null;
@@ -618,6 +618,10 @@
   async function carregarQuestoes() {
     const r = await fetch(QUESTOES_URL);
     questoes = await r.json();
+    TOTAL = questoes.length;
+    const el = document.getElementById('qTotalNum');
+    if (el) el.textContent = TOTAL;
+    document.getElementById('chipTotal').textContent = '0/' + TOTAL;
   };
 
   const letras = ['a','b','c','d'];
